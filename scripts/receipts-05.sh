@@ -23,7 +23,7 @@ r 6 show -s --format='%H%n%ai %an%n%s%n%b%ntree   %T' e90a4c0ed17b66c302f48ec0a2
 g "parent tree is the same object; diff is empty" "git -C \"$repo\" show -s --format='parent-tree %T' e90a4c0ed17b66c302f48ec0a234cac6f27e5eec^; git -C \"$repo\" diff --quiet e90a4c0ed17b66c302f48ec0a234cac6f27e5eec^ e90a4c0ed17b66c302f48ec0a234cac6f27e5eec && echo 'diff EMPTY'" "." 2
 echo "## R5 — 2005-04-20 01:10:46: 'Do SHA1 hash _before_ compression.'"
 r 14 show --stat --format='%H%n%ai %an%n%B' d98b46f8d9a3daf965a39f8c0089c1401e0081ee
-g "the four lines in sha1_file.c: hash the buffer, not the zlib stream" "git -C \"$repo\" show d98b46f8d9a3daf965a39f8c0089c1401e0081ee -- sha1_file.c" "^[+-].*SHA1_(Init|Update|Final)" 8
+g "git -C repos/git show d98b46f8d9 -- sha1_file.c | sed -n '14,50p'  (both functions' hunks, verbatim)" "git -C \"$repo\" show d98b46f8d9a3daf965a39f8c0089c1401e0081ee -- sha1_file.c | sed -n '14,50p'" "." 40
 echo "## R6 — 01:34:54, twenty-four minutes later: blobs were missed"
 r 5 show -s --format='%H%n%ai %an%n%s%n%b' f18ca7316631914776136455c151d70318299459
 g "update-cache.c: the blob header 'blob %lu' now hashed with the raw content" "git -C \"$repo\" show f18ca7316631914776136455c151d70318299459 -- update-cache.c" "^[+-].*(blob|SHA1_Update|metadata)" 8

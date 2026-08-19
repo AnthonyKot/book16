@@ -88,14 +88,44 @@ to new-style.
 ```
 
 ```
-$ the four lines in sha1_file.c: hash the buffer, not the zlib stream
+$ git -C repos/git show d98b46f8d9 -- sha1_file.c | sed -n '14,50p'  (both functions' hunks, verbatim)
+@@ -80,12 +80,14 @@ char *sha1_file_name(const unsigned char *sha1)
+ 	return base;
+ }
+ 
+-int check_sha1_signature(unsigned char *sha1, void *map, unsigned long size)
++int check_sha1_signature(unsigned char *sha1, void *map, unsigned long size, const char *type)
+ {
++	char header[100];
+ 	unsigned char real_sha1[20];
+ 	SHA_CTX c;
+ 
+ 	SHA1_Init(&c);
 +	SHA1_Update(&c, header, 1+sprintf(header, "%s %lu", type, size));
+ 	SHA1_Update(&c, map, size);
+ 	SHA1_Final(real_sha1, &c);
+ 	return memcmp(sha1, real_sha1, 20) ? -1 : 0;
+@@ -172,6 +174,11 @@ int write_sha1_file(char *buf, unsigned len, unsigned char *returnsha1)
+ 	unsigned char sha1[20];
+ 	SHA_CTX c;
+ 
++	/* Sha1.. */
 +	SHA1_Init(&c);
 +	SHA1_Update(&c, buf, len);
 +	SHA1_Final(sha1, &c);
++
+ 	/* Set it up */
+ 	memset(&stream, 0, sizeof(stream));
+ 	deflateInit(&stream, Z_BEST_COMPRESSION);
+@@ -188,11 +195,6 @@ int write_sha1_file(char *buf, unsigned len, unsigned char *returnsha1)
+ 	deflateEnd(&stream);
+ 	size = stream.total_out;
+ 
+-	/* Sha1.. */
 -	SHA1_Init(&c);
 -	SHA1_Update(&c, compressed, size);
 -	SHA1_Final(sha1, &c);
+-
 ```
 
 ## R6 — 01:34:54, twenty-four minutes later: blobs were missed

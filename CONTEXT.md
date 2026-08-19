@@ -30,6 +30,10 @@ locators in their head.
   at home — woven in, not a boxed sidebar.
 - External (non-git) facts carry `<!-- CHECK: -->` markers until an adversarial review pass
   clears them (book14 pipeline: draft → grok/agy/codex reviews → canonical).
+- **Never put grep-filtered diff output inside a ```diff fence.** Grep strips hunk boundaries and
+  can stitch lines from different functions into a "diff" that exists nowhere in the tree (this
+  bit ch.05's centerpiece on 2026-08-19 — caught by a blind reader test). Grep transcripts belong
+  in ```console with the pipe visible; real hunks are shown verbatim via sed line-ranges.
 
 ## Pipeline per chapter
 
@@ -63,3 +67,10 @@ already applied. Still open:
   preserved by impossibility. Also: open the reader cut on the verbatim 3-row shortlog output
   (lay-legible; converts the announced reveal into an earned one), and cut "in most projects that
   would be an annoyance" (no project rewrites published history; stake-inflation).
+
+- **Ch.06 (reader cut):** the Bitcoin paragraph is the tour's one listicle beat — rebuild it from
+  the full dig's own material (twin byte-identical "First commit" roots, the `sirius-m` handle) so
+  it gets its own mini-reveal; the control case could also take one more beat of stage time.
+- **Ch.07 (reader cut):** add two physical sentences making mailbox-vs-merge concrete before the
+  2019 revert (sim estimate: general-reader 8→9); optionally untangle "except for where the
+  community actually was."

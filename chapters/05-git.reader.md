@@ -59,15 +59,15 @@ letter, different envelope. And this law fingerprints *the envelope*.
 Which means the name of your data would change when the packaging software changed — for a system
 whose entire promise is *the name is the content*, the name was actually the wrapper.
 
-Thirteen days in, at 01:10 in the morning, he fixed it. Four lines. From that moment the
+Thirteen days in, at 01:10 in the morning, he fixed it — by moving four lines. From that moment the
 fingerprint is computed from the *original* bytes — the letter, never the envelope — plus a small
 label saying what kind of thing it is and how big. And because thirteen days of history already
 existed under the old law, the same midnight change shipped a little companion program whose only
 job was to walk through everything made so far and re-name it under the new rule. The whole
 world, such as it was, became a migration.
 
-Twenty-four minutes later, a second entry, and it is the reason this chapter has its title. He
-had changed the naming of everything — and missed *files*. Ordinary files: the single most common
+Twenty-four minutes later, a second entry. He had changed the naming of everything — and missed
+*files*. Ordinary files: the single most common
 thing a system like this stores. One code path was still fingerprinting envelopes. The 01:34
 entry owns up in one line and then, in the next, exhales:
 

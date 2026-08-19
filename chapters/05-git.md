@@ -94,20 +94,29 @@ changes with them. The identity of the data depends on the behavior of a compres
 For a system whose entire premise is *the name is the content*, the name was, in fact, the
 packaging.
 
-At 01:10:46 on 20 April, commit `d98b46f8d9`, subject `Do SHA1 hash _before_ compression.`:
+At 01:10:46 on 20 April, commit `d98b46f8d9`, subject `Do SHA1 hash _before_ compression.` In
+`write_sha1_file`, the function that mints objects, the fix is a move — the same four-line block,
+comment and all, deleted from below the compressor and reborn above it:
 
 ```diff
--	SHA1_Init(&c);
--	SHA1_Update(&c, compressed, size);
--	SHA1_Final(sha1, &c);
-+	SHA1_Update(&c, header, 1+sprintf(header, "%s %lu", type, size));
+@@ -172,6 +174,11 @@ int write_sha1_file(char *buf, unsigned len, ...)
++	/* Sha1.. */
 +	SHA1_Init(&c);
 +	SHA1_Update(&c, buf, len);
 +	SHA1_Final(sha1, &c);
++
+ 	/* Set it up */
+@@ -188,11 +195,6 @@ int write_sha1_file(char *buf, unsigned len, ...)
+-	/* Sha1.. */
+-	SHA1_Init(&c);
+-	SHA1_Update(&c, compressed, size);
+-	SHA1_Final(sha1, &c);
 ```
 
-[R5] Four lines. The hash now covers a tiny header — the object's type and size — followed by the
-raw, uncompressed content. Compression becomes what it should always have been: a storage detail,
+[R5] Four lines, moved. `compressed, size` becomes `buf, len`: the hash now reads the raw bytes,
+before the compressor ever touches them. A second hunk, in the verification function, adds the
+tiny type-and-size header to the hash — the label that makes a name say what kind of thing it
+names. Compression becomes what it should always have been: a storage detail,
 free to change forever without renaming anything. The same commit ships a new program,
 `convert-cache.c`, 138 lines, whose job is to walk every object made under the old law and mint
 it a new name under the new one. Thirteen days of history — the whole world so far — is now a
@@ -206,7 +215,7 @@ b6fc4c620b67d95f953a5c1c1230aaab5db5a1b0  -
 ```
 
 [R10] Identical. No git involved in the second line — just the header, a NUL, the raw bytes, and
-SHA-1. That equality *is* the four-line diff from 01:10. Notice what is absent: compression. Your
+SHA-1. That equality *is* the 01:10 move. Notice what is absent: compression. Your
 object's name will survive every repack, every storage rewrite, every zlib upgrade git will ever
 ship, because one man decided, at ten past one in the morning, that a thing's identity must never
 depend on its container. That is the takeaway, and it is portable to everything you build: hash
@@ -223,7 +232,7 @@ hex characters — the same answer it gave the first tired man who checked.
 - **R2** `git show e83c516331:README | sed -n '31,34p'` — the day-one law: "The SHA1 hash is always the hash of the _compressed_ object."
 - **R3** `git show -s --format='%B' 8bc9a0c769` — 15:16:10 (+177s), "a viable way of describing the world. So copyright it."
 - **R4** `git show -s --format='tree %T' e90a4c0ed1{,^}` — 2005-04-18, subject claims two scripts; tree identical to parent, diff empty.
-- **R5** `git show --stat d98b46f8d9 -- sha1_file.c` — 2005-04-20 01:10:46, "Do SHA1 hash _before_ compression.", the four-line flip + convert-cache.c (138 lines); README not touched.
+- **R5** `git show d98b46f8d9 -- sha1_file.c` — 2005-04-20 01:10:46, "Do SHA1 hash _before_ compression.": the four-line Sha1 block moved above the compressor in `write_sha1_file`, the header added in `check_sha1_signature`, + convert-cache.c (138 lines); README not touched.
 - **R6** `git show f18ca73166 -- update-cache.c` — 01:34:54, "missed the blob creation. Happily, convert-cache just magically fixes all errors."
 - **R7** `git show d98b46f8d9:README | sed -n '68,70p'` — as of the flip, the README still states the compressed-hash law.
 - **R8** `git show 8ac866a869 -- README` — 2005-05-22, David Greaves, "Whitespace and asciidoc formatting changes only"; the hunk rewrites the naming law, old rule demoted to "historical note: in the dawn of the age of git".
