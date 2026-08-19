@@ -16,6 +16,7 @@ def inline(t):
     t=re.sub(r"`([^`]+)`", stash, t)
     t=esc(t)
     t=re.sub(r"\[R(\d+)\]", r'<a class="receipt-ref" href="#r\1">R\1</a>', t)
+    t=re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', t)
     t=re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
     t=re.sub(r"\*([^*]+)\*", r"<em>\1</em>", t)
     t=re.sub(r"\x00(\d+)\x00", lambda m:f"<code>{esc(spans[int(m.group(1))])}</code>", t)
@@ -106,19 +107,22 @@ PAGE="""<!DOCTYPE html>
 </html>
 """
 
-def build_chapter(mdpath, kicker, desc):
+def build_chapter(mdpath, kicker, desc, out_stem=None):
     md=pathlib.Path(mdpath).read_text()
     parts, rlines = render(md)
     title=re.search(r"^# (.+)", md, re.M).group(1)
     receipts=render_receipts(rlines) if rlines else ""
     out=PAGE.format(title=esc(title), desc=esc(desc), kicker=kicker, body="\n".join(parts), receipts=receipts)
-    outpath=ROOT/"chapters"/(pathlib.Path(mdpath).stem+".html")
+    outpath=ROOT/"chapters"/((out_stem or pathlib.Path(mdpath).stem)+".html")
     outpath.write_text(out)
     return outpath
 
+# (md_stem, kicker, desc[, out_stem])
 CHAPTERS = [
-    ("01-debian-openssl", 'chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166',
-     "How a nine-minute Debian packaging change in 2006 made every key the distribution generated for two years predictable — reconstructed from the commits."),
+    ("01-debian-openssl.reader", 'chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166',
+     "How a nine-minute change in 2006 made every key Debian generated for two years guessable — the story, told plainly.", "01-debian-openssl"),
+    ("01-debian-openssl", 'chapter <b>01</b> · full dig · repo <b>debian/openssl</b> · CVE-2008-0166',
+     "The complete dig with every command and receipt: the nine-minute pair, the dead path, the one-sentence fix.", "01-debian-openssl.full"),
     ("02-log4j2", 'chapter <b>02</b> · repo <b>apache/logging-log4j2</b> · CVE-2021-44228',
      "Log4Shell was not a careless mistake. It was five reasonable commits over eleven years, each one you would have approved — reconstructed from the log."),
     ("03-bitcoin", 'chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
@@ -131,9 +135,11 @@ def receipts_regen_note(stem):
     return f'chapters/{stem}.receipts.md'
 
 if __name__=="__main__":
-    for stem, kicker, desc in CHAPTERS:
+    for entry in CHAPTERS:
+        stem, kicker, desc = entry[0], entry[1], entry[2]
+        out_stem = entry[3] if len(entry)>3 else stem
         md = ROOT/"chapters"/(stem+".md")
         if not md.exists():
             print("skip (no md):", stem); continue
-        out = build_chapter(md, kicker, desc)
+        out = build_chapter(md, kicker, desc, out_stem)
         print("built", out.name)

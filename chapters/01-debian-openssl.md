@@ -1,5 +1,8 @@
 # The nine minutes
 
+*This is the full dig — every command, every receipt. The plain-English telling of the same story
+is here: [The nine minutes](01-debian-openssl.html).*
+
 At 16:25 on a Tuesday afternoon in May 2006, Kurt Roeckx imports one file into Debian's OpenSSL
 package. At 16:34, he adds six lines to it. The commit message says he is stopping some Valgrind
 errors and closing a bug. Nine minutes, one file, six lines — the kind of afternoon that never
@@ -60,8 +63,10 @@ $ git show --format=fuller --stat 8f27a7dc02
  rand/md_rand.c   | 6 ++++++
 ```
 
-Six lines. Read the diff and you can watch the reasoning happen — a maintainer seeing two calls
-that look like the same problem, and treating them the same way:
+Six lines. What you are about to see is the same function call, `MD_Update`, silenced in two
+different places by wrapping it in `/* */` comment marks — the C equivalent of striking a line
+through it. Watch the reasoning happen: a maintainer seeing two calls that look like the same
+problem, and treating them the same way:
 
 ```diff
 @@ static void ssleay_rand_add(...)
