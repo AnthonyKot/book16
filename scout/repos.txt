@@ -8,3 +8,16 @@ tensor2tensor https://github.com/tensorflow/tensor2tensor
 openttd https://github.com/OpenTTD/OpenTTD
 log4j2 https://github.com/apache/logging-log4j2
 linux https://github.com/torvalds/linux
+php https://github.com/php/php-src
+node https://github.com/nodejs/node
+event-stream https://github.com/dominictarr/event-stream
+colors https://github.com/Marak/colors.js
+redis https://github.com/redis/redis
+curl https://github.com/curl/curl
+postgres https://github.com/postgres/postgres
+ffmpeg https://github.com/FFmpeg/FFmpeg
+vim https://github.com/vim/vim
+debian-openssl https://salsa.debian.org/debian/openssl.git
+the-algorithm https://github.com/twitter/the-algorithm
+swift https://github.com/swiftlang/swift
+msdos https://github.com/microsoft/MS-DOS
