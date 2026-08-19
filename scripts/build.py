@@ -127,10 +127,14 @@ CHAPTERS = [
      "Log4Shell was not a careless mistake. It was five reasonable decisions over eleven years, each one you would have approved — told plainly.", "02-log4j2"),
     ("02-log4j2", 'chapter <b>02</b> · full dig · repo <b>apache/logging-log4j2</b> · CVE-2021-44228',
      "The complete dig: five commits over eleven years, each command and receipt, that add up to Log4Shell.", "02-log4j2.full"),
-    ("03-bitcoin", 'chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
-     "git shortlog lists --author=Satoshi Nakamoto as a contributor with 8 commits. How a shell-quoting slip became a permanent part of Bitcoin's history."),
-    ("04-xz", 'chapter <b>04</b> · repo <b>tukaani-project/xz</b> · CVE-2024-3094',
-     "The xz backdoor as git recorded it: a two-year confidence trick, a weapon that exists only as a .gitignore line, and a single sabotaging period."),
+    ("03-bitcoin.reader", 'chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
+     "git credits --author=Satoshi with 8 commits. How a one-character quoting slip became a permanent part of Bitcoin's history — told plainly.", "03-bitcoin"),
+    ("03-bitcoin", 'chapter <b>03</b> · full dig · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
+     "The complete dig: three shortlog rows, the eight flag-authored commits, the correctly-credited twin, and why the hash chain makes it unfixable.", "03-bitcoin.full"),
+    ("04-xz.reader", 'chapter <b>04</b> · repo <b>tukaani-project/xz</b> · CVE-2024-3094',
+     "The xz backdoor as a human story: a two-year friendship, a weapon that ships in the package but never the repo, and one sabotaging period — told plainly.", "04-xz"),
+    ("04-xz", 'chapter <b>04</b> · full dig · repo <b>tukaani-project/xz</b> · CVE-2024-3094',
+     "The complete dig: every command and receipt behind the two-year con, the .gitignore weapon, and the single sabotaging period.", "04-xz.full"),
 ]
 
 def receipts_regen_note(stem):

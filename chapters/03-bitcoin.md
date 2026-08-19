@@ -1,5 +1,9 @@
 # A flag with 8 commits
 
+*This is the full dig — every command, every receipt. The plain-English telling of the same story
+is here: [A flag with 8 commits](03-bitcoin.html).*
+
+
 Run `git shortlog` on the Bitcoin repository, grep for the name everyone is looking for, and the
 answer is not one row. It is three.
 
