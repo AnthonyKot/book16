@@ -45,3 +45,21 @@ locators in their head.
   v2 with Round 2 + codex digs pending).
 - Pilot: ch. 01 Debian OpenSSL 2008 (CVE-2008-0166), the strongest moment-before-the-outcome
   in the corpus and double-verified reproducible.
+
+## Fix backlog (blind reader-test pass, 2026-08-19)
+
+Findings from four blind reader simulations, verified against the files; ch.01 and ch.04 items
+already applied. Still open:
+
+- **Ch.02 (log4j2):** the reader intro promises FIVE decisions but the essay delivers four
+  sections (2016+2017 collapsed) — best fix is restoring the 2021-11-29 default-flip (R6) as the
+  fifth beat: the door opened for CPU cycles and closed for CPU cycles. Also: the aphorism
+  contradicts across forms — reader says "off switch whose default is off" (correct), full dig
+  line ~120 says "default is on" (fix the full dig). Consider naming the maintainers (Ralph
+  Goers, Carter Kozak) in the reader cut; anonymity reads as parable.
+- **Ch.03 (bitcoin):** "But you can't [fix it]" overclaims — `.mailmap` corrects shortlog display
+  without rewriting a single object, and codex confirmed there is NO .mailmap at HEAD. Reframe:
+  preserved by indifference ("nobody even papered over the display") is truer and stronger than
+  preserved by impossibility. Also: open the reader cut on the verbatim 3-row shortlog output
+  (lay-legible; converts the announced reveal into an earned one), and cut "in most projects that
+  would be an annoyance" (no project rewrites published history; stake-inflation).
