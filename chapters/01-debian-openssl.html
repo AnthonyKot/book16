@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The nine minutes — Blame</title>
+<meta name="description" content="How a nine-minute Debian packaging change in 2006 made every key the distribution generated for two years predictable — reconstructed from the commits.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166</p>
+<h1>The nine minutes</h1>
+<p>At 16:25 on a Tuesday afternoon in May 2006, Kurt Roeckx imports one file into Debian's OpenSSL package. At 16:34, he adds six lines to it. The commit message says he is stopping some Valgrind errors and closing a bug. Nine minutes, one file, six lines — the kind of afternoon that never makes it into anyone's memory.</p>
+<p>I go looking for it in the Debian <em>packaging</em> repository, not upstream, because that is where it lived. <code>git clone https://salsa.debian.org/debian/openssl.git</code>, and then the mechanism sits there in the history, in plain sight, for anyone who thinks to run <code>git show</code> on a sixteen-year-old housekeeping commit.</p>
+<h2>What Kurt knew</h2>
+<p>Here is what Kurt Roeckx knew that Tuesday, and here is what he did not.</p>
+<p>He had a bug report: Debian #363516. Someone had run the OpenSSL test suite under Valgrind and Purify — memory checkers that flag any read of uninitialized memory — and gotten a wall of errors, all pointing at one file, <code>md_rand.c</code>, the heart of OpenSSL's random number generator. A package maintainer's queue is full of these: someone else's warning, on someone else's code, sitting in your inbox with a bug number attached, waiting for you to make the red text go away so you can close the ticket and get to the next one.</p>
+<p>The errors were not a mistake. They were a deliberate OpenSSL design choice: to capture every scrap of unpredictability it could, the generator hashed a buffer <em>before</em> filling it, uninitialized bytes and all. Think of it as sweeping whatever is already on the floor into the pot — it looks appalling to a health inspector, but to a random number generator, chaos is the nutrition. Uninitialized memory is unpredictable, and unpredictable is exactly what you want.</p>
+<p>Upstream knew it looked wrong. Check out the 1998 SSLeay import and grep the file, and the tell is already there, eight years before Kurt touches it:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git grep -n -B1 -A1 'purify complains' d02b48c63a -- crypto/rand/md_rand.c
+crypto/rand/md_rand.c-281-#ifndef PURIFY
+crypto/rand/md_rand.c:282:		MD_Update(&amp;m,buf,j); /* purify complains */
+crypto/rand/md_rand.c-283-#endif</code></pre>
+<p>One read, and one read only, sits behind <code>#ifndef PURIFY</code> — a switch you flip when the checker is running, so the deliberately dirty read disappears and Purify goes quiet. That comment, <code>/* purify complains */</code>, is a <em>scope</em>. It says: this one read, of this one throwaway buffer, is the line Purify hates, and here is the single place we make an exception. It does not say the practice is wrong. It says one function is noisy under one tool. <a class="receipt-ref" href="#r3">R3</a></p>
+<p>But if you are reading the file for the first time, on a Tuesday, with a bug to close, the comment looks less like a warning than like permission. And there are two calls in the file that look exactly alike.</p>
+<h2>Two calls</h2>
+<p>At 16:25 Kurt imports upstream's <code>md_rand.c</code> into the package. <a class="receipt-ref" href="#r4">R4</a> Nine minutes later, at 16:34, he generalizes the exception:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format=fuller --stat 8f27a7dc02
+    Don't add uninitialised data to the random number generator.  This stop
+    valgrind from giving error messages in unrelated code.  (Closes: #363516)
+ debian/changelog | 3 +++
+ rand/md_rand.c   | 6 ++++++</code></pre>
+<p>Six lines. Read the diff and you can watch the reasoning happen — a maintainer seeing two calls that look like the same problem, and treating them the same way:</p>
+<pre><span class="lang">diff</span><code><span class="diff-hunk">@@ static void ssleay_rand_add(...)</span>
+<span class="diff-add">+/*</span>
+<span class="diff-add">+ * Don't add uninitialised data.</span>
+ 		MD_Update(&amp;m,buf,j);
+<span class="diff-add">+*/</span>
+...
+<span class="diff-hunk">@@ static int ssleay_rand_bytes(...)</span>
+ #ifndef PURIFY
+<span class="diff-add">+/*</span>
+<span class="diff-add">+ * Don't add uninitialised data.</span>
+ 		MD_Update(&amp;m,buf,j); /* purify complains */
+<span class="diff-add">+*/</span>
+ #endif</code></pre>
+<p>Two functions, two identical comments, two <code>MD_Update</code> calls commented out. The second is the one Purify actually complained about — the throwaway output buffer, already behind <code>#ifndef PURIFY</code>. Fine. But the first is in <code>ssleay_rand_add</code>, and <code>ssleay_rand_add</code> is not a throwaway.</p>
+<p class="beat">It is the function that mixes the caller's seed into the pool.</p>
+<p>Every seed the process has — the process ID, the time, the contents of <code>/dev/urandom</code> — comes in through <code>ssleay_rand_add</code>. The line that hashes it into the pool is <code>MD_Update(&amp;m,buf,j)</code>. That is the line now sitting inside <code>/* */</code>. <a class="receipt-ref" href="#r5">R5</a></p>
+<p class="beat">He has not disabled a Purify workaround.</p>
+<p class="beat">He has disabled the seeding.</p>
+<p>From here on, the only thing feeding the pool is a few bytes of process ID — and a PID on Linux is a number under 32,768. The space of keys the generator can produce collapses from astronomical to something you could write down. Nothing in the commit looks like an emergency. It closes a bug and disappears into an already-open changelog stanza dated four weeks <em>earlier</em>, <code>Thu, 6 Apr 2006</code>, because that entry was still sitting open. <a class="receipt-ref" href="#r6">R6</a> It reads like hygiene. &lt;!-- CHECK: "at most ~15 bits / PID-only entropy" and the 32,768 figure — standard in the public analysis of CVE-2008-0166; keep the number, it is not from the repo --&gt;</p>
+<h2>The dead path</h2>
+<p>And here is the part that is pure <code>git</code>, the part no CVE writeup will tell you.</p>
+<p>For four months, it does not matter. He put the file in the wrong place.</p>
+<p>Look at where <code>md_rand.c</code> landed on 2 May: <code>rand/md_rand.c</code>. <a class="receipt-ref" href="#r4">R4</a> But OpenSSL 0.9.8 compiles <code>crypto/rand/md_rand.c</code>. Debian's packaging of this era stored <em>overlays</em> — only the upstream files the maintainer meant to change, laid over an unpacked tarball at build time, like a stencil cut over the real tree. Cut your hole one directory to the side, and the original code shows through untouched. A modified file at a path the build does not use is a no-op. You can prove it at the release tag:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git ls-tree --name-only debian/openssl-0.9.8b-1 rand/md_rand.c crypto/rand/md_rand.c
+rand/md_rand.c</code></pre>
+<p>The sabotaged file exists only at the dead path. <code>crypto/rand/md_rand.c</code> is not there; the build used the pristine upstream one. Version 0.9.8b-1 <em>claims</em> the valgrind fix in its changelog and ships a perfectly good random number generator. <a class="receipt-ref" href="#r7">R7</a></p>
+<p class="beat">The bug is checked in and inert.</p>
+<p>Valgrind, of course, is still noisy — because the fix is not really applied. So on Sunday 17 September, at 13:32, Kurt fixes that:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format=fuller --stat 33a9d075e9
+    Move the modified rand/md_rand.c file to the right place really fixing #363516.
+ {rand =&gt; crypto/rand}/md_rand.c | 0</code></pre>
+<p>Zero lines changed. The file merely moves onto the path the compiler reads. <em>That</em> is the commit that arms it. Everything Debian and Ubuntu ship from here descends from this Sunday afternoon, not from May. <a class="receipt-ref" href="#r8">R8</a></p>
+<p>And fifty-seven minutes later, the compiler gets its one vote. It votes on the wrong line.</p>
+<pre><span class="lang">diff</span><code>$ git show --format=fuller a590e4f469
+    Make md_rand.c build, nested comments don't work.
+...
+ #ifndef PURIFY
+<span class="diff-del">-/*</span>
+<span class="diff-del">- * Don't add uninitialised data.</span>
+<span class="diff-add">+#if 0 /* Don't add uninitialised data. */</span>
+ 		MD_Update(&amp;m,buf,j); /* purify complains */
+<span class="diff-del">-*/</span>
+<span class="diff-add">+#endif</span></code></pre>
+<p>The <code>/* */</code> he had wrapped around the <em>second</em> call sat inside a line that already held a <code>/* purify complains */</code> comment — a comment inside a comment, which C will not compile. So he converts that one to <code>#if 0</code>. <a class="receipt-ref" href="#r9">R9</a> Notice what the build break caught. It choked on the harmless half — the throwaway buffer — purely because that line happened to contain an inner comment. The fatal half, the seed path in <code>ssleay_rand_add</code>, had no inner comment, compiled clean the first time, and drew no protest at all.</p>
+<p>The last automated check between Kurt and the disaster was looking at the wrong function.</p>
+<h2>Twenty months of keys</h2>
+<p>The keys generated by that build were predictable for twenty months. Every SSH host key, every SSL certificate, every OpenVPN key made on a Debian or Ubuntu machine between September 2006 and May 2008 came out of a pool with about fifteen bits of unpredictability in it.</p>
+<p>Sit with what that means for an attacker, because it is not what "broken crypto" usually means. The key still looks like a key. It is still a long, official-looking number; the mathematics around it is not cracked. But it was drawn from a catalog of at most 32,768 possibilities. So you generate the whole catalog once — every key the broken generator could ever have produced, for every architecture — and then you do not attack anything. You look it up. Someone's SSH server, someone's VPN, someone's certificate: you match the key you see against your precomputed shelf and read off the private half.</p>
+<p class="beat">You did not break the key. You enumerated it.</p>
+<p>The fix, when it comes on 7 May 2008, is one sentence:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format=fuller --stat f7949d6e0a
+    ssleay_rand_add() really needs to call MD_Update() for buf.
+ crypto/rand/md_rand.c       | 3 ---
+ debian/changelog            | 8 ++++++--
+ debian/libssl0.9.8.postinst | 2 +-</code></pre>
+<p>Three lines gone from <code>md_rand.c</code> — the <code>/* */</code> around the seed call, deleted, so <code>MD_Update(&amp;m,buf,j)</code> runs again. That is the whole repair. The subject now names the function and the call precisely: <code>ssleay_rand_add() really needs to call MD_Update() for buf</code>. It is a man writing down, in a commit message, the exact line he had commented out two years earlier. <a class="receipt-ref" href="#r10">R10</a></p>
+<p>What the subject does <em>not</em> contain is any word a user would search for. Not "security." Not "regenerate your keys." Not the name of the CVE. And that is not a guess — grep the whole repository:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --all --grep=CVE-2008-0166 --oneline
+<span class="tok-prompt">$</span> git log --all --grep=DSA-1571 --oneline</code></pre>
+<p>Both empty. <a class="receipt-ref" href="#r11">R11</a> The most catastrophic bug in Debian's history is invisible to the search anyone would actually type. To find it in <code>git</code>, you cannot grep the message — you have to grep the <em>mechanism</em>: <code>git log -S 'uninitialised' -- '**/md_rand.c'</code>, and read the diffs.</p>
+<p>It even went out wearing someone else's clothes. Three hours before Kurt's fix, Christoph Martin had prepared version 0.9.8g-9 as a routine translations update. <a class="receipt-ref" href="#r15">R15</a> Kurt reused that same version: the changelog for the security release lists <code>[ Christoph Martin ]</code> and his debconf translations first, then <code>[ Kurt Roeckx ]</code> and one line about <code>MD_Update</code>. <a class="receipt-ref" href="#r10">R10</a> Urgency flips from <code>low</code> to <code>high</code>, and a restart prompt gets added on upgrade — the only two signs, anywhere in the packaging, that this was the fire and not a Tuesday.</p>
+<h2>The name that would not die</h2>
+<p>One more thing, because it changes how you read a tag. The parallel fix for the <em>stable</em> release, <code>etch</code>, lives in this repo as tag <code>debian/openssl-0.9.8c-4etch3</code>, its changelog signed by the security team and dated May 2008. But look at when the commit was actually made:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log -1 --format=fuller debian/openssl-0.9.8c-4etch3
+AuthorDate: Sat May 16 14:56:28 2009 +0000
+    Re-introducing seeding of the random number generator.</code></pre>
+<p>2009. A year after users got it. The archive shipped <code>4etch3</code> in May 2008; the <em>version control</em> only backfilled it a year later, in one sitting, preserving the 2008 changelog text inside a 2009 commit — and until that Saturday, the <code>etch</code> branch in this repository still carried the commented-out seed. [R12, R13] A tag named like a shipped version is not a receipt that the version control ever held that code when it shipped. Compare a tag's author date to its changelog trailer; when they disagree by a year, you are looking at a reconstruction, not a release.</p>
+<p>And the last word belongs to the leftover. In July 2009, Debian finally split its in-tree edits into named quilt patches — and the <em>other</em> half, the genuinely harmless throwaway-buffer wrapper, was checked in with a name of its own: <code>debian/patches/valgrind.patch</code>. <a class="receipt-ref" href="#r14">R14</a> The original excuse, still riding on the file, rebased release after release — 1.0.0, 1.0.1, 1.0.2 — until 2016, when upstream deleted <code>md_rand.c</code> and it finally had nowhere left to live. The disaster got a CVE number and a decade of postmortems. The half that was harmless got to keep the name.</p>
+<p>So when you go hunting for the worst thing that ever happened to a codebase, do not grep the commit messages. A <code>#ifndef SANITIZER</code> that disables a <em>read</em> is an invitation: the next person to open the file will read the comment as a rule and widen it, exactly the way one scoped <code>/* purify complains */</code> became two. Run <code>git log -S</code> on the name of a tool instead — <code>valgrind</code>, <code>purify</code>, <code>asan</code>, <code>coverity</code> — find every place someone quieted a checker, and check whether the next commit quieted it somewhere the checker was right. The people who did this were closing a bug. They wrote down the ticket number, not the crime.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r3"><span class="rid">R3</span> <code>git grep 'purify complains' d02b48c63a</code> — the 1998 <code>#ifndef PURIFY</code> scope, one read only.</li><li id="r4"><span class="rid">R4</span> <code>git show b03fc02755</code> — 2006-05-02 16:25, <code>md_rand.c</code> imported at path <code>rand/</code>.</li><li id="r5"><span class="rid">R5</span> <code>git show 8f27a7dc02</code> — 2006-05-02 16:34, six lines comment out both <code>MD_Update</code> calls.</li><li id="r6"><span class="rid">R6</span> <code>git show 8f27a7dc02 -- debian/changelog</code> — stanza trailer dated Thu 6 Apr 2006.</li><li id="r7"><span class="rid">R7</span> <code>git ls-tree debian/openssl-0.9.8b-1</code> — patched file exists only at the dead path <code>rand/</code>.</li><li id="r8"><span class="rid">R8</span> <code>git show 33a9d075e9</code> — 2006-09-17 13:32, rename <code>{rand =&gt; crypto/rand}/md_rand.c</code>, "really fixing".</li><li id="r9"><span class="rid">R9</span> <code>git show a590e4f469</code> — 2006-09-17 14:29, "nested comments don't work"; only the harmless half broke the build.</li><li id="r10"><span class="rid">R10</span> <code>git show f7949d6e0a</code> — 2008-05-07 18:35, three-line fix; urgency low→high; postinst threshold bump.</li><li id="r11"><span class="rid">R11</span> <code>git log --all --grep=CVE-2008-0166</code> / <code>DSA-1571</code> — both empty.</li><li id="r12"><span class="rid">R12</span> <code>git log -1 debian/openssl-0.9.8c-4etch3</code> — etch fix committed 2009-05-16, changelog dated 2008.</li><li id="r13"><span class="rid">R13</span> <code>git merge-base --is-ancestor f7949d6e0a origin/debian/etch</code> — exit 1, not an ancestor.</li><li id="r14"><span class="rid">R14</span> <code>debian/patches/valgrind.patch</code> — the surviving harmless half, named 2009, rebased to 2016.</li><li id="r15"><span class="rid">R15</span> <code>git show ad1ff815c9</code> — 2008-05-07 15:39, the translations upload whose 0.9.8g-9 stanza the fix reused.</li></ul><p class="regen">Every command above is reproducible. Full transcripts in <code>chapters/01-debian-openssl.receipts.md</code>; regenerate with <code>scripts/receipts-01.sh</code>.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

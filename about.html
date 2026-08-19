@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method — Blame</title>
+<meta name="description" content="How to check this book: every dig is a real commit in a public repository, reproducible with the exact git command shown.">
+<link rel="stylesheet" href="static/style.css">
+<script src="static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="index.html">contents</a><a href="about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<h1>How to check this book</h1>
+<p>Every claim in every chapter is a real object in a public git repository. Nothing is paraphrased from memory. Each chapter ends with a <em>receipts</em> list: for every finding, the exact command that produced it. The prose only quotes output that a command actually printed.</p>
+<h2>Reproduce a dig yourself</h2>
+<p>Clone the repository the chapter names, then run the commands from the receipts. For chapter 01:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git clone https://salsa.debian.org/debian/openssl.git
+<span class="tok-prompt">$</span> git -C openssl show 8f27a7dc02   # the nine-minute commit</code></pre>
+<p>The hashes are stable. If a command in this book does not print what the chapter says it prints, that is a bug in the book, and the git history is the authority — not the prose.</p>
+<h2>The find types</h2>
+<p>Each dig is one of a small set of shapes: a tiny diff with a huge blast radius; a planted or faked date; what day one really shows; a name that appears or disappears; a comment that outlived its code; a rule enforced by reverts; a feature that became the vulnerability; a diff that rolls back reality; an empty commit; a signature that answers a question nobody asked.</p>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
