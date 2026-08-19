@@ -62,8 +62,10 @@ def render(md):
         while i<len(lines) and lines[i].strip()!="" and not lines[i].startswith(("#","```",">")):
             para.append(lines[i]); i+=1
         text=" ".join(para)
-        cls=' class="beat"' if len(text)<70 and text.endswith(".") and "  " not in text and "`" not in text else ""
-        html_parts.append(f"<p{cls}>{inline(text)}</p>")
+        if text.startswith("~ "):
+            html_parts.append(f'<p class="beat">{inline(text[2:])}</p>')
+        else:
+            html_parts.append(f"<p>{inline(text)}</p>")
     return html_parts, receipts
 
 def render_receipts(rlines):
@@ -75,7 +77,7 @@ def render_receipts(rlines):
         elif ln.startswith("*") and "receipts.md" in ln:
             regen=inline(ln.strip("*").strip())
     body='<div class="receipts"><h2>receipts</h2><ul>'+"".join(items)+"</ul>"
-    body+='<p class="regen">Every command above is reproducible. Full transcripts in <code>chapters/01-debian-openssl.receipts.md</code>; regenerate with <code>scripts/receipts-01.sh</code>.</p></div>'
+    body+='<p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>'
     return body
 
 PAGE="""<!DOCTYPE html>
@@ -114,9 +116,22 @@ def build_chapter(mdpath, kicker, desc):
     outpath.write_text(out)
     return outpath
 
+CHAPTERS = [
+    ("01-debian-openssl", 'chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166',
+     "How a nine-minute Debian packaging change in 2006 made every key the distribution generated for two years predictable — reconstructed from the commits."),
+    ("02-log4j2", 'chapter <b>02</b> · repo <b>apache/logging-log4j2</b> · CVE-2021-44228',
+     "Log4Shell was not a careless mistake. It was five reasonable commits over eleven years, each one you would have approved — reconstructed from the log."),
+    ("03-bitcoin", 'chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
+     "git shortlog lists --author=Satoshi Nakamoto as a contributor with 8 commits. How a shell-quoting slip became a permanent part of Bitcoin's history."),
+]
+
+def receipts_regen_note(stem):
+    return f'chapters/{stem}.receipts.md'
+
 if __name__=="__main__":
-    p=build_chapter(
-        ROOT/"chapters/01-debian-openssl.md",
-        'chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166',
-        "How a nine-minute Debian packaging change in 2006 made every key the distribution generated for two years predictable — reconstructed from the commits.")
-    print("built", p)
+    for stem, kicker, desc in CHAPTERS:
+        md = ROOT/"chapters"/(stem+".md")
+        if not md.exists():
+            print("skip (no md):", stem); continue
+        out = build_chapter(md, kicker, desc)
+        print("built", out.name)

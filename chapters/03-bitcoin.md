@@ -15,9 +15,8 @@ second is the pseudonym as a name. The third has eight commits, and it is not a 
 command-line flag that a real, identifiable human typed by hand, sixteen years ago, and that `git`
 has been faithfully attributing to a contributor ever since. [R1]
 
-This is the smallest story in the book and one of the truest. Nobody was attacked. Nothing broke.
 A man tried to do a respectful thing, made a shell-quoting mistake while doing it, and the mistake
-became a permanent part of the identity of the most scrutinized software project on earth.
+became a permanent part of the identity of the project — checked in, hashed, and never removed.
 
 ## The handover
 
@@ -74,9 +73,8 @@ The shell did what shells do. Somewhere a quoting boundary landed one character 
 was passed as *data* to be recorded rather than as an *instruction* to record something — and git,
 which does not judge, wrote down what it was handed. [R5]
 
-And here is the part that makes it a chapter instead of a bug report: the correct version exists.
-The same patch, applied properly on the SVN side, is in this history too, authored cleanly by
-`s_nakamoto`:
+And the correct version is right here in the same history. The same patch, applied properly on the
+SVN side the same day, authored cleanly by `s_nakamoto`:
 
 ```console
 $ git show --format='%h %aI %an <%ae> %s' --stat 01bed1828b
@@ -89,15 +87,18 @@ misquoted flag. Both are checked in. Neither was ever rewritten.
 
 ## Why it is still there
 
-You might expect someone to have fixed it. Sixteen years, thousands of contributors, the most
-audited codebase in existence — surely you clean up eight commits that attribute work to a shell
-flag. But you cannot, not without changing history in the literal git sense. Every commit's hash is
+You might expect someone to have fixed it. Sixteen years, thousands of contributors — surely you
+clean up eight commits that attribute work to a shell flag. But you cannot, not without changing
+history in the literal git sense. Every commit's hash is
 computed from its contents, and the author field is part of the contents. Rewrite the author, and
 the hash changes; change the hash, and every descendant commit's hash changes; and in a project
 where the entire security model rests on a chain of hashes that thousands of people have
-independently copied, you do not rewrite the chain to fix a cosmetic typo. The mistake is load-
-bearing now. It is cheaper to leave `--author=Satoshi Nakamoto` standing as a contributor forever
-than to touch the ledger it lives in.
+independently copied, you do not rewrite the chain to fix a cosmetic typo.
+
+~ The mistake is load-bearing now.
+
+It is cheaper to leave `--author=Satoshi Nakamoto` standing as a contributor forever than to touch
+the ledger it lives in.
 
 So it stands. The most famous absent author in software has, among his commits, eight that were
 signed by a command-line argument, preserved by the same immutability that makes the project worth

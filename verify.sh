@@ -39,6 +39,24 @@ if [ -d "$repo/.git" ] && [ -f scripts/receipts-01.sh ]; then
   fi
 fi
 
+
+# --- chapter 02 -> repos/log4j2 ; chapter 03 -> repos/bitcoin ---
+for pair in "02-log4j2:log4j2" "03-bitcoin:bitcoin"; do
+  ch="${pair%%:*}"; rp="repos/${pair##*:}"; m="chapters/${ch}.md"
+  [ -f "$m" ] || continue
+  if [ -d "$rp/.git" ]; then
+    for h in $(grep -oE '\b[0-9a-f]{10}\b' "$m" | sort -u); do
+      git -C "$rp" cat-file -e "${h}^{object}" 2>/dev/null || { echo "FAIL $m: hash $h not in $rp"; fail=1; }
+    done
+    echo "checked $(grep -oE '\b[0-9a-f]{10}\b' "$m" | sort -u | wc -l) hashes against $rp"
+  else
+    echo "SKIP $m: clone $rp missing"
+  fi
+  for r in $(grep -oE '\[R[0-9]+\]' "$m" | tr -d '[]' | sort -u); do
+    n=${r#R}; grep -qE "^- \*\*R${n}\*\* " "$m" || { echo "FAIL $m: $r cited but no receipt line"; fail=1; }
+  done
+done
+
 # --- internal links in html resolve ---
 for html in index.html about.html chapters/*.html; do
   [ -f "$html" ] || continue

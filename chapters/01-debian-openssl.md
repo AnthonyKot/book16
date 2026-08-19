@@ -91,7 +91,7 @@ the line now sitting inside `/* */`. [R5]
 
 He has not disabled a Purify workaround.
 
-He has disabled the seeding.
+~ He has disabled the seeding.
 
 From here on, the only thing feeding the pool is a few bytes of process ID — and a PID on Linux
 is a number under 32,768. The space of keys the generator can produce collapses from astronomical
@@ -122,7 +122,7 @@ The sabotaged file exists only at the dead path. `crypto/rand/md_rand.c` is not 
 used the pristine upstream one. Version 0.9.8b-1 *claims* the valgrind fix in its changelog and
 ships a perfectly good random number generator. [R7]
 
-The bug is checked in and inert.
+~ The bug is checked in and inert.
 
 Valgrind, of course, is still noisy — because the fix is not really applied. So on Sunday
 17 September, at 13:32, Kurt fixes that:
@@ -175,7 +175,7 @@ every architecture — and then you do not attack anything. You look it up. Some
 someone's VPN, someone's certificate: you match the key you see against your precomputed shelf and
 read off the private half.
 
-You did not break the key. You enumerated it.
+~ You did not break the key. You enumerated it.
 
 The fix, when it comes on 7 May 2008, is one sentence:
 

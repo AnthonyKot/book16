@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A flag with 8 commits — Blame</title>
+<meta name="description" content="git shortlog lists --author=Satoshi Nakamoto as a contributor with 8 commits. How a shell-quoting slip became a permanent part of Bitcoin's history.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent</p>
+<h1>A flag with 8 commits</h1>
+<p>Run <code>git shortlog</code> on the Bitcoin repository, grep for the name everyone is looking for, and the answer is not one row. It is three.</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git shortlog -sne --all | grep -iE 'nakamoto|author='
+   245	s_nakamoto &lt;s_nakamoto@1a98c847-1fd6-4fd8-948a-caf3550aa51b&gt;
+    26	Satoshi Nakamoto &lt;satoshin@gmx.com&gt;
+     8	--author=Satoshi Nakamoto &lt;satoshin@gmx.com&gt;</code></pre>
+<p>The first is the pseudonym as the version-control robot recorded it, an SVN UUID for an email. The second is the pseudonym as a name. The third has eight commits, and it is not a person. It is a command-line flag that a real, identifiable human typed by hand, sixteen years ago, and that <code>git</code> has been faithfully attributing to a contributor ever since. <a class="receipt-ref" href="#r1">R1</a></p>
+<p>A man tried to do a respectful thing, made a shell-quoting mistake while doing it, and the mistake became a permanent part of the identity of the project — checked in, hashed, and never removed.</p>
+<h2>The handover</h2>
+<p>To read it you have to know where you are standing. <code>git clone https://github.com/bitcoin/bitcoin</code> does not clone the repository Satoshi Nakamoto used. Bitcoin's first eight months lived in Subversion on SourceForge; the git history everyone studies is a copy that was kept in parallel and later became canonical. In mid-2010, the project is quietly changing hands. Satoshi is still here, but a new name has arrived — and, in the way of these things, it arrives doing chores:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --all --author='Gavin' --reverse --format='%h %aI %an %s' HEAD
+8bd66202c3 2010-07-14T15:54:31+00:00 Gavin Andresen Fix CRLF</code></pre>
+<p>Gavin Andresen's first commit in this history is <code>Fix CRLF</code> — normalizing line endings so the new git copy is usable. <a class="receipt-ref" href="#r4">R4</a> Not a design document, not a manifesto. Line endings. The man who will run Bitcoin Core for the next half-decade enters as a janitor, which is how maintainers almost always enter. Two weeks later he is applying Satoshi's patches, and that is where the flag comes from.</p>
+<h2>The mistake</h2>
+<p>Here is what Gavin is trying to do, and it is the opposite of careless: preserve authorship. Satoshi writes a patch on the SVN side; Gavin re-applies it to the git copy and wants the commit to still say <em>Satoshi wrote this</em>, not <em>Gavin committed this</em>. Git has a switch for exactly that intention. You run:</p>
+<pre><code>git commit --author="Satoshi Nakamoto &lt;satoshin@gmx.com&gt;"</code></pre>
+<p>and git records the author as Satoshi while recording you as the committer. It is the honest move. What Gavin typed, though, put the literal text <code>--author=Satoshi Nakamoto &lt;satoshin@gmx.com&gt;</code> into the <em>author field itself</em> — the <code>--author=</code> and all. Eight times, over five days at the end of July 2010:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --all --author='--author' --format='%h %aI %an | committer=%cn | %s'
+9f35575ca3 2010-07-27T14:21:02+00:00 --author=Satoshi Nakamoto | committer=Gavin Andresen | tcatm's cached SHA256 state idea, about 70% faster generating
+...
+e1cb7ce017 2010-07-31T14:14:41+00:00 --author=Satoshi Nakamoto | committer=Gavin Andresen | simplified makefile.unix, updated build-unix.txt instructions to include boost 1.37</code></pre>
+<p>Every one of them has Gavin as the committer and the flag-that-should-have-been-a-flag as the author. <a class="receipt-ref" href="#r2">R2</a> You can watch the intention and the error in the same object:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format=fuller 9f35575ca3
+Author:     --author=Satoshi Nakamoto &lt;satoshin@gmx.com&gt;
+AuthorDate: Tue Jul 27 14:21:02 2010 +0000
+Commit:     Gavin Andresen &lt;gavinandresen@gmail.com&gt;</code></pre>
+<p>The shell did what shells do. Somewhere a quoting boundary landed one character off — the <code>--author=</code> was passed as <em>data</em> to be recorded rather than as an <em>instruction</em> to record something — and git, which does not judge, wrote down what it was handed. <a class="receipt-ref" href="#r5">R5</a></p>
+<p>And the correct version is right here in the same history. The same patch, applied properly on the SVN side the same day, authored cleanly by <code>s_nakamoto</code>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format='%h %aI %an &lt;%ae&gt; %s' --stat 01bed1828b
+01bed1828b 2010-07-30T23:22:55+00:00 s_nakamoto &lt;...&gt; simplified makefile.unix, updated build-unix.txt instructions to include boost 1.37</code></pre>
+<p>Same change, same day, done right. <a class="receipt-ref" href="#r3">R3</a> So the two branches of this project's early life disagree, permanently, about who touched the makefile: on one line it is Satoshi, on the other it is a misquoted flag. Both are checked in. Neither was ever rewritten.</p>
+<h2>Why it is still there</h2>
+<p>You might expect someone to have fixed it. Sixteen years, thousands of contributors — surely you clean up eight commits that attribute work to a shell flag. But you cannot, not without changing history in the literal git sense. Every commit's hash is computed from its contents, and the author field is part of the contents. Rewrite the author, and the hash changes; change the hash, and every descendant commit's hash changes; and in a project where the entire security model rests on a chain of hashes that thousands of people have independently copied, you do not rewrite the chain to fix a cosmetic typo.</p>
+<p class="beat">The mistake is load-bearing now.</p>
+<p>It is cheaper to leave <code>--author=Satoshi Nakamoto</code> standing as a contributor forever than to touch the ledger it lives in.</p>
+<p>So it stands. The most famous absent author in software has, among his commits, eight that were signed by a command-line argument, preserved by the same immutability that makes the project worth studying.</p>
+<h2>At home</h2>
+<p>The habit here is small and it will save you a real argument someday: <code>git commit --author=</code> does not attach a label you can peel off later. It writes bytes into the object, the object's identity is the hash of those bytes, and the hash is forever. A name in a git history is not metadata sitting beside the work — it <em>is</em> the work, cryptographically. Which means authorship, in git, is simultaneously the easiest thing in the world to fake (type any string you like into <code>--author</code>) and the hardest thing in the world to fix (you cannot change it without changing everything downstream). Both facts live in these eight commits.</p>
+<p>So when you go to preserve someone's name on their work — the honest, generous thing Gavin was doing — check what the shell actually handed to git before you commit. And when you find a strange author in an old history, do not assume it is who it says it is, or even <em>what</em> it says it is. Sometimes it is a person. Sometimes it is a flag.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git shortlog -sne --all | grep -iE 'nakamoto|author='</code> — three rows: <code>s_nakamoto</code> (245), <code>Satoshi Nakamoto</code> (26), and <code>--author=Satoshi Nakamoto</code> (8).</li><li id="r2"><span class="rid">R2</span> <code>git log --all --author='--author' --format='%h %aI %an | committer=%cn | %s'</code> — the 8 commits, 2010-07-27 to 07-31, author = the literal flag, committer = Gavin Andresen.</li><li id="r3"><span class="rid">R3</span> <code>git show --stat 01bed1828b</code> — the same makefile patch, authored cleanly by <code>s_nakamoto</code> on the SVN line.</li><li id="r4"><span class="rid">R4</span> <code>git log --all --author='Gavin' --reverse</code> — Gavin's first commit, <code>8bd66202c3</code> "Fix CRLF", 2010-07-14.</li><li id="r5"><span class="rid">R5</span> <code>git show --format=fuller 9f35575ca3</code> — one flagged commit in full: author the flag, committer Gavin, tree never rewritten.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
