@@ -101,7 +101,7 @@ index 6e10f6ef67..6a60ba145f 100644
  		if (k > 0)
 ```
 
-## R6 — the changelog stanza it lands in is dated four weeks earlier
+## R6 — the changelog stanza it lands in is dated four weeks earlier (trailer: 6 Apr 2006)
 ```
 $ git -C repos/debian-openssl show 8f27a7dc022e95ab7274628715f22207235f8e36 -- debian/changelog
 commit 8f27a7dc022e95ab7274628715f22207235f8e36
@@ -116,6 +116,15 @@ index 78a2a1b903..ba94fb0686 100644
 --- a/debian/changelog
 +++ b/debian/changelog
 @@ -23,6 +23,9 @@ openssl (0.9.8a-9) unstable; urgency=low
+     - Make use of invoke-rc.d
+   * Add comment to README.Debian that rc5, mdc2 and idea have been
+     disabled (since 0.9.6b-3)  (Closes: #362754)
++  * Don't add uninitialised data to the random number generator.  This stop
++    valgrind from giving error messages in unrelated code.
++    (Closes: #363516)
+ 
+  -- Kurt Roeckx <kurt@roeckx.be>  Thu,  6 Apr 2006 20:34:07 +0200
+ 
 ```
 
 ## R7 — at tag 0.9.8b-1 the patched file exists ONLY at the dead path
@@ -224,6 +233,28 @@ index 82db1828de..75fddb35d3 100644
 +openssl (0.9.8g-9) unstable; urgency=high
  
 +  [ Christoph Martin ]
+   * Include updated debconf translations (closes: #473477, #461597,
+     #461880, #462011, #465517, #475439)
+ 
+- -- Christoph Martin <christoph.martin@uni-mainz.de>  Wed,  7 May 2008 17:31:09 +0200
++  [ Kurt Roeckx ]
++  * ssleay_rand_add() really needs to call MD_Update() for buf.
++
++ -- Kurt Roeckx <kurt@roeckx.be>  Wed, 07 May 2008 20:32:12 +0200
+ 
+ openssl (0.9.8g-8) unstable; urgency=high
+ 
+diff --git a/debian/libssl0.9.8.postinst b/debian/libssl0.9.8.postinst
+index c6b5b7eeb3..a07f8c652e 100644
+--- a/debian/libssl0.9.8.postinst
++++ b/debian/libssl0.9.8.postinst
+@@ -57,7 +57,7 @@ filerc() {
+ if [ "$1" = "configure" ]
+ then
+     if [ ! -z "$2" ]; then
+-	if dpkg --compare-versions "$2" lt 0.9.8e-9; then
++	if dpkg --compare-versions "$2" lt 0.9.8g-9; then
+ 	    db_version 2.0
 ```
 
 ## R11 — no commit message in the whole repo names the CVE or the advisory
@@ -271,6 +302,12 @@ index a86b4ecbd6..aec5cbac1e 100644
 ```
 $ git -C repos/debian-openssl merge-base --is-ancestor f7949d6e0a140e9a87e483ae89b140f1c57755d3 origin/debian/etch; echo exit=$?
 exit=1
+```
+
+## R15 — three hours before the fix, the same 0.9.8g-9 stanza was a translations upload
+```
+$ git -C repos/debian-openssl show -s --format=%h\ %aI\ %an\ %s ad1ff815c9
+ad1ff815c9 2008-05-07T15:39:10+00:00 Christoph Martin * Include updated debconf translations (closes: #473477, #461597, #461880, #462011, #465517, #475439)
 ```
 
 ## R14 — 2009: the leftover half is christened debian/patches/valgrind.patch

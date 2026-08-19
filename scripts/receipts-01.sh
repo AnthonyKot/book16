@@ -29,8 +29,8 @@ r 14 show --format=fuller --stat b03fc027554b096402708b4e762bc05eb1d59d0e
 echo "## R5 — 2006-05-02 16:34 (nine minutes later): the seed-mixing commented out"
 r 16 show --format=fuller --stat 8f27a7dc022e95ab7274628715f22207235f8e36
 r 40 show 8f27a7dc022e95ab7274628715f22207235f8e36 -- rand/md_rand.c
-echo "## R6 — the changelog stanza it lands in is dated four weeks earlier"
-r 12 show 8f27a7dc022e95ab7274628715f22207235f8e36 -- debian/changelog
+echo "## R6 — the changelog stanza it lands in is dated four weeks earlier (trailer: 6 Apr 2006)"
+r 26 show 8f27a7dc022e95ab7274628715f22207235f8e36 -- debian/changelog
 echo "## R7 — at tag 0.9.8b-1 the patched file exists ONLY at the dead path"
 r 4 ls-tree --name-only debian/openssl-0.9.8b-1 rand/md_rand.c crypto/rand/md_rand.c
 r 4 grep -n 'uninitialised' debian/openssl-0.9.8b-1 -- rand/md_rand.c
@@ -40,7 +40,7 @@ echo "## R9 — 57 minutes later: 'nested comments don't work' — the compiler'
 r 30 show --format=fuller a590e4f46997ce41db5c21dddb2638c8780c46f5
 echo "## R10 — 2008-05-07 18:35: the fix is one sentence, inside a translations upload"
 r 14 show --format=fuller --stat f7949d6e0a140e9a87e483ae89b140f1c57755d3
-r 30 show f7949d6e0a140e9a87e483ae89b140f1c57755d3 -- crypto/rand/md_rand.c debian/changelog debian/libssl0.9.8.postinst
+r 52 show f7949d6e0a140e9a87e483ae89b140f1c57755d3 -- crypto/rand/md_rand.c debian/changelog debian/libssl0.9.8.postinst
 echo "## R11 — no commit message in the whole repo names the CVE or the advisory"
 r 2 log --all --grep=CVE-2008-0166 --oneline
 r 2 log --all --grep=DSA-1571 --oneline
@@ -52,6 +52,8 @@ echo '```'
 echo '$ git -C repos/debian-openssl merge-base --is-ancestor f7949d6e0a140e9a87e483ae89b140f1c57755d3 origin/debian/etch; echo exit=$?'
 git -C "$repo" merge-base --is-ancestor f7949d6e0a140e9a87e483ae89b140f1c57755d3 origin/debian/etch; echo "exit=$?"
 echo '```'; echo
+echo "## R15 — three hours before the fix, the same 0.9.8g-9 stanza was a translations upload"
+r 2 show -s --format='%h %aI %an %s' ad1ff815c9
 echo "## R14 — 2009: the leftover half is christened debian/patches/valgrind.patch"
 r 12 show c86e4fc32229f067511b10a7dc2ccf4b1ce2c310:debian/patches/valgrind.patch
 r 8 log --all --format='%h %aI %s' -- debian/patches/valgrind.patch
