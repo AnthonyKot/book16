@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The current maintainer — Blame</title>
+<meta name="description" content="Bram Moolenaar's final weekend of commits, the one-name ledger, and the succession the license promised — told plainly.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>07</b> · repo <b>vim/vim</b> · the last 32 hours</p>
+<h1>The current maintainer</h1>
+<p>On the evening of Friday, July 7th, 2023, the maintainer of Vim — the text editor that lives on essentially every Unix machine on earth — spent his evening on a joke. Two error numbers in his editor had never been assigned a meaning, and he had found one: he wired them to a famous 1998 April Fools' internet standard, so that Vim could now, under the right circumstances, report <em>E418: I'm a teapot</em>, and, if asked nicely, <em>E503: Coffee is currently not available</em>. He filed it the way he had filed everything for decades, as a numbered patch with a one-line problem and a one-line solution.</p>
+<p>Four and a half hours later he filed the next one: the new "teapot" entry had made an alphabetized help list unalphabetical, and that would not stand. He worked past midnight — a test that ran too slowly under a diagnostic tool at 00:25, some renamed files in another test at 00:54, so a warning could be read properly.</p>
+<p>Saturday passed without an entry. Then, at 2:38 on Sunday morning, he processed one item from his mailbox — a stranger's fix for the misspelling "arguements" in a test file. He applied it, credited the author, and ticked his patch counter.</p>
+<p class="beat">That is the last thing Bram Moolenaar ever did to Vim.</p>
+<p>The project's own records give the date of his death: August 3rd, 2023. Nothing in that final weekend knows it is an ending. A teapot, an alphabetization, a stranger's typo — and then silence.</p>
+<h2>One name</h2>
+<p>To understand what happened next, you have to understand how strange this project was.</p>
+<p>Ask the ledger who wrote Vim, decade by decade, and the answer is not a list. It is a name. From the day the record begins in 2004 until late 2019 — fifteen years — every single entry, nine thousand one hundred and sixty-six of them, is authored by one man.</p>
+<p>Which would look like a project with no community at all, except for where the community actually was. Vim's social contract was this: you mailed Bram your improvement; he reviewed it, entered it himself, and wrote your name in parentheses at the end of his note. Your work got in. Your name got in. Your <em>entry</em> was his. There is a man named Christian Brabandt whose work first entered Vim in March 2010, as exactly such a parenthesis — and then again, and again, four hundred and four times over thirteen years, every time inside an entry authored by Bram. The ledger, read naively, says this project's survival depended on a single person. The fine print says there was a crowd — but a crowd on the other side of a mailbox, with one man deciding, one man typing, one man ticking the counter.</p>
+<h2>The six-hour constitution</h2>
+<p>Only once while he lived did anyone else's name appear on an entry. In November 2019, Christian — by then trusted enough to hold the keys — added nine lines of housekeeping through the modern route, the kind of one-click merge the rest of the software world uses daily. Six hours later, the same evening, Bram removed it. His removal note contains no explanation. Not a word. Nine lines, deleted in silence.</p>
+<p>It wasn't anger; it was a boundary. Christian had the <em>permissions</em>. Permissions were not the constitution. And here is the fact that turns those six hours into law: that modern one-click merge was used exactly twice in the project's entire history while Bram lived — once for that experiment, once for his removal of it — and then never again. Until four days after his death.</p>
+<p>The constitution was also, once, written down, in the least likely place. In 2020, Bram added a formal license file to the project (for a mundane reason: the website couldn't find the license where Vim traditionally kept it, inside its own help system). And in that license, one sentence:</p>
+<p><em>The current maintainer is Bram Moolenaar. If this changes it will be announced in appropriate places.</em></p>
+<p>A legal document, naming one human being, and promising an announcement. Read cold in 2020, it is boilerplate. Keep it in mind.</p>
+<h2>July 13th / August 8th</h2>
+<p>Git — the record-keeper — stamps every entry with two dates, and almost nobody reads the second one. The first says when the work was <em>written</em>. The second says when it <em>entered the ledger</em>. They almost always match. Here is the entry that will teach you to check:</p>
+<p>The first numbered patch of the new era — a small cleanup of leftover test files, by Christian — carries these two stamps:</p>
+<p><em>written: July 13th, 2023. entered: August 8th, 2023.</em></p>
+<p>On July 13th, Bram is alive, five days past his teapot weekend. Christian finishes a bit of work — cleanup connected, as it happens, to files from Bram's very last authored patch — and it goes where his work had always gone for thirteen years: into the queue, to wait for Bram.</p>
+<p>Then look at the ledger for the weeks that follow, and you will see something you will almost never see in a famous, living project. Between July 9th and August 7th there are no entries. None. Twenty-nine days in which the most widely installed text editor on earth does not move — a project holding its breath. On August 7th, four days after Bram's death, the ledger moves again: someone else's pending patch enters, through the one-click route used twice in 2019. And the next day, Christian enters his July cleanup — himself, at last — still carrying its July 13th date.</p>
+<p>Unfinished business from the old world, carried across the gap with its original date still on it.</p>
+<h2>The announcement</h2>
+<p>The license had promised an announcement. On August 13th, ten days after his death, it arrived, as an ordinary entry in the ledger titled "Farewell to Bram and dedicate upcoming Vim 9.1 to him." It touches three files, and the three files are the whole story of a succession.</p>
+<p>The license keeps its promise. <em>The current maintainer is Bram Moolenaar</em> becomes <em>the current maintainers are listed here</em>, followed by a web address. One human becomes a URL.</p>
+<p>The README edits the gentlest line in the project. For thirteen years it had carried a standing instruction: <em>Send any other comments, patches, flowers and suggestions to: Bram Moolenaar.</em> Flowers. Now the flowers go to a mailing list.</p>
+<p>And the help system — where Vim keeps everything that matters — gains one sentence: <em>Vim version 9.1 is dedicated to Bram Moolenaar, who passed away on August 3rd 2023 while still working full-time on Vim.</em></p>
+<p>After that, the record shows continuity, not ceremony. The patch counter did not reset. The numbered-patch format, the Problem/Solution note — his format — appears in every entry to this day. What changed is the one thing that never changed while he lived: the author column now holds a crowd, six names deep and growing, every one of them filing patches in the old form, into the old counter.</p>
+<h2>What to carry away</h2>
+<p>If you rely on a project maintained by one person — and you do, whether you know it or not — the question worth asking is not "what happens if." It is "where is it written down." Vim's answer was one sentence long, filed under licensing, three years before anyone needed it: <em>if this changes it will be announced in appropriate places.</em> It changed. It was announced.</p>
+<p>And if you ever find yourself reading a ledger like this one, read both dates. Almost always they agree, and the second one is noise. But now and then they disagree by weeks, and the gap between them is a held breath — work written in one world, landed in another.</p>
+<p class="beat">The last patch of the old world was a stranger's typo, applied at 2:38 in the morning. The first patch of the new one was written while its world was still alive.</p>
+<p>---</p>
+<p><em>Every entry in this story is public and reproducible — the teapot patch, the 404 parentheses, the six-hour revert with the empty note, the two dates on the cleanup, the twenty-nine silent days, the farewell that edits the license, the flowers line. The full technical dig, with every command, is here: <a href="07-vim.full.html">The current maintainer — the full dig</a>.</em></p>
+
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

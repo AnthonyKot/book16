@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The current maintainer — Blame</title>
+<meta name="description" content="The complete dig: the teapot, the 404 parentheses, the six-hour revert with the empty body, the two dates on patch 9.0.1679, and the announcement.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>07</b> · full dig · repo <b>vim/vim</b> · the last 32 hours</p>
+<h1>The current maintainer</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="07-vim.html">The current maintainer</a>.</em></p>
+<p>On the evening of Friday, 7 July 2023, at 18:57, the maintainer of Vim closed a gap in his editor's error numbering. The numbers E418 and E503 were unused, and he had found a use:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show -s --format='%s%n%b' 80adaa8ae8
+patch 9.0.1673: cannot produce a status 418 or 503 message
+Problem:    Cannot produce a status 418 or 503 message.
+Solution:   Add err_teapot().</code></pre>
+<p><code>E418: I'm a teapot</code>, says the new function, and — if you ask it nicely — <code>E503: Coffee is currently not available</code>. <a class="receipt-ref" href="#r2">R2</a> A maintainer, on a Friday night, implementing a 1998 April Fools' RFC in his text editor, because the error number was free and the joke was right there. Four and a half hours later, at 23:19, he files the next patch: the new <code>err_teapot</code> entry has made a help-file list unalphabetical, and that will not stand. <a class="receipt-ref" href="#r3">R3</a> He works past midnight — a test timing out under valgrind at 00:25, then, at 00:54, patch 9.0.1676, renaming some buffers in a crypt test so a warning can be read properly. <a class="receipt-ref" href="#r4">R4</a></p>
+<p>Saturday passes without a commit. Then, at 02:38 on Sunday morning, he processes one item from the queue — someone else's patch, a stranger fixing the spelling of "arguements" in a syntax test file. He applies it, credits the author, ticks the version counter, patch 9.0.1677. <a class="receipt-ref" href="#r5">R5</a></p>
+<p class="beat">That is the last thing Bram Moolenaar ever did to Vim.</p>
+<p>The repository gives the date of his death as 3 August 2023.</p>
+<h2>One name</h2>
+<p>Run the org-chart question on Vim in decade windows and the answer does not need a table:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git shortlog -sn HEAD --since=2004-01-01 --until=2011-01-01
+  2649	Bram Moolenaar
+<span class="tok-prompt">$</span> git shortlog -sn HEAD --since=2011-01-01 --until=2019-01-01
+  6517	Bram Moolenaar</code></pre>
+<p>Not the top row. The <em>only</em> row. <a class="receipt-ref" href="#r6">R6</a> From the day this repository begins — a 2004 import of an editor already, by its own dedication, more than a decade into its life — to late 2019, every single commit is authored by one man. Nine thousand one hundred and sixty-six for nine thousand one hundred and sixty-six.</p>
+<p>Which would look like a project with no community, except for where the community actually is. Vim's social contract was: you mail a patch; Bram reviews it, commits it as himself, and writes your name into the message body. The author field says Bram; the <em>paragraph</em> says everyone. Here is what fifteen years of contributing to Vim looked like from the contributor's side:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --author='Bram Moolenaar' --grep='(Christian Brabandt)' --reverse --format='%h %aI %s' | head -1
+12682fda7 2010-03-10 updated for version 7.2.389
+    Problem:    synIDattr() cannot return the font.
+    Solution:   Support the "font" argument. (Christian Brabandt)</code></pre>
+<p>March 2010: Christian Brabandt's work enters Vim for the first time — as a parenthesis at the end of Bram's sentence. It happens again. It happens, in total, four hundred and four times:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --author='Bram Moolenaar' --grep='(Christian Brabandt)' --format='%h' | wc -l
+404</code></pre>
+<p><a class="receipt-ref" href="#r7">R7</a> Four hundred and four commits authored by Bram whose Solution line credits the same man, across thirteen years. The git author field, read naively, says Vim's bus factor was 1. The bodies say there was a crowd — but a crowd on the other side of a mailbox, with one man deciding, one man typing, one man ticking the counter in <code>src/version.c</code>.</p>
+<h2>The constitution</h2>
+<p>The one-name era cracks exactly once while he is alive. On 27 November 2019, at 15:45, the first non-Bram author in the history of the repository lands a commit — Christian Brabandt, adding nine lines of CI configuration, merged through a GitHub pull request. At 21:57 the same evening, Bram reverts it. <a class="receipt-ref" href="#r8">R8</a> Six hours. The revert's message body is empty — nine lines of YAML removed without one word of explanation. <a class="receipt-ref" href="#r15">R15</a> Christian had the <em>permissions</em> to merge a PR. Permissions were not the constitution.</p>
+<p>Ask for every <code>Merge pull request</code> in the entire history, oldest first:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --reverse --grep='Merge pull request' --format='%ai %an %s' | head -3
+2019-11-27  Christian Brabandt  Merge pull request #5273 from chrisbra/cirrus_ci
+2019-11-27  Bram Moolenaar      Merge pull request #5275 from vim/revert-5273-cirrus_ci
+2023-08-07  Christian Brabandt  Merge pull request #12740 from k-takata/import-9.0.1678</code></pre>
+<p>Three and a half years of silence between the second line and the third. <a class="receipt-ref" href="#r8">R8</a> The first PR ever merged is the 2019 experiment; the second is the revert; the third is four days after his death. The gap <em>is</em> the constitution.</p>
+<p>It was also, once, written down — in the most bureaucratic corner of the tree. In January 2020 Bram added a LICENSE file, for the least romantic reason imaginable: <code>Problem: Vim license not easy to find on github.</code> The license had lived in the help system for decades — <code>:help uganda</code> — but GitHub's crawler does not run help commands, so he copied it into a root file the website could see. <a class="receipt-ref" href="#r9">R9</a> And in it, this sentence:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show c838626fea:LICENSE | sed -n '24,25p'
+          The current maintainer is Bram Moolenaar &lt;Bram@vim.org&gt;.  If this
+          changes it will be announced in appropriate places (most likely</code></pre>
+<p>The license names one human being, and promises: <em>if this changes it will be announced.</em> <a class="receipt-ref" href="#r9">R9</a></p>
+<h2>13 July / 8 August</h2>
+<p>Git keeps two clocks on every commit, and most of us only ever read one. The author date is when the work was made; the committer date is when it entered the tree. On almost every commit you will ever inspect they agree, or differ by trivia — a rebase, a cherry-pick — and so the eye learns to skip the second line. Here is the commit that will teach you to stop skipping it. Patch 9.0.1679, the first numbered patch after 9.0.1678, a cleanup of leftover test files:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show -s --format='author    %an %aI%ncommitter %cn %cI' 84bc00e9b5
+author    Christian Brabandt 2023-07-13T11:45:54+02:00
+committer Christian Brabandt 2023-08-08T20:39:55+02:00</code></pre>
+<p><a class="receipt-ref" href="#r10">R10</a> Author date, 13 July. Bram is alive, five days past the teapot. Christian is debugging leftover test files — files whose names trace to the crypt rename in Bram's final authored patch. He finishes the work and it goes where his work had always gone: into the queue, to wait for Bram.</p>
+<p>Now put the whole month on one screen. Every commit in the repository between 8 July and 9 August:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --format='%ci %an | committer=%cn | %s' --since=2023-07-08 --until=2023-08-09 --reverse
+2023-07-09 02:38  THARAK HEGDE       | committer=Bram Moolenaar     | patch 9.0.1677: typo in syntax test input file
+2023-08-07 03:24  ObserverOfTime     | committer=K.Takata           | patch 9.0.1678: blade files are not recognized
+2023-08-07 17:00  Christian Brabandt | committer=GitHub             | Merge pull request #12740
+2023-08-08 20:39  Christian Brabandt | committer=Christian Brabandt | patch 9.0.1679: Cleanup Tests from leftover files</code></pre>
+<p><a class="receipt-ref" href="#r14">R14</a> Twenty-nine days in which the repository does not move at all. The typo fix at 02:38, and then nothing — no commits, no merges, a project holding its breath — until patch 9.0.1678 arrives on 7 August, through a merged pull request, the grammar that had been used exactly twice before, in 2019, for six hours. And the next day, 9.0.1679: the cleanup Christian had written in July. The patch retained its 13 July author date until he committed it, himself, on 8 August. Unfinished business from the old arrangement, carried across the gap with its original date still on it.</p>
+<h2>The announcement</h2>
+<p>The license had promised an announcement, and on 13 August 2023 it arrives — as commit <code>e978b4534a</code>, <code>Farewell to Bram and dedicate upcoming Vim 9.1 to him</code>, merged as a GitHub pull request. <a class="receipt-ref" href="#r11">R11</a> Three files.</p>
+<p>The LICENSE keeps its promise:</p>
+<pre><span class="lang">diff</span><code><span class="diff-del">-          The current maintainer is Bram Moolenaar &lt;Bram@vim.org&gt;.  If this</span>
+<span class="diff-add">+          The current maintainers are listed here: https://github.com/orgs/vim/people.</span></code></pre>
+<p>One human becomes an org URL. The README edits the gentlest line in the project:</p>
+<pre><span class="lang">diff</span><code><span class="diff-del">-Send any other comments, patches, flowers and suggestions to:</span>
+<span class="diff-del">-	Bram Moolenaar &lt;Bram@vim.org&gt;</span>
+<span class="diff-add">+Send any other comments, patches, flowers and suggestions to the vim-dev mailing list:</span>
+<span class="diff-add">+	&lt;vim-dev@vim.org&gt;</span></code></pre>
+<p>For thirteen years this file had carried a standing instruction to send one man flowers. <a class="receipt-ref" href="#r13">R13</a> Now the flowers go to a mailing list. <a class="receipt-ref" href="#r11">R11</a> And the help system gains the sentence that puts his death date into the permanent record:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show e978b4534a:runtime/doc/version9.txt | sed -n '47,48p'
+Vim version 9.1 is dedicated to Bram Moolenaar, who passed away on August 3rd 2023
+while still working full-time on Vim.</code></pre>
+<p>After that, the record shows continuity, not ceremony. The patch counter did not reset. The subject grammar — <code>patch 9.0.NNNN:</code> — did not change. The Problem/Solution form is in every commit, Christian's included; the new era adds <code>Signed-off-by:</code> lines and PR numbers. Since 3 August the author column holds what it never held in his lifetime — a crowd, six names deep in the shortlog — and every one of them files patches in the same form, into the same counter. <a class="receipt-ref" href="#r12">R12</a></p>
+<h2>At home</h2>
+<p>The habit this chapter teaches is the second clock. <code>git log --format='%aI %cI'</code> prints both dates; <code>--author</code> and <code>--committer</code> filter by different people; and on any commit where the two disagree by more than a rebase, there is a story in the gap — work that waited, a gate that changed, sometimes a whole world that ended between the writing and the landing. The related habit is smaller: when you want to know how a project really makes decisions, don't read its governance file. Ask <code>git log --reverse --grep='Merge pull request'</code> and read the gaps. Constitutions live in reverts and silences.</p>
+<p>Vim's answer to the question every one-maintainer project will eventually be asked was one sentence long, filed under licensing, three years early: <em>if this changes it will be announced in appropriate places.</em> It changed. It was announced.</p>
+<p class="beat">Patch 9.0.1678 was followed by patch 9.0.1679, authored before the world it landed in.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git log --committer='Bram' --format='%ci %an | %s' | head -5</code> — the final five: teapot (18:57 Fri), sorted help (23:19), valgrind (00:25), crypt rename (00:54), a stranger's typo (02:38 Sun).</li><li id="r2"><span class="rid">R2</span> <code>git show 80adaa8ae8</code> — 2023-07-07 18:57, patch 9.0.1673, <code>err_teapot()</code>: E418 / E503.</li><li id="r3"><span class="rid">R3</span> <code>git show 416bd916b4</code> — 23:19, patch 9.0.1674, the help list re-alphabetized.</li><li id="r4"><span class="rid">R4</span> <code>git show -s --format=fuller 16abd997c9</code> — 00:54, patch 9.0.1676: the last commit Bram authored.</li><li id="r5"><span class="rid">R5</span> <code>git show 4c0089d696</code> — 02:38, patch 9.0.1677: author THARAK HEGDE, committer Bram; "arguements" → "arguments".</li><li id="r6"><span class="rid">R6</span> <code>git shortlog -sn HEAD --since/--until</code> decade windows — 2,649/2,649 and 6,517/6,517 Bram; first non-Bram author 2019-11-27 (Christian Brabandt, Cirrus CI).</li><li id="r7"><span class="rid">R7</span> <code>git log --author='Bram Moolenaar' --grep='(Christian Brabandt)'</code> — 404 commits; the first, <code>12682fda7</code>, 2010-03-10.</li><li id="r8"><span class="rid">R8</span> <code>git log --reverse --grep='Merge pull request' | head -3</code> — 2019-11-27 add, 2019-11-27 revert (six hours), then nothing until 2023-08-07; revert stat: 2 files, 10 deletions.</li><li id="r9"><span class="rid">R9</span> <code>git show c838626fea</code> + <code>:LICENSE</code> lines 24–25 — 2020-01-08, "Vim license not easy to find on github"; "The current maintainer is Bram Moolenaar… If this changes it will be announced."</li><li id="r10"><span class="rid">R10</span> <code>git show -s 84bc00e9b5</code> — patch 9.0.1679: authored 2023-07-13, committed 2023-08-08.</li><li id="r11"><span class="rid">R11</span> <code>git show e978b4534a</code> — 2023-08-13, "Farewell to Bram": LICENSE maintainer line, README flowers line, version9.txt dedication ("passed away on August 3rd 2023 while still working full-time on Vim").</li><li id="r12"><span class="rid">R12</span> <code>git log --reverse --committer='Christian Brabandt' --since=2023-08-03 | head -2</code> + <code>shortlog -sn --since=2023-08-03</code> — same grammar, counter unreset; the author column becomes a crowd (1,164 / 544 / 314 …).</li><li id="r13"><span class="rid">R13</span> <code>git log --reverse -S 'flowers' -- README.txt | head -1</code> — the flowers line enters README.txt 2010-08-07.</li><li id="r14"><span class="rid">R14</span> <code>git log --since=2023-07-08 --until=2023-08-09 --reverse</code> — four commits in thirty-two days: the typo fix, then twenty-nine days of nothing, then 9.0.1678, the merge, and 9.0.1679.</li><li id="r15"><span class="rid">R15</span> <code>git show -s --format='%b' d52986e7be</code> — the revert's message body: empty.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
