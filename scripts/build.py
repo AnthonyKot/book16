@@ -135,6 +135,10 @@ CHAPTERS = [
      "The xz backdoor as a human story: a two-year friendship, a weapon that ships in the package but never the repo, and one sabotaging period — told plainly.", "04-xz"),
     ("04-xz", 'chapter <b>04</b> · full dig · repo <b>tukaani-project/xz</b> · CVE-2024-3094',
      "The complete dig: every command and receipt behind the two-year con, the .gitignore weapon, and the single sabotaging period.", "04-xz.full"),
+    ("05-git.reader", 'chapter <b>05</b> · repo <b>git/git</b> · the night the names were made',
+     "Git's own origin: four lines at 01:10, a missed spot at 01:34, and a founding document that slept for a month — told plainly.", "05-git"),
+    ("05-git", 'chapter <b>05</b> · full dig · repo <b>git/git</b> · the night the names were made',
+     "The complete dig: the false law, the 177-second copyright, the empty announcement, the 01:10 flip, and the formatting-only patch that amended the constitution.", "05-git.full"),
 ]
 
 def receipts_regen_note(stem):
