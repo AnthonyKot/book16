@@ -137,6 +137,10 @@ CHAPTERS = [
      "The complete dig: every command and receipt behind the two-year con, the .gitignore weapon, and the single sabotaging period.", "04-xz.full"),
     ("05-git.reader", 'chapter <b>05</b> · repo <b>git/git</b> · the night the names were made',
      "Git's own origin: four lines at 01:10, a missed spot at 01:34, and a founding document that slept for a month — told plainly.", "05-git"),
+    ("06-genesis.reader", 'chapter <b>06</b> · six repos · the genesis lie',
+     "Six famous first commits: two robots, three cuts, a funeral, an accidental fourth Genesis — and one true beginning. Told plainly.", "06-genesis"),
+    ("06-genesis", 'chapter <b>06</b> · full dig · six repos · the genesis lie',
+     "The complete dig: php's empty tree, cpython's September-in-August, Linus's cut in writing, redis at 10:30:00, openttd's crashed SVN, and Linux's four roots.", "06-genesis.full"),
     ("05-git", 'chapter <b>05</b> · full dig · repo <b>git/git</b> · the night the names were made',
      "The complete dig: the false law, the 177-second copyright, the empty announcement, the 01:10 flip, and the formatting-only patch that amended the constitution.", "05-git.full"),
 ]
