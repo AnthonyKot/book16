@@ -1,0 +1,10 @@
+git https://github.com/git/git
+go https://github.com/golang/go
+cpython https://github.com/python/cpython
+bitcoin https://github.com/bitcoin/bitcoin
+openssl https://github.com/openssl/openssl
+xz https://github.com/tukaani-project/xz
+tensor2tensor https://github.com/tensorflow/tensor2tensor
+openttd https://github.com/OpenTTD/OpenTTD
+log4j2 https://github.com/apache/logging-log4j2
+linux https://github.com/torvalds/linux

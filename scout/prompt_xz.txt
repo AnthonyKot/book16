@@ -1,0 +1,16 @@
+You are scouting one public git repository for a book of git archaeology. Read ~/book16/scout/BRIEF.md first and follow it.
+
+Repository: https://github.com/tukaani-project/xz  ->  clone (full history, no --depth) into ~/book16/repos/xz if not already present. Use `git -C ~/book16/repos/xz ...` for everything. Do not modify the repo. Do not write anywhere except ~/book16/scout/xz.md.
+
+Method — actually dig, don't recite folklore:
+- git log --reverse | head, first commits and their messages/dates/authors (odd dates, planted commits, imported history boundaries).
+- git log --diff-filter=... / --stat for the smallest commits with the biggest later consequences; git log -S / -G for known-story strings if you have leads (Jia Tan commits 2022-2024; the backdoor build-to-host.m4 and test files; Lasse Collin; if GitHub is unavailable try https://git.tukaani.org/xz.git), but verify every hash by running the command.
+- git shortlog -sn over time windows: names that appear/disappear; maintainers handing over.
+- git log --grep for "revert", "oops", "sorry", "hack", "temporary", "FIXME", "XXX", "do not", "never" — then read the actual diffs of the interesting ones.
+- git blame on a few very old files to find lines/comments that survived decades; git log -L or -S for their origin.
+- Timestamps: commits at odd hours/dates (Dec 31, 3am), commit date vs author date gaps.
+- Any find must include the exact reproducible command and its output excerpt.
+
+Write ~/book16/scout/xz.md with: repo, clone size, history span (first/last commit dates), number of commits; then 5–12 candidate digs, each with: title, find-type (1–8 from brief), hash(es), date, author, message, the git command that shows it (and 3–10 lines of its output), why it is a story (one paragraph, moment-before-the-outcome), what the reader learns about their own repos, surprise 1–5. End with a ranked top-3 and one honest line about what was disappointing.
+
+Return as your final message: the ranked top-3 in 6 lines total, plus history span and commit count. Nothing else.
