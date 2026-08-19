@@ -46,6 +46,14 @@ uninitialized memory is exactly the kind of thing the detector exists to catch, 
 tell "reckless bug" from "reckless on purpose." So it screamed. The bug report was, essentially:
 *make the smoke detector stop.*
 
+And here is the detail the angry retellings leave out: he asked first. Before touching anything,
+Kurt wrote to the software's own developers — the people who kept that note in the code — and
+asked whether it was all right to remove the lines the detector was screaming about. The answer
+amounted to: *if it helps with the debugging tool, fine by us.*
+<!-- CHECK: the openssl-dev exchange (2006-05-01 thread "Random number generator, uninitialised data and valgrind"; Ulf Möller's "If it helps with debugging, I'm in favor of removing them") is mailing-list record, not provable from either git repo. -->
+The note in the code had read like permission. Now he had the real thing, in writing, from the
+owners of the pot. Hold on to that, because it is about to make the tragedy worse, not better.
+
 The obvious way to make it stop is to not scoop the floor-dust. And in the file, there were two
 places that did the scooping, and they looked almost identical — same function call, same shape.
 So Kurt did the natural, tidy, symmetrical thing: he commented out both of them. Silence the
@@ -92,9 +100,9 @@ looked. So the computer, building the software, walked right past his sabotaged 
 clean original. The broken version was checked in, dated, real — and completely inert. A loaded
 gun in the wrong drawer.
 
-The smoke detector, of course, kept complaining, because the fix wasn't really in effect. So four
+The smoke detector kept complaining, because the fix wasn't really in effect. So four
 months later, on a Sunday afternoon, Kurt fixed the *filing*. He moved the file into the right
-folder. He changed not a single line of its contents — just its location. The commit message says,
+folder, changing not a single line of its contents. The commit message says,
 with a small note of satisfaction, that he is *really* fixing the bug this time.
 
 ~ That Sunday is the moment the gun moved into the loaded drawer.
@@ -126,7 +134,21 @@ Then, when they saw your key in the wild, they didn't attack it.
 
 ~ They looked it up.
 
-The repair, when it finally came in May 2008, was almost insultingly small: delete the comment
+## The catch
+
+The moment it was caught is almost as quiet as the moment it was made. No alarm ever went off. No
+attacker announced themselves. For twenty months the broken keys flowed out looking exactly like
+good ones, and every tool, audit, and pair of eyes walked past.
+
+Then, in May 2008, a Debian developer named Luciano Bello looked into the project's random numbers
+and found the thing nobody had thought to test: the generator was *predictable*. He pulled the
+thread, and the thread led back through the crippled pool, to the commented-out lines, to the
+Tuesday afternoon two years earlier. On May 13th the project
+told the world, and the world spent that spring doing something almost without precedent: hunting
+down and replacing, one by one, every key the broken pool had ever dealt.
+<!-- CHECK: Luciano Bello as discoverer, early-May 2008, and the 2008-05-13 advisory (DSA-1571) — public record of CVE-2008-0166, not provable from the packaging repo (R11: the advisory ID appears in no commit message). -->
+
+The repair itself, when it came, was almost insultingly small: delete the comment
 marks, let the real seed flow again. One line, essentially, undone. The commit that did it named
 the exact function Kurt had silenced two years earlier — a maintainer writing down, at last, the
 precise thing he'd switched off without knowing.
@@ -143,15 +165,18 @@ boring ones.
 
 Nobody in this story was a fool, and nobody was a villain. Kurt Roeckx was doing careful,
 conscientious work — closing a ticket, silencing a warning, keeping a giant piece of shared
-infrastructure tidy on a Tuesday afternoon. The tragedy is built entirely out of reasonable moves.
-A note that meant "leave this alone" got read as "this is safe to remove." Two lines that looked
-the same weren't. A safety check looked at the wrong one.
+infrastructure tidy on a Tuesday afternoon. He even asked the experts before he touched their code. The tragedy is built entirely out of
+reasonable moves. A note that meant "leave this alone" got read as "this is safe to remove." A
+question got an answer — to exactly the question it asked. Two lines that looked the same weren't.
+A safety check looked at the wrong one.
 
-If there is one habit to take from it, it is this: be careful the day you *quiet* a warning. A tool
-complaining about your code is annoying, and the fastest way to make it stop is often to remove the
-thing it's pointing at. But sometimes the tool is right, and the annoyance is the only thing
-standing between you and a mistake you won't notice for two years. The moment you reach to silence
-an alarm is exactly the moment to ask, once, out loud: *what is it actually trying to tell me?*
+If there is one habit to take from it, it is this: be careful the day you *quiet* a warning — and
+notice that *ask first*, the standard advice, is not the protection it sounds like. Kurt asked. It
+bought him nothing, because his question already had the mistake folded inside it. He asked *may I
+remove these lines*, and everyone answered the question he asked. Nobody was asked — and so nobody
+answered — the question underneath: *what are these two lines actually for?* The moment you reach
+to silence an alarm is exactly the moment to put that one on the table. Not "may I make it stop."
+*What is it trying to tell me?*
 
 ---
 

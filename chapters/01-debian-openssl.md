@@ -50,6 +50,16 @@ But if you are reading the file for the first time, on a Tuesday, with a bug to 
 looks less like a warning than like permission. And there are two calls in the file that look
 exactly alike.
 
+One more thing Kurt did, and it matters because every sneering retelling leaves it out: he asked.
+The day before the commit, he described the offending `MD_Update` lines on OpenSSL's own
+development list and asked whether removing them was acceptable; the reply he got back amounted to
+*if it helps with debugging, I'm in favor of removing them*.
+<!-- CHECK: the openssl-dev exchange (2006-05-01 thread "Random number generator, uninitialised data and valgrind"; Ulf Möller's reply) is mailing-list record, outside both git repos. -->
+Whatever each side of that exchange thought it covered — a debug build, one line, both lines — none
+of it is in this repository. What is in the repository is what happened next, and permission is the
+frame to read it in: by the time he opens the editor, the comment has said *exception*, and the
+authors have said *fine*.
+
 ## Two calls
 
 At 16:25 Kurt imports upstream's `md_rand.c` into the package. [R4] Nine minutes later, at 16:34,
@@ -182,7 +192,12 @@ read off the private half.
 
 ~ You did not break the key. You enumerated it.
 
-The fix, when it comes on 7 May 2008, is one sentence:
+The catch, after twenty months, was not a tool and not an attacker. In early May 2008 a Debian
+developer named Luciano Bello found the generator predictable and traced it back to the 2006
+change; the advisory, DSA-1571, went out on 13 May.
+<!-- CHECK: Luciano Bello as discoverer and the 2008-05-13 DSA-1571 date — public record of CVE-2008-0166, outside the packaging repo (and per R11, the advisory ID appears in no commit message). -->
+Inside the repository, the catch looks like this. The fix, when it comes on 7 May 2008, is one
+sentence:
 
 ```console
 $ git show --format=fuller --stat f7949d6e0a
