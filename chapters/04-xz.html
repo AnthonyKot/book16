@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One character — Blame</title>
+<meta name="description" content="The xz backdoor as git recorded it: a two-year confidence trick, a weapon that exists only as a .gitignore line, and a single sabotaging period.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>04</b> · repo <b>tukaani-project/xz</b> · CVE-2024-3094</p>
+<h1>One character</h1>
+<p><code>git clone https://github.com/tukaani-project/xz</code> and run <code>shortlog</code> on the years before 2022, and the project is one man:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git shortlog -sn --until=2022-01-01 HEAD
+  1259	Lasse Collin
+    11	Adrien Nader</code></pre>
+<p>This is the compression library that ships in effectively every Linux distribution — in the tools that unpack your kernel, your packages, your container images — and for its entire life it has been Lasse Collin and a long tail of people who sent one patch and left. <a class="receipt-ref" href="#r10">R10</a> That is the condition this whole story runs on: an indispensable piece of the world's infrastructure, maintained, essentially alone, by someone doing it for free in his spare time. Keep it in mind, because it is not a weakness anyone was foolish to have. It is the normal state of an enormous amount of the software you depend on.</p>
+<h2>The welcome</h2>
+<p>In January 2022 a new contributor sends a patch. It is exactly the kind you want: defensive, small, unglamorous.</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --all --author='jiat75' --reverse --format='%h %aI | committer=%cn | %s'
+6468f7e4 2022-01-28T20:47:55+08:00 | committer=Lasse Collin | liblzma: Add NULL checks to LZMA and LZMA2 properties encoders.</code></pre>
+<p>Lasse applies it. <a class="receipt-ref" href="#r1">R1</a> Over the next six months "jiat75" sends more — test cleanups, coverage scripts, CMake work — and in August 2022 Lasse writes the name into the file that says who this project belongs to:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show 692de534fa -- AUTHORS
++    &lt;lasse.collin@tukaani.org&gt; and Jia Tan &lt;jiat0218@gmail.com&gt;.</code></pre>
+<p>One line. <a class="receipt-ref" href="#r2">R2</a> It is the nicest thing that can happen to a one-maintainer project: someone reliable showed up and stayed. By the end of 2022 Jia Tan is pushing as a committer. By 2023 Jia is doing more of the work than Lasse. Nobody in the room is watching a heist. They are watching a burnout end. That is the point of the two and a half years — not the code, the <em>trust</em>. The backdoor could not have been committed by a stranger. It had to be committed by the co-maintainer, and the way you become the co-maintainer is to be genuinely helpful for a very long time.</p>
+<h2>A name that only adds one thing</h2>
+<p>In June 2023 a second name appears, and this one is worth watching because it does exactly one thing and then vanishes:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --all --author='Hans Jansen' --format='%h %aI %cn %s'</code></pre>
+<p>Hans Jansen exists in this repository from June to October 2023. The work Hans contributes is support for GNU indirect functions — ifunc, the mechanism that lets a library pick which version of a function to use at load time, at runtime. It is a legitimate optimization. It is also the exact hook the eventual payload needs: a place where a resolver runs early and gets to decide what a symbol points to. Hans lands the ifunc groundwork and is never heard from again. <a class="receipt-ref" href="#r3">R3</a> I am not going to tell you who Hans was; the git history cannot, and this book only tells you what the git history can prove. What it proves is a name that appears, donates a loading mechanism, and disappears — six months before that mechanism is used.</p>
+<h2>The weapon that is not here</h2>
+<p>Now the famous part, and the first surprise is that you cannot <code>git show</code> it. The payload that made CVE-2024-3094 — the code that hooks the SSH daemon's authentication — travelled in a file called <code>build-to-host.m4</code>, a build script. If you go looking for it, you find nothing:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/xz log --all --oneline -- m4/build-to-host.m4  # (no output = never tracked)</code></pre>
+<p>Empty. The file was never committed. The only trace of it anywhere in this repository is its <em>name</em>, added to a <code>.gitignore</code> nine days before the 5.6.0 release:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show 4323bc3e0c
+    Update m4/.gitignore.
++build-to-host.m4</code></pre>
+<p>Read what that does. [R4, R5] Autotools generates the malicious build script into the release tarball. Adding its name to <code>.gitignore</code> means that if a maintainer ever regenerates it locally, <code>git status</code> stays clean and the unexpected file never shows up to be questioned. The crime scene is the <em>tarball</em>, the thing distributions actually download and compile. It is not the repository. Git, the tool everyone trusts to show them what changed, was specifically taught to say nothing. The one-line hygiene commit that taught it is so innocuous that after the breach Lasse himself cherry-picked it forward, twice, because read in isolation it is exactly what it claims to be: tidying a <code>.gitignore</code>.</p>
+<p>If you take one habit from this chapter, it is this: diff what you <em>ship</em> against what you <em>commit</em>. They are not the same tree, and the gap is where this lived.</p>
+<h2>The period</h2>
+<p>February 2024. Jia adds a build check for Linux Landlock — a kernel sandbox that confines a process, limiting what a compromised binary can reach. Adding sandboxing is precisely what a conscientious maintainer does, and the commit is titled like one: a routine feature test. Here is the C program it compiles to detect whether Landlock is available:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show 328c52da8a -- CMakeLists.txt
++        #include &lt;sys/prctl.h&gt;
++.
++        void my_sandbox(void)</code></pre>
+<p>A lone <code>.</code> on its own line, between the include and the function. <a class="receipt-ref" href="#r6">R6</a> It is a syntax error. The test program never compiles, so the check always fails, so CMake decides Landlock is "not available," so <code>xz</code> never sandboxes itself. The Autotools half of the same commit does not have the period. Only CMake.</p>
+<p class="beat">Someone sat in front of that file and added one character.</p>
+<p>It stayed until after the breach was public. When Lasse finally removes it, the entire fix is that same character, deleted, and the message says out loud what the commit was:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show f9cf4c05ed
+    CMake: Fix sabotaged Landlock sandbox check.
+    It never enabled it.</code></pre>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show f9cf4c05ed -- CMakeLists.txt | grep -E '^[+-]'
+-.
++</code></pre>
+<p><a class="receipt-ref" href="#r7">R7</a> "Sabotaged." A minus, a dot, a plus, a blank line. The word did not exist in this tree until a security researcher named Andres Freund, chasing a half-second of extra latency in SSH logins, found the backdoor and went public on March 29. Everything before that date is written in the language of maintenance. The sabotage and the fix are the same one character, pointing opposite directions.</p>
+<h2>What it nearly cost</h2>
+<p>What that period was protecting is the reason this is not a footnote. The payload in <code>build-to-host.m4</code> rewired the dynamic linker so that, on the machines it targeted, it hooked into <code>sshd</code> — the process that stands at every Linux server's front door and decides who gets in. A backdoored <code>sshd</code> is not a data leak; it is a master key to a large fraction of the internet's servers, shipped through the update channel those servers trust most. Versions 5.6.0 and 5.6.1 were already in the beta branches of major distributions, days from the stable releases that would have carried the key into production everywhere.</p>
+<p>It was stopped by an accident. A Microsoft engineer named Andres Freund noticed that his SSH logins were running about half a second slower than they should, went looking for why, and followed the latency into the compression library and out the other side into the backdoor. He posted it publicly on March 29, 2024. The difference between a historical curiosity and the worst supply-chain compromise ever shipped was one careful person being annoyed by half a second. &lt;!-- CHECK: external (non-git) facts in this section — Andres Freund / ~0.5s sshd latency / the sshd hook / 2024-03-29 disclosure / 5.6.0-5.6.1 in distro betas. Standard public record of CVE-2024-3094; not provable from this repo. --&gt;</p>
+<h2>The exit</h2>
+<p>Jia's last commits are a tell you can only read backward. Three days before disclosure, at 1:50 in the morning, Jia trims the project's <code>SECURITY.md</code>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show -s --format='%h %aI %s' af071ef770
+af071ef7 2024-03-26T01:50:02+08:00 Docs: Simplify SECURITY.md.</code></pre>
+<p><a class="receipt-ref" href="#r8">R8</a> The lines removed are the ones that would have told a reporter to attach build logs and input files — the exact artifacts that would have described the payload hidden in the test data. It is the last commit Jia both authors and commits. Then the account goes dark.</p>
+<p>The final word is Lasse's, returning to a house that turned out not to be his alone. His removal commit reverts the backdoor and reads like an inventory of grief:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git show e93e13c8b3
+Remove the backdoor found in 5.6.0 and 5.6.1 (CVE-2024-3094).
+...
+  - The maintainer who added the backdoor has disappeared.
+  - Backdoors are bad for security.
+This reverts the following without making any other changes:</code></pre>
+<p><a class="receipt-ref" href="#r9">R9</a> He lists the reverted commits like a table of contents for the attack, and then he edits <code>AUTHORS</code> the way you edit a headstone: the second name comes out of the header and reappears lower down, labelled, dated, sealed off. The years 2022 to 2024 become a marked interval. The project is one person's again.</p>
+<h2>What to read twice</h2>
+<p>The uncomfortable lesson of xz is that none of the usual defenses were asleep. The code was reviewed. The maintainer was diligent. The contributor was, by every visible signal, excellent — for years, because being excellent for years was the attack. You cannot grep your way to catching this; the malicious commits are, one at a time, indistinguishable from good ones, and the two that matter most are a <code>.gitignore</code> tidy and a whitespace-shaped <code>.</code>.</p>
+<p>But two habits would have narrowed it, and they cost nothing. First: your release tarball is not your git tree — <code>git archive</code> a tag, diff it against what you actually publish, and look hard at anything in the shipped artifact that is not in the repository, especially generated build scripts. Second: read the <em>negative</em> path of every "improvement." A commit that adds a sandbox check is a commit that can also quietly disable one, and the difference can be a single character that <code>git log --grep</code> will never find because the message says the opposite of what the diff does. Blame, here, is not a question of who to punish. It is a question of which line to read twice.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r10"><span class="rid">R10</span> <code>git shortlog -sn --until=2022-01-01 HEAD</code> — before 2022: Lasse Collin 1259 commits, next name 11.</li><li id="r1"><span class="rid">R1</span> <code>git log --all --author='jiat75' --reverse</code> — first patch, 2022-01-28, committed by Lasse Collin.</li><li id="r2"><span class="rid">R2</span> <code>git show 692de534fa -- AUTHORS</code> — 2022-08, "and Jia Tan" added as co-maintainer.</li><li id="r3"><span class="rid">R3</span> <code>git log --all --author='Hans Jansen'</code> — a name present only June–October 2023, contributing the ifunc mechanism.</li><li id="r4"><span class="rid">R4</span> <code>git show 4323bc3e0c</code> — 2024-02-15, <code>build-to-host.m4</code> added to <code>m4/.gitignore</code>, nine days before 5.6.0.</li><li id="r5"><span class="rid">R5</span> <code>git log --all -S 'build-to-host'</code> / <code>git log --all -- m4/build-to-host.m4</code> — the string appears only in <code>.gitignore</code>; the file was never a tracked object.</li><li id="r6"><span class="rid">R6</span> <code>git show 328c52da8a -- CMakeLists.txt</code> — a lone <code>.</code> inside the CMake Landlock feature test (Autotools side clean).</li><li id="r7"><span class="rid">R7</span> <code>git show f9cf4c05ed</code> — "CMake: Fix sabotaged Landlock sandbox check. It never enabled it." — the fix is the single <code>.</code> removed.</li><li id="r8"><span class="rid">R8</span> <code>git show af071ef770</code> — 2024-03-26 01:50, "Docs: Simplify SECURITY.md," Jia's last authored+committed commit.</li><li id="r9"><span class="rid">R9</span> <code>git show e93e13c8b3</code> — 2024-04, Lasse removes the backdoor (CVE-2024-3094) and re-labels <code>AUTHORS</code>.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

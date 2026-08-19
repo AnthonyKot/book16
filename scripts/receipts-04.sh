@@ -11,6 +11,8 @@ echo
 echo "Verbatim outputs against a full clone of https://github.com/tukaani-project/xz."
 echo "Regenerate with \`scripts/receipts-04.sh\`. Long outputs truncated editorially (head)."
 echo
+echo "## R10 — before 2022, the project is one person"
+r 3 shortlog -sn --until=2022-01-01 HEAD
 echo "## R1 — 2022-01: 'jiat75' arrives with a NULL-check patch, committed by Lasse"
 r 3 log --all --author='jiat75' --reverse --format='%h %aI %cI %an <%ae> | committer=%cn | %s'
 echo "## R2 — 2022-08: the name is written into AUTHORS as co-maintainer"

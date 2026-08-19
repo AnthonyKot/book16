@@ -123,6 +123,8 @@ CHAPTERS = [
      "Log4Shell was not a careless mistake. It was five reasonable commits over eleven years, each one you would have approved — reconstructed from the log."),
     ("03-bitcoin", 'chapter <b>03</b> · repo <b>bitcoin/bitcoin</b> · a quoting bug, made permanent',
      "git shortlog lists --author=Satoshi Nakamoto as a contributor with 8 commits. How a shell-quoting slip became a permanent part of Bitcoin's history."),
+    ("04-xz", 'chapter <b>04</b> · repo <b>tukaani-project/xz</b> · CVE-2024-3094',
+     "The xz backdoor as git recorded it: a two-year confidence trick, a weapon that exists only as a .gitignore line, and a single sabotaging period."),
 ]
 
 def receipts_regen_note(stem):
