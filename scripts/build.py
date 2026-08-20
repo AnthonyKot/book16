@@ -168,6 +168,10 @@ CHAPTERS = [
      "In 2021 a remote-code-execution backdoor was committed to PHP under Rasmus Lerdorf's name, tagged \"Fix typo\" — and git's own metadata proves he didn't write it. Told plainly.", "12-php"),
     ("12-php", 'chapter <b>12</b> · full dig · repo <b>php/php-src</b> · the backdoor signed by the founder',
      "The complete dig: the eleven-line payload, the timezone and Signed-off-by tells, the revert war, and why the backdoor is still an ancestor of every PHP 8.1+ checkout.", "12-php.full"),
+    ("13-node.reader", 'chapter <b>13</b> · repo <b>nodejs/node</b> · the deletion behind the folklore',
+     "Everyone knows Node chose callbacks over Promises. Git knows Node HAD Promises for eight months in 2009 — and that someone deleted them. Told plainly.", "13-node"),
+    ("13-node", 'chapter <b>13</b> · full dig · repo <b>nodejs/node</b> · the deletion behind the folklore',
+     "The complete dig: the 306-line Promise deletion, why you can't find it, and the founder's second deletion that the next lead un-broke — still in HEAD.", "13-node.full"),
 ]
 
 def receipts_regen_note(stem):
