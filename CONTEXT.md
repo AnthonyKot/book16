@@ -52,25 +52,8 @@ locators in their head.
 
 ## Fix backlog (blind reader-test pass, 2026-08-19)
 
-Findings from four blind reader simulations, verified against the files; ch.01 and ch.04 items
-already applied. Still open:
-
-- **Ch.02 (log4j2):** the reader intro promises FIVE decisions but the essay delivers four
-  sections (2016+2017 collapsed) — best fix is restoring the 2021-11-29 default-flip (R6) as the
-  fifth beat: the door opened for CPU cycles and closed for CPU cycles. Also: the aphorism
-  contradicts across forms — reader says "off switch whose default is off" (correct), full dig
-  line ~120 says "default is on" (fix the full dig). Consider naming the maintainers (Ralph
-  Goers, Carter Kozak) in the reader cut; anonymity reads as parable.
-- **Ch.03 (bitcoin):** "But you can't [fix it]" overclaims — `.mailmap` corrects shortlog display
-  without rewriting a single object, and codex confirmed there is NO .mailmap at HEAD. Reframe:
-  preserved by indifference ("nobody even papered over the display") is truer and stronger than
-  preserved by impossibility. Also: open the reader cut on the verbatim 3-row shortlog output
-  (lay-legible; converts the announced reveal into an earned one), and cut "in most projects that
-  would be an annoyance" (no project rewrites published history; stake-inflation).
-
-- **Ch.06 (reader cut):** the Bitcoin paragraph is the tour's one listicle beat — rebuild it from
-  the full dig's own material (twin byte-identical "First commit" roots, the `sirius-m` handle) so
-  it gets its own mini-reveal; the control case could also take one more beat of stage time.
-- **Ch.07 (reader cut):** add two physical sentences making mailbox-vs-merge concrete before the
-  2019 revert (sim estimate: general-reader 8→9); optionally untangle "except for where the
-  community actually was."
+**All cleared 2026-08-20.** Ch.01/04 applied 2026-08-19; ch.02 (fifth beat restored as "2021 —
+this feature is not used", full-dig aphorism corrected to "default is off", Goers/Kozak named),
+ch.03 (mailmap/indifference reframe both forms + R6 no-.mailmap receipt, verbatim shortlog open
+in reader, annoyance line cut), ch.06 reader (Bitcoin paragraph rebuilt on twin roots + sirius-m),
+ch.07 reader (mailbox-vs-serving-hatch physical beat) applied 2026-08-20.

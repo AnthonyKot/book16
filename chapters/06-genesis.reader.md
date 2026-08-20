@@ -68,11 +68,17 @@ adolescence edited out. Its author, it turns out, is a connoisseur of the form: 
 later, opening a new chapter of his life with the project, he minted himself *another* first
 entry, titled "First internal release." Genesis, for him, is not an event. It is a genre.
 
-And Bitcoin — the most scrutinized codebase in finance — begins in August 2009, eight months
-*after* the Bitcoin network started running. The hand on the first entry belongs to a volunteer's
-username. The files that volunteer filed say, right inside: *Copyright (c) 2009 Satoshi Nakamoto*.
-The founder's actual keystrokes, the January moment the folklore wants? Not in this ledger. Not
-anywhere you can clone.
+And Bitcoin — the most scrutinized codebase in finance — has a first entry with the perfect title,
+*"First commit"*, and everything else about it wrong. It is dated August 2009, eight months *after*
+the Bitcoin network started running. The name on it is not the founder's: it is `sirius-m`, the
+username of an early volunteer, filing an import of somebody else's finished work. The files he filed announce their real parentage on the inside: *BitCoin
+v0.1.5 ALPHA, Copyright (c) 2009 Satoshi Nakamoto*. A version number north of zero and a copyright
+line, wrapped in someone else's "First commit."
+
+And here is my favorite wrinkle: it happened *twice*. The import ran two ways, and the ledger keeps
+twin first entries — same title, same contents down to the byte, two different fingerprints —
+sitting side by side like a document that was notarized twice by two clerks. The founder's actual
+January keystrokes, the moment the folklore wants? In neither. Not anywhere you can clone.
 
 Day one of the copy is wherever the person making the copy happened to be standing.
 

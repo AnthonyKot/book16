@@ -21,5 +21,11 @@ r 4 log --all --author='Gavin' --reverse --format='%h %aI %an %s' HEAD
 r 3 show --stat --format='%h %s' 8bd66202c3
 echo "## R5 — one of the flagged commits in full (the quoting bug is permanent, tree never rewritten)"
 r 8 show --format=fuller --stat 9f35575ca3
+echo "## R6 — no .mailmap at HEAD: nobody has even papered over the display"
+echo '```'
+echo "$ git -C repos/bitcoin cat-file -e HEAD:.mailmap || echo 'no .mailmap at HEAD'"
+git -C repos/bitcoin cat-file -e HEAD:.mailmap 2>/dev/null || echo 'no .mailmap at HEAD'
+echo '```'
+echo
 } > "$out"
 echo "wrote $out ($(wc -l < "$out") lines)"

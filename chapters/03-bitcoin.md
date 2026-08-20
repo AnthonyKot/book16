@@ -92,17 +92,29 @@ misquoted flag. Both are checked in. Neither was ever rewritten.
 ## Why it is still there
 
 You might expect someone to have fixed it. Sixteen years, thousands of contributors — surely you
-clean up eight commits that attribute work to a shell flag. But you cannot, not without changing
-history in the literal git sense. Every commit's hash is
-computed from its contents, and the author field is part of the contents. Rewrite the author, and
-the hash changes; change the hash, and every descendant commit's hash changes; and in a project
-where the entire security model rests on a chain of hashes that thousands of people have
-independently copied, you do not rewrite the chain to fix a cosmetic typo.
+clean up eight commits that attribute work to a shell flag. The deep fix is off the table: every
+commit's hash is computed from its contents, and the author field is part of the contents. Rewrite
+the author, and the hash changes; change the hash, and every descendant commit's hash changes; and
+in a project where the entire security model rests on a chain of hashes that thousands of people
+have independently copied, you do not rewrite the chain to fix a cosmetic typo.
+
+But there is a shallow fix, and git ships it: a `.mailmap` file — one line in the repository that
+tells `shortlog` and `blame` "when you see this string, display that name instead." No object
+touched, no hash changed, five minutes of work. Bitcoin has no such file:
+
+```console
+$ git cat-file -e HEAD:.mailmap || echo 'no .mailmap at HEAD'
+no .mailmap at HEAD
+```
+
+[R6] In sixteen years, nobody has even papered over the display. The flag is preserved at the deep
+layer by immutability — and at the shallow layer, where it could be dressed in five minutes, by
+indifference. Nobody minds enough. That is truer than "unfixable," and it is stranger.
 
 ~ The mistake is load-bearing now.
 
 It is cheaper to leave `--author=Satoshi Nakamoto` standing as a contributor forever than to touch
-the ledger it lives in.
+the ledger it lives in — and apparently not worth one line to hide.
 
 So it stands. The most famous absent author in software has, among his commits, eight that were
 signed by a command-line argument, preserved by the same immutability that makes the project worth
@@ -130,5 +142,6 @@ Sometimes it is a person. Sometimes it is a flag.
 - **R3** `git show --stat 01bed1828b` — the same makefile patch, authored cleanly by `s_nakamoto` on the SVN line.
 - **R4** `git log --all --author='Gavin' --reverse` — Gavin's first commit, `8bd66202c3` "Fix CRLF", 2010-07-14.
 - **R5** `git show --format=fuller 9f35575ca3` — one flagged commit in full: author the flag, committer Gavin, tree never rewritten.
+- **R6** `git cat-file -e HEAD:.mailmap` — fails: no .mailmap exists at HEAD; the display was never even papered over.
 
 *Full transcripts: `chapters/03-bitcoin.receipts.md` (regenerate with `scripts/receipts-03.sh`).*

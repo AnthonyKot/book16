@@ -1,19 +1,24 @@
 # A flag with 8 commits
 
-Every software project keeps a ledger of who did what. Ask Bitcoin's ledger who its contributors
-are and one name jumps out — the famous one, the pseudonym, the person nobody has ever identified.
-Except the ledger does not list that name once. It lists it three times, in three slightly
-different spellings, with three different counts next to them.
+Every software project keeps a ledger of who did what. Ask Bitcoin's ledger to count the work of
+its creator — the famous pseudonym, the person nobody has ever identified — and this is what it
+prints, verbatim:
 
-Two of the three are what you would expect: the pseudonym as an old version-control system
-recorded it, and the pseudonym as a plain name. The third entry is credited with eight pieces of
-work. And it is not a person. It is a typo. Specifically, it is a fragment of a command that a real,
-identifiable human typed by hand in the summer of 2010 — and the ledger has been faithfully
-crediting that fragment as a contributor ever since.
+```console
+ 245  s_nakamoto
+  26  Satoshi Nakamoto
+   8  --author=Satoshi Nakamoto
+```
+
+Three spellings of one name, three counts. The first two are what you would expect: the pseudonym
+as an old version-control system recorded it, and the pseudonym as a plain name. Look at the third
+row. It is credited with eight pieces of work, and it is not a person. It is a typo — a fragment
+of a command that a real, identifiable human typed by hand in the summer of 2010, and the ledger
+has been faithfully crediting that fragment as a contributor ever since.
 
 This is the story of how a man tried to do a respectful thing, made a one-character mistake while
-doing it, and how that mistake became a permanent, unfixable part of the most studied software
-history in the world.
+doing it, and how that mistake became a permanent part of the most studied software history in the
+world.
 
 ## The janitor
 
@@ -64,24 +69,27 @@ credited to a flag. Both are in the ledger. Neither was ever corrected.
 You would expect someone to have cleaned this up. Sixteen years, thousands of contributors. Surely
 you fix eight entries that credit a piece of work to a command-line argument.
 
-But you can't. Not without breaking the thing that makes the ledger trustworthy.
+The deep fix is genuinely impossible — and here is the part most people never think about. In git,
+the name of the author is not a sticker on the outside of the work. It is *inside* the work. Every
+entry in the ledger has an identity — a long fingerprint — and that fingerprint is computed from
+everything in the entry, author included. Change the author and the fingerprint changes. Change one
+fingerprint and every entry that came after it, which refers back to it, changes too. The whole
+chain, forward, forever. And Bitcoin is a project whose entire reason for existing is the idea that
+a chain of fingerprints should be tamper-evident, whose history has been copied independently by
+thousands of people. You do not rewrite that chain to fix a cosmetic typo.
 
-Here is the part most people never think about. In git, the name of the author is not a sticker on
-the outside of the work. It is *inside* the work. Every entry in the ledger has an identity — a long
-fingerprint — and that fingerprint is computed from everything in the entry, author included. Change
-the author and the fingerprint changes. Change one fingerprint and every entry that came after it,
-which refers back to it, changes too. The whole chain, forward, forever.
-
-In most projects that would be an annoyance. In Bitcoin — a project whose entire reason for existing
-is the idea that a chain of fingerprints should be tamper-evident, and whose history has been copied
-independently by thousands of people — you do not rewrite the chain to fix a cosmetic typo.
+But there is also a shallow fix, and git ships it: a small note you can add to a repository saying
+"when you see this string, display that name instead." It rewrites nothing — it just dresses the
+output. Five minutes of work, done in thousands of projects. Bitcoin's repository contains no such
+note. In sixteen years, nobody has even papered over the display.
 
 ~ The mistake is load-bearing now.
 
-It is cheaper to let "the author-flag" stand as a contributor forever than to touch the ledger it
-lives in. So it stands. The most famous absent author in software has, among his credited work,
-eight pieces signed by a fragment of a command — preserved by the very same immutability that makes
-the project worth studying in the first place.
+So the flag stands twice over: at the deep layer, protected by the same immutability that makes the
+project worth studying — and at the shallow layer, where it could be hidden in five minutes, by the
+fact that nobody minds. The most famous absent author in software has, among his credited work,
+eight pieces signed by a fragment of a command, and the project has decided, year after year, that
+this is fine.
 
 ## What to carry away
 

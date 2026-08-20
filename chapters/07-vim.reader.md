@@ -41,6 +41,13 @@ naively, says this project's survival depended on a single person. The fine prin
 a crowd — but a crowd on the other side of a mailbox, with one man deciding, one man typing, one
 man ticking the counter.
 
+Hold the two mechanics side by side, physically. The modern way is a button on a website: a
+contributor's finished work lands under the contributor's own name, untouched, in one click. Bram's
+way, your patch arrived as text in his inbox, and if he accepted it, he folded it into his own
+working copy at his own keyboard and filed it under his own name, yours in brackets at the bottom.
+One is a door anyone trusted can walk through. The other is a serving hatch, and the kitchen was
+his.
+
 ## The six-hour constitution
 
 Only once while he lived did anyone else's name appear on an entry. In November 2019, Christian —

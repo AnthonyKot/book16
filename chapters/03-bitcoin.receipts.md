@@ -62,3 +62,9 @@ CommitDate: Tue Jul 27 14:21:02 2010 +0000
 
 ```
 
+## R6 — no .mailmap at HEAD: nobody has even papered over the display
+```
+$ git -C repos/bitcoin cat-file -e HEAD:.mailmap || echo 'no .mailmap at HEAD'
+no .mailmap at HEAD
+```
+
