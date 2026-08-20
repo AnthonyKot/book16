@@ -29,7 +29,8 @@ locators in their head.
 - **Chapter changes how the reader reads their own repo.** Each chapter ends with what to run
   at home — woven in, not a boxed sidebar.
 - External (non-git) facts carry `<!-- CHECK: -->` markers until an adversarial review pass
-  clears them (book14 pipeline: draft → grok/agy/codex reviews → canonical).
+  clears them, then `<!-- VERIFIED: evidence + source URL -->` comments preserve the invisible
+  audit trail (book14 pipeline: draft → grok/agy/codex reviews → canonical).
 - **Never put grep-filtered diff output inside a ```diff fence.** Grep strips hunk boundaries and
   can stitch lines from different functions into a "diff" that exists nowhere in the tree (this
   bit ch.05's centerpiece on 2026-08-19 — caught by a blind reader test). Grep transcripts belong
@@ -47,8 +48,11 @@ locators in their head.
 
 - `scout/` — 23 grok reports + 23 codex verify/extend reports + SELECTION.md (Round 1 ranking;
   v2 with Round 2 + codex digs pending).
-- Pilot: ch. 01 Debian OpenSSL 2008 (CVE-2008-0166), the strongest moment-before-the-outcome
-  in the corpus and double-verified reproducible.
+- Final public sequence (source IDs remain stable for receipts): 05 Git → ch.01; 01 Debian
+  OpenSSL → ch.02; 13 Node → ch.03; 02 Log4j2 → ch.04; 08 Costume → ch.05; 04 xz →
+  ch.06; 15 Postgres → ch.07; 07 Vim → ch.08.
+- The other eight completed investigations remain accessible under `P.S. Drafts` on the contents
+  page, but are not part of the numbered book.
 
 ## Fix backlog (blind reader-test pass, 2026-08-19)
 

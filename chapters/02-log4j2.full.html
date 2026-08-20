@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>02</b> · full dig · repo <b>apache/logging-log4j2</b> · CVE-2021-44228</p>
+<p class="kicker">chapter <b>04</b> · full dig · repo <b>apache/logging-log4j2</b> · CVE-2021-44228</p>
 <h1>To improve performance</h1>
 <p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="02-log4j2.html">To improve performance</a>.</em></p>
 <p><code>git clone https://github.com/apache/logging-log4j2</code>, and you can walk Log4Shell backward — not to the December 2021 week everyone remembers, but to five commits spread across eleven years, in order, each one the sort of change you would have approved without a second thought. None of them is the bug. The bug is what they add up to. Here they are, oldest first.</p>
@@ -61,10 +61,10 @@ CommitDate: 2021-12-04T22:47:24-07:00</code></pre>
 <p>"This feature is not used." <a class="receipt-ref" href="#r6">R6</a> They grepped GitHub and Stack Overflow and found almost nobody who <em>wanted</em> message lookups. They were right. They were about to discover that everybody <em>had</em> them. Whether Carter is quietly acting on the private report or independently killing a misfeature the same week, the commit does the correct thing for a reason adjacent to the truth: it is a cleanup, it is unused, it costs cycles. The word "security" does not appear. The default flips eleven days before the CVE, in a commit about CPU.</p>
 <h2>The fire</h2>
 <p>On December 9 the disclosure is public and the internet is on fire. The commits from that week are the only part of this story anyone remembers. Here is the one that isn't in the postmortems.</p>
-<p>Saturday, December 4, 21:00 Colorado time, Ralph checks in the first defensive patch — limit which JNDI protocols work. In the same commit is a new test class:</p>
+<p>The repository's response had begun five days before the public disclosure. Saturday, December 4, 21:00 Colorado time, Ralph checks in the first defensive patch — limit which JNDI protocols work. In the same commit is a new test class:</p>
 <pre><span class="lang">diff</span><code><span class="diff-add">+public class JndiExploit implements ObjectFactory {</span>
 <span class="diff-add">+        fail("getObjectInstance must not be allowed");</span></code></pre>
-<p>They named it <code>JndiExploit</code>. <a class="receipt-ref" href="#r7">R7</a> The test asserts that a remote object factory must never run — the exact mechanism of the attack — on the same Saturday night they believe they have contained it. They have not. That first patch only limits protocols; other paths still reach JNDI, and 2.15 ships with the hole narrowed, not closed.</p>
+<p>They named it <code>JndiExploit</code>. <a class="receipt-ref" href="#r7">R7</a> The test asserts that a remote object factory must never run — the exact mechanism of the attack — on the Saturday night before the world found out, when they believe they have contained it. They have not. That first patch only limits protocols; other paths still reach JNDI, and 2.15 ships with the hole narrowed, not closed.</p>
 <p>Then, on December 13, the deeper fix, and it explains itself by pointing back to 2010:</p>
 <pre><span class="lang">diff</span><code>$ git show 70edc23334 -- '*Interpolator.java'</code></pre>
 <p>2.16 does not just remove <code>JndiLookup</code> — it excludes the class by its hard-coded fully-qualified name. <a class="receipt-ref" href="#r8">R8</a> It has to, because of the open vocabulary from the very first deposit: <code>JndiLookup</code> carries a <code>@Plugin</code> annotation, and the plugin loader would cheerfully register it again. You cannot delete a verb from a language that auto-discovers its verbs; you have to name the specific thing and forbid it. The tension was flagged in the code the whole time — a <code>// TODO: this ought to use the PluginManager</code> comment, added in 2014, still sitting there when the fire started, only resolved in January 2022. <a class="receipt-ref" href="#r9">R9</a></p>

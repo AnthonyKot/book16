@@ -43,7 +43,7 @@ $ git show a6043d3e1e
 One blank line, above an include. [R2] The man who created the language enters its permanent
 record adding whitespace, under a message the tooling wrote for him because he didn't leave one.
 PHP itself was years old by then — none of that life is here.
-<!-- CHECK: PHP dating to 1994 (PHP/FI) — public record, not in this repo; the repo's own first payload is already version 4-era Zend code. -->
+
 The founding is one repository over, or in a tarball, or gone. What this git remembers begins the
 morning two people imported a rewrite.
 
@@ -109,7 +109,7 @@ commit titled `First internal release.` [R12] Genesis, for him, is not an event.
 
 Bitcoin's cut is a postcard with the wrong signature. Day one is 30 August 2009 — the network it
 implements had been mining since January —
-<!-- CHECK: Bitcoin network live since 2009-01 (genesis block) — public record, not provable from this repo. -->
+
 and the hand that types `First commit` belongs to a handle, `sirius-m`, that matches nothing in
 the tree it imports: the readme inside announces `BitCoin v0.1.5 ALPHA / Copyright (c) 2009
 Satoshi Nakamoto`. [R9, R10] Eight months of the founder's shipped work arrive as somebody

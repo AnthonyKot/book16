@@ -13,8 +13,8 @@ alphabetized help list unalphabetical, and that would not stand. He worked past 
 that ran too slowly under a diagnostic tool at 00:25, some renamed files in another test at
 00:54, so a warning could be read properly.
 
-Saturday passed without an entry. Then, at 2:38 on Sunday morning, he processed one item from his
-mailbox — a stranger's fix for the misspelling "arguements" in a test file. He applied it — the
+The rest of Saturday passed without an entry. Then, at 2:38 on Sunday morning, he processed one
+item from his mailbox — a stranger's fix for the misspelling "arguements" in a test file. He applied it — the
 stranger's name on the work, his own on the filing — and ticked his patch counter.
 
 ~ That is the last thing Bram Moolenaar ever did to Vim.
@@ -28,8 +28,8 @@ silence.
 To understand what happened next, you have to understand how strange this project was.
 
 Ask the ledger who wrote Vim, decade by decade, and the answer is not a list. It is a name. From
-the day the record begins in 2004 until late 2019 — fifteen years — every single entry, nine
-thousand one hundred and sixty-six of them, is authored by one man.
+the day the record begins in 2004 through the end of 2018 — fifteen years — every single entry,
+nine thousand one hundred and sixty-six of them, is authored by one man.
 
 Which would look like a project with no community at all, except for where the community actually
 was. Vim's social contract was this: you mailed Bram your improvement; he reviewed it, entered it

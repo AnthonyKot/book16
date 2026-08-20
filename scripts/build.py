@@ -58,7 +58,7 @@ def render(md):
             i+=1; continue
         if ln.strip()=="":
             i+=1; continue
-        # paragraph: gather until blank (authoring comments like <!-- CHECK: --> never render)
+        # paragraph: gather until blank (authoring comments never render)
         para=[ln]; i+=1
         while i<len(lines) and lines[i].strip()!="" and not lines[i].startswith(("#","```",">")):
             if lines[i].lstrip().startswith("<!--"): i+=1; continue
@@ -142,9 +142,9 @@ CHAPTERS = [
      "Bram Moolenaar's final weekend of commits, the one-name ledger, and the succession the license promised — told plainly.", "07-vim"),
     ("07-vim", 'chapter <b>07</b> · full dig · repo <b>vim/vim</b> · the last 32 hours',
      "The complete dig: the teapot, the 404 parentheses, the six-hour revert with the empty body, the two dates on patch 9.0.1679, and the announcement.", "07-vim.full"),
-    ("06-genesis.reader", 'chapter <b>06</b> · six repos · the genesis lie',
-     "Six famous first commits: two robots, three cuts, a funeral, an accidental fourth Genesis — and one true beginning. Told plainly.", "06-genesis"),
-    ("06-genesis", 'chapter <b>06</b> · full dig · six repos · the genesis lie',
+    ("06-genesis.reader", 'chapter <b>06</b> · seven repos · the genesis lie',
+     "Seven famous repository openings: two robots, three cuts, a funeral, an accidental fourth Genesis — and one true beginning. Told plainly.", "06-genesis"),
+    ("06-genesis", 'chapter <b>06</b> · full dig · seven repos · the genesis lie',
      "The complete dig: php's empty tree, cpython's September-in-August, Linus's cut in writing, redis at 10:30:00, openttd's crashed SVN, and Linux's four roots.", "06-genesis.full"),
     ("05-git", 'chapter <b>05</b> · full dig · repo <b>git/git</b> · the night the names were made',
      "The complete dig: the false law, the 177-second copyright, the empty announcement, the 01:10 flip, and the formatting-only patch that amended the constitution.", "05-git.full"),
@@ -186,12 +186,40 @@ CHAPTERS = [
      "The complete dig: the tree-equals-parent mechanism, the 2 a.m. mirror trigger, the four QUIC phase markers, and the backport that had nothing left to apply.", "16-empty.full"),
 ]
 
+# Source prefixes are stable production IDs: receipt generators and manuscript links use them.
+# Public chapter numbers follow the final eight-chapter reading order.
+FINAL_ORDER = {
+    "05-git": "01",
+    "01-debian-openssl": "02",
+    "13-node": "03",
+    "02-log4j2": "04",
+    "08-costume": "05",
+    "04-xz": "06",
+    "15-postgres": "07",
+    "07-vim": "08",
+}
+DRAFTS = {
+    "03-bitcoin", "06-genesis", "09-npm", "10-t2t",
+    "11-ffmpeg", "12-php", "14-openssl", "16-empty",
+}
+
+def public_kicker(stem, kicker):
+    base = stem[:-7] if stem.endswith(".reader") else stem
+    if base in FINAL_ORDER:
+        label = f'chapter <b>{FINAL_ORDER[base]}</b>'
+    elif base in DRAFTS:
+        label = 'P.S. <b>draft</b>'
+    else:
+        raise ValueError(f"chapter missing from final/draft selection: {base}")
+    return re.sub(r"chapter <b>\d+</b>", label, kicker, count=1)
+
 def receipts_regen_note(stem):
     return f'chapters/{stem}.receipts.md'
 
 if __name__=="__main__":
     for entry in CHAPTERS:
         stem, kicker, desc = entry[0], entry[1], entry[2]
+        kicker = public_kicker(stem, kicker)
         out_stem = entry[3] if len(entry)>3 else stem
         md = ROOT/"chapters"/(stem+".md")
         if not md.exists():

@@ -50,7 +50,7 @@ And here is the detail the angry retellings leave out: he asked first. Before to
 Kurt wrote to the software's own developers — the people who kept that note in the code — and
 asked whether it was all right to remove the lines the detector was screaming about. The answer
 amounted to: *if it helps with the debugging tool, fine by us.*
-<!-- CHECK: the openssl-dev exchange (2006-05-01 thread "Random number generator, uninitialised data and valgrind"; Ulf Möller's "If it helps with debugging, I'm in favor of removing them") is mailing-list record, not provable from either git repo. -->
+
 The note in the code had read like permission. Now he had the real thing, in writing, from the
 owners of the pot. Hold on to that, because it is about to make the tragedy worse, not better.
 
@@ -146,7 +146,7 @@ thread, and the thread led back through the crippled pool, to the commented-out 
 Tuesday afternoon two years earlier. On May 13th the project
 told the world, and the world spent that spring doing something almost without precedent: hunting
 down and replacing, one by one, every key the broken pool had ever dealt.
-<!-- CHECK: Luciano Bello as discoverer, early-May 2008, and the 2008-05-13 advisory (DSA-1571) — public record of CVE-2008-0166, not provable from the packaging repo (R11: the advisory ID appears in no commit message). -->
+
 
 The repair itself, when it came, was almost insultingly small: delete the comment
 marks, let the real seed flow again. One line, essentially, undone. The commit that did it named

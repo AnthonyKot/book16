@@ -94,7 +94,7 @@ not composed in a three-minute panic after the outcry.
 ~ Somewhere in the metadata there is always a clock that wasn't in the meeting.
 
 The rest of the ledger is short. In its entire life, this repository has entries from exactly
-four named human beings — six entries, all within the first four days — and twenty-five bulk
+three named human beings — six entries, all within the first four days — and twenty-five bulk
 snapshots from the faceless team account. After mid-2023 it goes silent for 783 days. Then,
 in September 2025, one enormous entry arrives under six quiet words: "update for-you
 recommendations code." Inside, political labels are back — an AI model, Grok, now classifies

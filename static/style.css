@@ -92,6 +92,10 @@ ol.toc .num { color:var(--accent); }
 ol.toc a { color:var(--ink); text-decoration:none; }
 ol.toc a:hover { color:var(--accent); }
 ol.toc .sub { display:block; font-family:var(--text); color:var(--ink-soft); font-size:.95rem; margin-top:.2rem; }
+.draft-note { color:var(--ink-faint); font-size:.92rem; }
+ol.toc.drafts { border-top:1px solid var(--rule); padding-top:1rem; }
+ol.toc.drafts li { margin-bottom:.8rem; }
+ol.toc.drafts > li > a { color:var(--ink-soft); }
 
 blockquote { margin:0 0 1.2rem; padding:.1rem 0 .1rem 1rem; border-left:3px solid var(--rule); color:var(--ink-soft); font-style:italic; }
 

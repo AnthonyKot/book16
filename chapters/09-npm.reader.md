@@ -25,7 +25,7 @@ innocent-looking. It was fluent. It was a sentence written in the project's nati
 completing a set the founder had left unfinished. The malicious part — code that, in the
 right victim's build, quietly harvested bitcoin wallets — lived entirely inside
 `flatmap-stream`, a separate package on the npm registry.
-<!-- CHECK: flatmap-stream@0.1.1's payload targeted the Copay wallet build — public incident record, external to this repo. --> Search this repository's whole
+Search this repository's whole
 history for "copay" (the wallet it targeted), "bitcoin", "wallet": zero results. The weapon
 never lived here. What lives here is the shape of the hand that placed it.
 
@@ -39,7 +39,7 @@ way contributors arrive — proposing changes, asking for review. It arrives alr
 the keys, publishing directly. No handover note, no goodbye, no introduction. (Off the
 ledger, the story is ordinary and sad: a volunteer offered to take over a package the
 owner no longer used, and the owner said yes.)
-<!-- CHECK: Dominic Tarr's own postmortem ("statement on event-stream compromise") describes handing npm rights to a volunteer who emailed him — external record. --> From inside the record, the
+From inside the record, the
 transfer of a library installed millions of times a month looks like nothing at all.
 
 The new maintainer's first week is the part worth studying, because it is a model
@@ -69,14 +69,14 @@ says "remove," no alarm is raised. The evidence is dissolved rather than deleted
 who cloned the repository afterward and read it — including people who came specifically
 to check — found a clean project with no trace of `flatmap-stream`. Meanwhile the npm
 registry, which is a completely separate ledger, went on serving the poisoned `3.3.6` to
-every automatic upgrade for two more months, until a stranger chasing a deprecation
-warning found the wallet stealer and the whole thing unraveled.
-<!-- CHECK: November 2018 discovery via a deprecation warning (Ayrton Sparling's GitHub issue) — external record. -->
+every automatic upgrade for two more months, until developers tracing a deprecation warning
+began opening the dependency and investigators exposed the wallet stealer.
+
 
 Hold onto that gap, because it is the real subject here: the repository showed a clean face
-while the registry shipped the weapon. And the repository still does. Its final entry,
-to this day, is the attacker doing a bit of housekeeping. Its listed author, unchanged
-through all 322 entries, is still Dominic Tarr.
+while the registry shipped the weapon. And the repository still does. Its final Git entry,
+to this day, is the attacker doing a bit of housekeeping under the name 北川. But the `author`
+field in `package.json`, unchanged through all 322 entries, still names Dominic Tarr.
 
 ## The other Friday
 
@@ -90,7 +90,7 @@ Its ledger shows him drifting away: his last real update to the shipping branch 
 every release. But the ownership — the name on the door, the right to publish — never moved.
 And by late 2021 Marak had been saying publicly that he was done maintaining popular
 packages for free, for companies that paid him nothing.
-<!-- CHECK: Marak's public no-more-free-work statements (Nov 2020 GitHub post) — external record. -->
+
 
 On 7 January 2022, at 23:19, he came back to his own package. Four commits in three and a
 half minutes. The first adds an ASCII-art American flag and, at the bottom of the file every
@@ -114,9 +114,9 @@ entry where the intended behavior *was* the failure. Then one more version bump 
 working loop is the one people get, and he stops forever.
 
 And here the mirror completes itself. With `event-stream`, the repository was scrubbed while
-the registry served the poison. With `colors`, the registry was scrubbed — npm took the
-sabotaged releases down within days — but the repository was never touched.
-<!-- CHECK: npm removed the sabotaged colors releases after 2022-01-08 — registry record, external to this repo. --> No one ever hit
+the registry served the poison. With `colors`, the registry was scrubbed — by January 11,
+npm once again presented safe version `1.4.0` as latest — but the repository was never touched.
+No one ever hit
 undo. Clone `colors` today, and the default branch still opens onto the infinite loop,
 sitting under a comment that says `/* remove this line after testing */`. The news called it
 cleaned up. The ledger never was.

@@ -1,6 +1,6 @@
 # Magically fixes all errors
 
-Every previous chapter of this book has been checked the same way: against git, the tool that
+Every chapter in this book is checked the same way: against git, the tool that
 remembers what happened to software. Git can do this because of one idea, and the idea fits in a
 sentence: *the name of a thing is the fingerprint of its contents.* Not a label somebody chose —
 a fingerprint, computed from the bytes themselves. Change one comma in a file and its name

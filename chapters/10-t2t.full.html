@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>10</b> · full dig · repo <b>tensorflow/tensor2tensor</b> · the Transformer's repository</p>
+<p class="kicker">P.S. <b>draft</b> · full dig · repo <b>tensorflow/tensor2tensor</b> · the Transformer's repository</p>
 <h1>Giving 0 losses</h1>
 <p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="10-t2t.html">Giving 0 losses</a>.</em></p>
 <pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor log --reverse --format='%h %ai %an %s' | head -2
@@ -26,7 +26,8 @@ cedf0e2d 2017-06-15 11:24:53 -0700 Ryan Sepassi first commit
 
 encoder: [Self-Attention, Feed-forward] x n
 decoder: [Self-Attention, Source-Target-Attention, Feed-forward] x n</code></pre>
-<p><a class="receipt-ref" href="#r2">R2</a> Two lines of architecture that would eat the next decade, described with the enthusiasm of a parts list. The paper had gone to arXiv three days earlier. This repository is where its code came out to live, and the birth is not a birth — it is a delivery. The name on both commits is Ryan Sepassi, the engineer with permission to push, and the <code>AUTHORS</code> file in the push names exactly one author: <code>Google Inc.</code> <a class="receipt-ref" href="#r2">R2</a> I went looking for the paper's people. Some arrive in the following weeks and stay for years; three of the eight never touch this history at all:</p>
+<p><a class="receipt-ref" href="#r2">R2</a> Two lines of architecture that would eat the next decade, described with the enthusiasm of a parts list. The paper had gone to arXiv three days earlier.</p>
+<p>This repository is where its code came out to live, and the birth is not a birth — it is a delivery. The name on both commits is Ryan Sepassi, the engineer with permission to push, and the <code>AUTHORS</code> file in the push names exactly one author: <code>Google Inc.</code> <a class="receipt-ref" href="#r2">R2</a> I went looking for the paper's people. Some arrive in the following weeks and stay for years; three of the eight never touch this history at all:</p>
 <pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor log --author='Uszkoreit' --oneline | wc -l
 0</code></pre>
 <p><a class="receipt-ref" href="#r3">R3</a> Same for Polosukhin, same for Llion Jones. The architecture arrived in public git as a fait accompli: a company named as author, an engineer doing the push, the inventors appearing later, if at all. The history I wanted had happened somewhere else, in a repository I could never clone.</p>

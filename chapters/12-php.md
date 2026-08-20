@@ -44,7 +44,7 @@ everything after those eight characters — `+8` — and hands it to `zend_eval_
 
 Those eleven lines are a remote-code-execution backdoor. They entered PHP's main development
 branch under its founder's name, beneath *Fix typo* and `[skip-ci]`.
-<!-- CHECK: Zerodium was a firm that bought and resold software exploits; "sold to zerodium" is the attacker's joke, not a factual sale — public context, not provable from this repo. -->
+
 
 ## The tells
 

@@ -3,9 +3,28 @@
 # 1. every hash cited in a chapter .md exists as a real object in the named clone
 # 2. every [Rn] marker in a chapter has a matching receipt entry
 # 3. internal HTML links resolve
+# 4. no unresolved factual CHECK comments remain in chapter manuscripts
 # Repos are expected under repos/<name> (gitignored). Exit non-zero on any failure.
 cd "$(dirname "$0")"
 fail=0
+
+# --- unresolved factual markers ---
+if grep -R -n --include='*.md' '<!-- CHECK:' chapters; then
+  echo "FAIL unresolved factual CHECK comments remain in chapters"; fail=1
+else
+  echo "checked zero unresolved factual CHECK comments"
+fi
+
+# --- final public reading order ---
+expected_order=$(printf '%s\n' 05-git 01-debian-openssl 13-node 02-log4j2 08-costume 04-xz 15-postgres 07-vim)
+actual_order=$(sed -n '/<h2>Chapters<\/h2>/,/<\/ol>/p' index.html \
+  | grep '<li><span class="num">' \
+  | sed -E 's/.*href="chapters\/([^".]+)\.html".*/\1/')
+if [ "$actual_order" != "$expected_order" ]; then
+  echo "FAIL index.html: final chapter order drifted"; fail=1
+else
+  echo "checked final eight-chapter reading order"
+fi
 
 # --- chapter 01 -> repos/debian-openssl ---
 repo=repos/debian-openssl

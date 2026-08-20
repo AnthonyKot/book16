@@ -18,8 +18,8 @@
 <p>Every claim in every chapter is a real object in a public git repository. Nothing is paraphrased from memory. Each chapter ends with a <em>receipts</em> list: for every finding, the exact command that produced it. The prose only quotes output that a command actually printed.</p>
 <h2>Reproduce a dig yourself</h2>
 <p>Clone the repository the chapter names, then run the commands from the receipts. For chapter 01:</p>
-<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git clone https://salsa.debian.org/debian/openssl.git
-<span class="tok-prompt">$</span> git -C openssl show 8f27a7dc02   # the nine-minute commit</code></pre>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git clone https://github.com/git/git.git
+<span class="tok-prompt">$</span> git -C git show d98b46f8d9   # the 01:10 hash flip</code></pre>
 <p>The hashes are stable. If a command in this book does not print what the chapter says it prints, that is a bug in the book, and the git history is the authority — not the prose.</p>
 <h2>The find types</h2>
 <p>Each dig is one of a small set of shapes: a tiny diff with a huge blast radius; a planted or faked date; what day one really shows; a name that appears or disappears; a comment that outlived its code; a rule enforced by reverts; a feature that became the vulnerability; a diff that rolls back reality; an empty commit; a signature that answers a question nobody asked.</p>

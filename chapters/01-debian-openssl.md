@@ -54,7 +54,7 @@ One more thing Kurt did, and it matters because every sneering retelling leaves 
 The day before the commit, he described the offending `MD_Update` lines on OpenSSL's own
 development list and asked whether removing them was acceptable; the reply he got back amounted to
 *if it helps with debugging, I'm in favor of removing them*.
-<!-- CHECK: the openssl-dev exchange (2006-05-01 thread "Random number generator, uninitialised data and valgrind"; Ulf Möller's reply) is mailing-list record, outside both git repos. -->
+
 Whatever each side of that exchange thought it covered — a debug build, one line, both lines — none
 of it is in this repository. What is in the repository is what happened next, and permission is the
 frame to read it in: by the time he opens the editor, the comment has said *exception*, and the
@@ -113,7 +113,7 @@ is a number under 32,768. The space of keys the generator can produce collapses 
 to something you could write down. Nothing in the commit looks like an emergency. It closes a
 bug and disappears into an already-open changelog stanza dated four weeks *earlier*, `Thu, 6 Apr
 2006`, because that entry was still sitting open. [R6] It reads like hygiene.
-<!-- CHECK: "at most ~15 bits / PID-only entropy" and the 32,768 figure — standard in the public analysis of CVE-2008-0166; keep the number, it is not from the repo -->
+
 
 ## The dead path
 
@@ -195,7 +195,7 @@ read off the private half.
 The catch, after twenty months, was not a tool and not an attacker. In early May 2008 a Debian
 developer named Luciano Bello found the generator predictable and traced it back to the 2006
 change; the advisory, DSA-1571, went out on 13 May.
-<!-- CHECK: Luciano Bello as discoverer and the 2008-05-13 DSA-1571 date — public record of CVE-2008-0166, outside the packaging repo (and per R11, the advisory ID appears in no commit message). -->
+
 Inside the repository, the catch looks like this. The fix, when it comes on 7 May 2008, is one
 sentence:
 

@@ -62,7 +62,7 @@ discussed*.
 Within weeks, the group behind the edit left to found Libav — the same code and the same
 history, continued under a different name and different governance — and for the next
 several years the two trees developed side by side.
-<!-- CHECK: Libav announced March 2011 by departing FFmpeg maintainers — public record; the split itself is off-repo. -->
+
 
 ## The string
 
@@ -204,8 +204,8 @@ name off the door and leaves the office standing.
 
 September 2022: the empty office is taken down. The commit is signed by Anton Khirnov —
 third-most-prolific author in this repository's history [R12], and one of the developers
-who had left for Libav in 2011.
-<!-- CHECK: Anton Khirnov was among the Libav founders/maintainers — public record; in-repo his commits arrive via qatar merges during the fork years. -->
+who worked on Libav after the 2011 split.
+
 The forks had wound down; people had, one by one, come back to the shared tree. [R11]
 
 ```console

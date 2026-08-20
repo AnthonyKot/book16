@@ -44,9 +44,9 @@ $ git shortlog -sn HEAD --since=2011-01-01 --until=2019-01-01
 ```
 
 Not the top row. The *only* row. [R6] From the day this repository begins — a 2004 import of an
-editor already, by its own dedication, more than a decade into its life — to late 2019, every
-single commit is authored by one man. Nine thousand one hundred and sixty-six for nine thousand
-one hundred and sixty-six.
+editor already, by its own dedication, more than a decade into its life — through the end of
+2018, every single commit is authored by one man. Nine thousand one hundred and sixty-six for
+nine thousand one hundred and sixty-six.
 
 Which would look like a project with no community, except for where the community actually is.
 Vim's social contract was: you mail a patch; Bram reviews it, commits it as himself, and writes

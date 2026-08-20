@@ -18,7 +18,7 @@ Day one has a timestamp: Thursday, 7 April 2005, 15:13:13. The commit is `e83c51
 is `Initial revision of "git", the information manager from hell`, and the tree is eleven files,
 1,244 lines, total. [R1] Linux had just lost the proprietary tool that hosted its source, and its
 creator was writing the replacement personally, in an afternoon.
-<!-- CHECK: "Linux had just lost BitKeeper" — the April 2005 license withdrawal is public record, not in this repo. -->
+
 Read the eleven file names like an inventory: `read-cache.c`, `update-cache.c`, `commit-tree.c`,
 `write-tree.c`, `cat-file.c`. There is no `git` command in this tree. There is no `git commit`,
 no `git log`, no branches. There is a content store, a directory cache, and that README.

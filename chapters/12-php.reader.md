@@ -25,8 +25,8 @@ PHP site running this code and make the server execute whatever commands they li
 about the worst thing that can happen to a piece of software. And it had just been committed to
 the main development version of PHP, under the name of the person who invented it, disguised as
 routine maintenance. (The attacker even left a joke in the code — a reference to Zerodium, a
-firm known for buying software exploits.)
-<!-- CHECK: Zerodium was a firm that bought and resold software exploits; the reference is the attacker's joke, not a factual sale — public context. -->
+zero-day acquisition firm.)
+
 
 ## The tells
 

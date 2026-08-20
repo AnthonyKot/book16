@@ -38,7 +38,7 @@ language, spoken fluently, completing a set the author left unfinished.
 The sentence was written by the wrong hand. And the package it pulls down — `flatmap-stream`
 — is where the crime lived: inside it, dormant until the right build ran, sat code that
 harvested bitcoin wallets.
-<!-- CHECK: flatmap-stream@0.1.1's encrypted payload targeted the Copay wallet's build; discovered November 2018 — public incident record, not provable from this repo. -->
+
 None of that is in this repository, and never was:
 
 ```console
@@ -139,8 +139,9 @@ that `^3.3.4` will *not* follow into `4.x`, and the release tag `4.0.0` is hung 
 commit that removed the dependency but on the README commit two minutes later. [R6] Clone
 this repository today, check out `master`, read `package.json`: clean. No `flatmap-stream`,
 no trace. Meanwhile npm went on serving `3.3.6` to every unpinned installer for two more
-months, until a stranger opened the dependency in November and found the wallet stealer.
-<!-- CHECK: npm continued serving event-stream@3.3.6 until the November 2018 discovery — registry/incident record, external to this repo. -->
+months, until developers tracing a deprecation warning began opening the dependency in
+November and investigators exposed the wallet stealer.
+
 The repository's face was washed eight weeks before anyone knew the face was dirty.
 
 And it stays washed. The last commit in this git is the attacker removing a CI config line,
@@ -173,7 +174,7 @@ between, a developer named David Hyde had quietly become the project — 74 comm
 release tag — while `package.json` still said `"author": "Marak Squires"` and the push
 rights, as these four commits prove, still answered to the name on the door. [R11] By late
 2021 Marak had been saying publicly that he was done maintaining popular packages for free.
-<!-- CHECK: Marak's public statements (Nov 2020 GitHub post, Jan 2022) about no longer doing free open-source maintenance — external record; the protest framing is his, stated off-repo. -->
+
 What he did about it, git recorded at 23:19:03. The first commit adds an ASCII American flag
 and, at the bottom of the file every `require('colors')` executes:
 
@@ -228,9 +229,10 @@ $ git -C repos/colors branch -a --contains 074a0f8ed0
 $ git -C repos/colors tag --contains 074a0f8ed0   # (empty)
 ```
 
-[R15] The cleanup happened on npm, which removed the poisoned releases
-<!-- CHECK: npm removed the colors 1.4.44-liberty releases (served as 1.4.1–1.4.4) after 2022-01-08 — registry record, external to this repo. -->
-— releases whose version numbers, `1.4.1` through `1.4.4`, were never committed here at all;
+[R15] The registry cleanup left `1.4.0` as npm's latest version by January 11; the sabotaged
+releases were no longer available.
+
+Those registry releases, numbered `1.4.1` through `1.4.4`, were never committed here at all;
 git's only 2022 versions are the two slogans. [R17] But the repository was never touched.
 Nobody hit revert — the newest revert in this git is from 2018 [R15] — no tag moved, no
 force-push came. `event-stream` inverted, exactly: there, git is clean and the registry

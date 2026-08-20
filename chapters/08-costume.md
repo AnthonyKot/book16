@@ -83,8 +83,9 @@ and in the 1985-sourced tree he delivers, the same roster has gone to initials w
 annotation surviving the compression: `NP (Parenting)`. [R7] The names shrank; the courtesy
 didn't. `git blame` now assigns those old roster lines to Mark Zbikowski in 2024, and for
 once the attribution is nearly right: he made this copy, and the copy names him. His
-initials are also the first two bytes of every executable DOS ever shipped.
-<!-- CHECK: "MZ" as the magic bytes of the DOS/Windows .EXE header, named for Mark Zbikowski — public record, not provable from this repo. -->
+initials also survive as the `MZ` signature at the start of DOS MZ executables and, later,
+every Windows PE executable.
+
 The day before his commit, the curators changed the sign on the door — the README heading
 `# Contribute!`, which the world had answered with twenty translations of the plaque, became
 `# For historical reference`. [R8] Museums have git histories too.
@@ -196,8 +197,8 @@ typed at four minutes past midnight, and it is accurate.
 
 They published that. The empty Saturday, and then the whole secret adolescence behind it:
 24,610 commit messages still citing `rdar://` tickets into Apple's internal bug tracker,
-which you will never be able to open, starting ten days into the language [R18]
-<!-- CHECK: rdar:// = Radar, Apple's internal issue tracker, inaccessible to the public — common knowledge, not provable from this repo. -->
+which the public cannot open, starting ten days into the language [R18]
+
 — and the week in July 2011 when methods were declared with the keyword `meth`, killed five
 days later by a commit that explains itself: `This is cleaner both conceptually and in
 implementation, and eliminates drug references. :)`. [R19] A design meeting you can replay,

@@ -25,12 +25,12 @@ not a detail — it is the whole game. Every key you make, every session you sec
 unguessable as the numbers underneath it; predict the generator and you predict the keys, and
 the encryption is theatre. Dual EC was one such generator, standardized by the US government's
 standards body in the mid-2000s.
-<!-- CHECK: Dual EC DRBG standardized in NIST SP 800-90A (2006) — public record. -->
+
 It is also, today, the most notorious cryptographic algorithm of its era: in 2013, leaked
 documents made public a long-held suspicion among cryptographers that Dual EC carried a
 deliberate mathematical backdoor — a relationship, hidden in its constants, that would let
 whoever chose those constants predict its output. The standards body later withdrew it.
-<!-- CHECK: 2013 (Snowden-era) reporting linked Dual EC DRBG to a suspected NSA backdoor; NIST withdrew it from SP 800-90A in 2014 — public record, not provable from this repo. -->
+
 
 You do not have to trust any of that to feel the story in the git, because the man who added
 Dual EC told you how much he trusted the whole family it came in. Six months before Dual EC, he
@@ -94,7 +94,7 @@ sentence does not say who did not accept it, and neither will the rest of the re
 2.0.7* — the decision is pinned to a specific version of something. That something is the thing
 the commits keep naming: the `FIPS module`, a specially packaged build of OpenSSL's
 cryptography that has passed the US government's formal validation program.
-<!-- CHECK: FIPS 140-2 is the US government cryptographic-module validation program; "the OpenSSL FIPS Object Module" was the validated build — public record. -->
+
 A validated module is not ordinary code. The thing that was certified is one frozen artifact,
 and *any* change to it — including deleting a suspected backdoor — makes a version that is no
 longer the version that was approved. So the removal was itself a change that had to be
@@ -114,8 +114,9 @@ Sit for a second in what that Monday held. May 2014 is not a quiet month for the
 OpenSSL's cryptography alone. Heartbleed — the vulnerability that put the whole internet's
 padlocks in doubt — had been disclosed five weeks earlier, out of this same codebase, with
 Henson at the center of the response.
-<!-- CHECK: Heartbleed (CVE-2014-0160) was publicly disclosed 2014-04-07, in OpenSSL — public record. -->
-He wrote the Heartbleed fix in April. In May, in the same weeks, he is at his keyboard typing
+
+The Heartbleed fix commit bears his name, though its message credits Adam Langley and Bodo Möller
+with preparing the fix. In May, in the same weeks, he is at his keyboard typing
 `Revert "Remove Dual EC DRBG from FIPS module."` — restoring the era's most notorious algorithm
 to the validated build because a version of that build had not accepted its removal. Two
 security stories, opposite directions, one exhausted maintainer, the same month.

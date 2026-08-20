@@ -36,7 +36,7 @@ Within weeks, the group behind the deletion left — taking a complete copy of t
 its entire history, as open source allows — and founded a parallel project under a new name:
 **Libav**. For the next several years, two nearly identical projects developed side by side,
 each releasing its own version of the same ten-year inheritance.
-<!-- CHECK: Libav announced March 2011 by departing FFmpeg maintainers — public record; the split itself is off-repo. -->
+
 
 ## The two-in-the-morning merges
 
@@ -103,8 +103,8 @@ in the project. He takes his name off the door and leaves the office standing.
 
 **September 2022.** The empty office is finally taken down. And the person who files that
 change is Anton Khirnov — by then the third-most-prolific contributor in the project's
-entire history, and one of the developers who had left for Libav in 2011.
-<!-- CHECK: Anton Khirnov was among the Libav founders/maintainers — public record. --> The forks had
+entire history, and one of the developers who worked on Libav after the 2011 split.
+The forks had
 wound down years before; the people had, one by one, come back to the shared tree. His
 explanation is four words:
 

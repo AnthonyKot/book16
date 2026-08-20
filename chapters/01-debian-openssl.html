@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>01</b> · repo <b>debian/openssl</b> · CVE-2008-0166</p>
+<p class="kicker">chapter <b>02</b> · repo <b>debian/openssl</b> · CVE-2008-0166</p>
 <h1>The nine minutes</h1>
 <p>It is a Tuesday afternoon in May 2006, and somewhere a maintainer named Kurt Roeckx has a bug to close before he gets up from his desk. Not a glamorous bug. A tooling complaint — one of those tickets that sits in your queue with a number attached, someone else's warning on someone else's code, waiting for you to make the red text stop so you can move on to the next one.</p>
 <p>He opens the file. He makes a small change. Nine minutes later he commits it and, in every sense that mattered to him that afternoon, he is done.</p>
@@ -27,7 +27,8 @@
 <p>That note is where the trouble starts. Because a note that says "leave this one line alone" reads, to the next person who comes along on a Tuesday with a bug to close, a lot like <em>permission</em>.</p>
 <h2>The nine minutes</h2>
 <p>Here is Kurt's problem, in plain terms. A memory-checking tool — the software equivalent of a smoke detector for sloppy code — was shrieking about that deliberate scoop of floor-dust. Reading uninitialized memory is exactly the kind of thing the detector exists to catch, and it could not tell "reckless bug" from "reckless on purpose." So it screamed. The bug report was, essentially: <em>make the smoke detector stop.</em></p>
-<p>And here is the detail the angry retellings leave out: he asked first. Before touching anything, Kurt wrote to the software's own developers — the people who kept that note in the code — and asked whether it was all right to remove the lines the detector was screaming about. The answer amounted to: <em>if it helps with the debugging tool, fine by us.</em> The note in the code had read like permission. Now he had the real thing, in writing, from the owners of the pot. Hold on to that, because it is about to make the tragedy worse, not better.</p>
+<p>And here is the detail the angry retellings leave out: he asked first. Before touching anything, Kurt wrote to the software's own developers — the people who kept that note in the code — and asked whether it was all right to remove the lines the detector was screaming about. The answer amounted to: <em>if it helps with the debugging tool, fine by us.</em></p>
+<p>The note in the code had read like permission. Now he had the real thing, in writing, from the owners of the pot. Hold on to that, because it is about to make the tragedy worse, not better.</p>
 <p>The obvious way to make it stop is to not scoop the floor-dust. And in the file, there were two places that did the scooping, and they looked almost identical — same function call, same shape. So Kurt did the natural, tidy, symmetrical thing: he commented out both of them. Silence the detector in both spots. Close the ticket.</p>
 <p>Here is what that change did, in pseudocode, with the C stripped away:</p>
 <pre><span class="lang">pseudocode</span><code>before:   stir in ( the floor-dust )              &lt;- detector complains here

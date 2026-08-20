@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>07</b> · full dig · repo <b>vim/vim</b> · the last 32 hours</p>
+<p class="kicker">chapter <b>08</b> · full dig · repo <b>vim/vim</b> · the last 32 hours</p>
 <h1>The current maintainer</h1>
 <p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="07-vim.html">The current maintainer</a>.</em></p>
 <p>On the evening of Friday, 7 July 2023, at 18:57, the maintainer of Vim closed a gap in his editor's error numbering. The numbers E418 and E503 were unused, and he had found a use:</p>
@@ -32,7 +32,7 @@ Solution:   Add err_teapot().</code></pre>
   2649	Bram Moolenaar
 <span class="tok-prompt">$</span> git shortlog -sn HEAD --since=2011-01-01T00:00:00Z --until=2019-01-01T00:00:00Z
   6517	Bram Moolenaar</code></pre>
-<p>Not the top row. The <em>only</em> row. <a class="receipt-ref" href="#r6">R6</a> From the day this repository begins — a 2004 import of an editor already, by its own dedication, more than a decade into its life — to late 2019, every single commit is authored by one man. Nine thousand one hundred and sixty-six for nine thousand one hundred and sixty-six.</p>
+<p>Not the top row. The <em>only</em> row. <a class="receipt-ref" href="#r6">R6</a> From the day this repository begins — a 2004 import of an editor already, by its own dedication, more than a decade into its life — through the end of 2018, every single commit is authored by one man. Nine thousand one hundred and sixty-six for nine thousand one hundred and sixty-six.</p>
 <p>Which would look like a project with no community, except for where the community actually is. Vim's social contract was: you mail a patch; Bram reviews it, commits it as himself, and writes your name into the message body. The author field says Bram; the <em>paragraph</em> says everyone. Here is what fifteen years of contributing to Vim looked like from the contributor's side:</p>
 <pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --author='Bram Moolenaar' --grep='(Christian Brabandt)' --reverse --format='%h %aI %s' | head -1
 12682fda7 2010-03-10 updated for version 7.2.389

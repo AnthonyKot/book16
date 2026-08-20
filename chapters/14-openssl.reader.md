@@ -28,12 +28,12 @@ your random numbers, they can predict your keys, and your encryption protects no
 one component you most need to trust is the one making the randomness.
 
 Dual EC was a generator blessed by the US government's official standards body in the mid-2000s.
-<!-- CHECK: Dual EC DRBG standardized in NIST SP 800-90A (2006) — public record. -->
+
 It is also, now, the most infamous crypto algorithm of its generation. In 2013, leaked documents
 brought into the open a suspicion cryptographers had harbored for years: that Dual EC had been
 built with a hidden mathematical trapdoor — a secret relationship in its numbers that would let
 whoever designed it predict everything it produced. The standards body eventually withdrew it.
-<!-- CHECK: 2013 (Snowden-era) reporting linked Dual EC to a suspected NSA backdoor; NIST withdrew it in 2014 — public record. -->
+
 
 You do not have to take any of that on faith to feel this story, though, because Henson told you
 plainly how much he trusted the whole family of generators Dual EC arrived in. Six months before
@@ -61,7 +61,7 @@ accepted for 2.0.7 version of the module."*
 Here is what that means. That special, security-critical version of OpenSSL wasn't just code — it
 was a *certified* build, one that had passed the US government's formal testing program so that
 federal agencies were permitted to use it.
-<!-- CHECK: FIPS 140-2 is the US government's cryptographic-module validation program — public record. -->
+
 And a certified build is frozen. The exact thing that got approved is the only thing you're
 allowed to ship under that approval. So *any* change to it — even removing a suspected backdoor —
 creates something that is no longer the approved thing, and now needs its own approval. Henson's
@@ -80,8 +80,9 @@ It's worth pausing on what else was happening that month. May 2014 was not a cal
 person maintaining OpenSSL's crypto alone. Five weeks earlier, Heartbleed — the flaw that put
 every padlock on the internet in doubt — had erupted out of this same codebase, with Henson at
 the center of the emergency.
-<!-- CHECK: Heartbleed (CVE-2014-0160) was disclosed 2014-04-07, in OpenSSL — public record. -->
-He wrote the Heartbleed fix in April. In May, in the same stretch of days, he sat down and typed
+
+The Heartbleed fix commit bears his name, though its message credits Adam Langley and Bodo Möller
+with preparing the fix. In May, in the same stretch of days, he sat down and typed
 the note putting Dual EC back. Two security stories running in opposite directions, one very
 tired maintainer, the same weeks.
 
