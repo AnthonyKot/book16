@@ -11,8 +11,8 @@ filed by a machine.
 
 People have a ritual with famous projects: open the ledger, scroll to the very first page, and
 gaze at the moment of creation. This chapter is about what is actually on that first page. I went
-looking in six famous ledgers. What I found was two robots, three careful lies, one funeral — and
-a single true beginning.
+looking in seven famous ledgers. What I found was two robots, one honest cut, two cover-ups, one
+funeral, one accident nobody can ever undo — and, exactly once, a true beginning.
 
 ## The robot's title card
 
@@ -37,13 +37,14 @@ inside an entry dated August.
 
 When a document and its date disagree, the date is the artifact. And this ledger has passed
 through *three* different record-keeping systems on its way to the present — the raw entry still
-carries, in one line, the stamps of all three. There are 178 entries in Python's ledger titled
+carries the stamps of all three, like a passport with three countries' exit stamps on one page.
+There are 178 entries in Python's ledger titled
 exactly "Initial revision." They are not initial. They are not revisions. They are the label a
 machine glued onto paperwork it could not read.
 
 ~ The date on a famous first entry is a title card, typed by whoever did the last conversion.
 
-## The cut
+## The honest cut
 
 The other way a beginning goes missing is that a human decides it should — and the largest
 software project on earth has the decision in writing. The Linux kernel's first ledger entry, from
@@ -59,10 +60,12 @@ signs off: *"Let it rip!"* Seventeen thousand files arrive from nowhere, six poi
 lines with no past. It is the most honest first entry in this chapter — a cut that tells you it's
 a cut — and it drives off whistling.
 
-Most cuts don't announce themselves; you read for the seams. Redis, the database that caches half
-the internet, begins at exactly 10:30:00 on a Sunday — zero seconds, a clock too round for a
-human hand. Inside that "first" entry, the license already says *2006–2009* — three years older
-than the ledger — and the code declares itself *version 0.07*. Nothing is born at version 0.07.
+## Read for the seams
+
+Most cuts don't announce themselves. Redis, the database that caches half the internet, begins
+at exactly 10:30:00 on a Sunday — zero seconds, a clock too round for a human hand. Inside that
+"first" entry, the license already says *2006–2009* — three years older than the ledger — and
+the code declares itself *version 0.07*. Nothing is born at version 0.07.
 Version 0.07 is what walks in the door when a private project steps into the light with its
 adolescence edited out. Its author, it turns out, is a connoisseur of the form: sixteen years
 later, opening a new chapter of his life with the project, he minted himself *another* first
@@ -71,16 +74,16 @@ entry, titled "First internal release." Genesis, for him, is not an event. It is
 And Bitcoin — the most scrutinized codebase in finance — has a first entry with the perfect title,
 *"First commit"*, and everything else about it wrong. It is dated August 2009, eight months *after*
 the Bitcoin network started running. The name on it is not the founder's: it is `sirius-m`, the
-username of an early volunteer, filing an import of somebody else's finished work. The files he filed announce their real parentage on the inside: *BitCoin
-v0.1.5 ALPHA, Copyright (c) 2009 Satoshi Nakamoto*. A version number north of zero and a copyright
-line, wrapped in someone else's "First commit."
+username of an early volunteer, importing somebody else's finished work. The files announce their
+real parentage on the inside: *BitCoin v0.1.5 ALPHA, Copyright (c) 2009 Satoshi Nakamoto*. A
+version number north of zero and a copyright line, wrapped in someone else's "First commit."
 
 And here is my favorite wrinkle: it happened *twice*. The import ran two ways, and the ledger keeps
 twin first entries — same title, same contents down to the byte, two different fingerprints —
 sitting side by side like a document that was notarized twice by two clerks. The founder's actual
 January keystrokes, the moment the folklore wants? In neither. Not anywhere you can clone.
 
-Day one of the copy is wherever the person making the copy happened to be standing.
+~ Day one of the copy is wherever the person making the copy happened to be standing.
 
 ## The funeral
 
@@ -141,9 +144,10 @@ to earn it.
 
 ## What to carry away
 
-If you keep a project of your own, ask it the honest question sometime — your tools can list
-every "first page" in your history, and if a fork was ever absorbed or a scratch repo merged on
-some forgotten Tuesday, there are more than you think, and each is a story. And when you meet a
+If you keep a project of your own, ask it the honest question sometime — not what the first page
+says, but *how many* first pages there are; git will list them in one command. If a fork was ever
+absorbed or a scratch repo merged on some forgotten Tuesday, there are more than you think, and
+each is a story. And when you meet a
 famous first commit, read it the way an archivist reads a document: not "what does it say" but
 "*who made this copy, and what did they leave out?*" The seams are always the same — a clock too
 round, an author too robotic, a copyright older than the ledger, a version number that isn't
@@ -156,7 +160,8 @@ was: the first page someone chose to keep.
 
 ---
 
-*All six first commits — the empty tree, the September file in the August entry, "Let it rip!",
-the 10:30:00 Sunday, the crashed-SVN funeral, the two-line README welded into Linux — are real
-and public, reproducible with a git command each. The full technical dig is here:
+*All of these first commits — the empty tree, the September file in the August entry, "Let it
+rip!", the 10:30:00 Sunday, the twin notarized "First commit"s, the crashed-SVN funeral, the
+two-line README welded into Linux, and the one true "Initial revision" — are real and public,
+reproducible with a git command each. The full technical dig is here:
 [Initial revision — the full dig](06-genesis.full.html).*

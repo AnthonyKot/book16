@@ -14,8 +14,8 @@ that ran too slowly under a diagnostic tool at 00:25, some renamed files in anot
 00:54, so a warning could be read properly.
 
 Saturday passed without an entry. Then, at 2:38 on Sunday morning, he processed one item from his
-mailbox — a stranger's fix for the misspelling "arguements" in a test file. He applied it,
-credited the author, and ticked his patch counter.
+mailbox — a stranger's fix for the misspelling "arguements" in a test file. He applied it — the
+stranger's name on the work, his own on the filing — and ticked his patch counter.
 
 ~ That is the last thing Bram Moolenaar ever did to Vim.
 
@@ -48,13 +48,19 @@ working copy at his own keyboard and filed it under his own name, yours in brack
 One is a door anyone trusted can walk through. The other is a serving hatch, and the kitchen was
 his.
 
+In his last years the hatch's paperwork grew more honest. Patches he accepted began keeping their
+sender's name on them — that is how a stranger's name sits on the final typo fix — and by the
+end, more than two hundred names had entered the ledger that way, over fourteen hundred entries.
+But every one of those entries was still typed into the ledger by him. The names multiplied. The
+hands never did.
+
 ## The six-hour constitution
 
-Only once while he lived did anyone else's name appear on an entry. In November 2019, Christian —
-by then trusted enough to hold the keys — added nine lines of housekeeping through the modern
-route, the kind of one-click merge the rest of the software world uses daily. Six hours later,
-the same evening, Bram removed it. His removal note contains no explanation. Not a word. Nine
-lines, deleted in silence.
+Only once while he lived did anyone else's hands put an entry in the ledger. In November 2019,
+Christian — by then trusted enough to hold the keys — walked through the door instead of the
+hatch: nine lines of housekeeping, entered himself, through the kind of one-click merge the rest
+of the software world uses daily. Six hours later, the same evening, Bram removed it. His
+removal note contains no explanation. Not a word. Nine lines, deleted in silence.
 
 It wasn't anger; it was a boundary. Christian had the *permissions*. Permissions were not the
 constitution. And here is the fact that turns those six hours into law: that modern one-click
@@ -73,8 +79,8 @@ boilerplate. Keep it in mind.
 
 ## July 13th / August 8th
 
-Git — the record-keeper — stamps every entry with two dates, and almost nobody reads the second
-one. The first says when the work was *written*. The second says when it *entered the ledger*.
+Git — the record-keeper — stamps every entry with two dates, the way it carries two names, and
+almost nobody reads the second one. The first says when the work was *written*. The second says when it *entered the ledger*.
 They almost always match. Here is the entry that will teach you to check:
 
 The first numbered patch of the new era — a small cleanup of leftover test files, by Christian —
@@ -115,9 +121,10 @@ full-time on Vim.*
 
 After that, the record shows continuity, not ceremony. The patch counter did not reset. The
 numbered-patch format, the Problem/Solution note — his format — appears in every entry to this
-day. What changed is the one thing that never changed while he lived: the author column now holds
-a crowd, six names deep and growing, every one of them filing patches in the old form, into the
-old counter.
+day. What changed is the one thing that never changed while he lived: the hands. The ledger's new
+entries arrive by many hands now — a crowd of names, six deep and growing, filing patches in the
+old form, into the old counter — and the person who types most of them in is Christian, the man
+who was once reverted in six hours.
 
 ## What to carry away
 

@@ -24,8 +24,8 @@ echo "## R5 — 02:38 Sunday: the last commit Bram applies — a stranger's typo
 r 6 show -s --format='%H%nauthor    %an <%ae> %ai%ncommitter %cn %ci%n%s' 4c0089d696b8d1d5dc40568f25ea5738fa5bbffb
 g "git -C repos/vim show 4c0089d696 | grep -E '^[+-].*argu' | head -2" "git -C \"$repo\" show 4c0089d696b8d1d5dc40568f25ea5738fa5bbffb | grep -E '^[+-].*argu'" 2
 echo "## R6 — fifteen years, one name: decade shortlogs and the first non-Bram author"
-r 2 shortlog -sn HEAD --since=2004-01-01 --until=2011-01-01
-r 2 shortlog -sn HEAD --since=2011-01-01 --until=2019-01-01
+r 2 shortlog -sn HEAD --since=2004-01-01T00:00:00Z --until=2011-01-01T00:00:00Z
+r 2 shortlog -sn HEAD --since=2011-01-01T00:00:00Z --until=2019-01-01T00:00:00Z
 g "git -C repos/vim log --reverse --format='%H %ai %an %s' | grep -v 'Bram Moolenaar' | head -1" "git -C \"$repo\" log --reverse --format='%H %ai %an %s' | grep -v 'Bram Moolenaar' | head -1" 1
 echo "## R7 — the contributors live in the body: 404 Bram-authored commits credit Christian Brabandt"
 g "git -C repos/vim log --author='Bram Moolenaar' --grep='(Christian Brabandt)' --format='%h' | wc -l" "git -C \"$repo\" log --author='Bram Moolenaar' --grep='(Christian Brabandt)' --format='%h' | wc -l" 1
@@ -52,5 +52,12 @@ echo "## R15 — the 2019 revert's message body is empty"
 g "git -C repos/vim show -s --format='%an %aI%n%s%n---body---%n%b' d52986e7be" "git -C \"\$repo\" show -s --format='%an %aI%n%s%n---body---%n%b' d52986e7be366b6f8c9e18078648f1c5219c4335" 5
 echo "## R13 — the flowers line arrives in README.txt in 2010"
 g "git -C repos/vim log --reverse -S 'flowers' --format='%h %ai %s' -- README.txt | head -1" "git -C \"\$repo\" log --reverse -S 'flowers' --format='%h %ai %s' -- README.txt | head -1" 1
+echo "## R16 — while he lived: the author column opens (2021), the committer column does not"
+g "git -C repos/vim log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | wc -l" "git -C \"\$repo\" log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | wc -l" 1
+g "git -C repos/vim log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | sort -u | wc -l" "git -C \"\$repo\" log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | sort -u | wc -l" 1
+g "git -C repos/vim log --reverse --since=2020-01-01 --format='%h %aI %an %s' | grep -v 'Bram Moolenaar' | head -2" "git -C \"\$repo\" log --reverse --since=2020-01-01 --format='%h %aI %an %s' | grep -v 'Bram Moolenaar' | head -2" 2
+g "git -C repos/vim log --until=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn" "git -C \"\$repo\" log --until=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn" 3
+echo "## R17 — the hands after 3 August: the committer column since his death"
+g "git -C repos/vim log --since=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn | head -5" "git -C \"\$repo\" log --since=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn | head -5" 5
 } > "$out"
 echo "wrote $out ($(wc -l < "$out") lines)"

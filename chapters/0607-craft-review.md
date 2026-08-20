@@ -5,6 +5,28 @@ consistency between cuts. Not a receipts audit. Files read: both `.md` full digs
 `.reader.md` cuts, TEMPLATE.md, CONTEXT.md, plus the openings of ch. 05 and 08 for the
 consecutive-open rule.
 
+> **Applied 2026-08-20:** both ch. 07 gate items fixed in both cuts. Digging into G1 changed
+> the story: the author column had already opened while Bram lived (from April 2021 patches he
+> applied kept the sender's name — 1,420 commits, 223 names, new R16), while the committer
+> column stayed 17,981 Bram / 1 other human, ever; since his death the chief committing hands
+> (5,881) are Christian Brabandt's, the man reverted in six hours (new R17). The chapter now
+> scopes the constitution to the hands (serving-hatch beat ported to the full dig), the close
+> lands on R17, and the org-chart question is introduced inline. Side fix: R6's decade-window
+> shortlogs were timezone-sensitive (drifted 6,517→6,520 on regeneration); receipts-07.sh now
+> pins the windows with `T00:00:00Z`, and prose matches the receipts verbatim again.
+
+> **Applied 2026-08-20 (second pass):** ch. 06 gate items + readability pass for the casual
+> reader. Reader cut: tally recounted honestly ("seven famous ledgers … two robots, one honest
+> cut, two cover-ups, one funeral, one accident nobody can ever undo — and, exactly once, a
+> true beginning"); "The cut" split into "The honest cut" (Linux alone) and "Read for the
+> seams" (Redis + Bitcoin) so each section carries one idea; closing italics now list all the
+> exhibits including the twin roots and git; passport-stamps image added for the three-systems
+> seam; carry-away sharpened ("how many first pages… git will list them in one command");
+> Bitcoin paragraph tightened. Full dig: twin roots promoted out of the parenthesis (own
+> sentence, notarized-by-two-clerks image ported); "The information manager from hell" header
+> renamed "The control case" so the punchline lands at the reveal; "tree it lands" → "tree it
+> delivers"; the day-one-of-a-clone aphorism now carries its `~` beat marker in both cuts.
+
 ## Verdict
 
 Both chapters clear the book's bar. **Ch. 07 is the best chapter in the book so far** — the

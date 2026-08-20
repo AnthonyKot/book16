@@ -99,7 +99,7 @@ no past. It is the most honest first commit in this chapter: a cut that tells yo
 and then — *Let it rip!* — drives off.
 
 Most cuts don't announce themselves; you have to read for the seams. Redis's day one is
-timestamped 10:30:00, on a Sunday — zero seconds, the first seam. The tree it lands says the
+timestamped 10:30:00, on a Sunday — zero seconds, the first seam. The tree it delivers says the
 rest: the license reads `Copyright (c) 2006-2009` — three years older than the repository — and
 the source declares `REDIS_VERSION "0.07"`. [R11] Version 0.07 of a thing does not appear in a
 first commit; it appears when a private project is carried into the light, its adolescence edited
@@ -113,10 +113,11 @@ implements had been mining since January —
 and the hand that types `First commit` belongs to a handle, `sirius-m`, that matches nothing in
 the tree it imports: the readme inside announces `BitCoin v0.1.5 ALPHA / Copyright (c) 2009
 Satoshi Nakamoto`. [R9, R10] Eight months of the founder's shipped work arrive as somebody
-else's day one (twice, in fact — the import ran two ways, leaving twin roots with identical
-trees [R9]). Satoshi's January keystrokes are in neither.
+else's day one — and they arrive twice. The import ran two ways, and the history keeps twin
+roots: same subject, identical trees, two different hashes, sitting side by side like a document
+notarized by two clerks. [R9] Satoshi's January keystrokes are in neither.
 
-Day one of a clone is wherever the importer happened to be standing.
+~ Day one of a clone is wherever the importer happened to be standing.
 
 ## The funeral
 
@@ -180,7 +181,7 @@ cosmology when you run it — it feels like Tuesday — but `--max-parents=0` do
 now the kernel's book of Genesis has four first pages, one of which is a note a man left for
 himself.
 
-## The information manager from hell
+## The control case
 
 There is one repository left to ask, and it is the one none of these tricks could reach: the tool
 itself could not have a history before it existed. Git's repository begins with git's own birth —

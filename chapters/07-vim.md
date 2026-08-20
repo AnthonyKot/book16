@@ -23,7 +23,8 @@ crypt test so a warning can be read properly. [R4]
 
 Saturday passes without a commit. Then, at 02:38 on Sunday morning, he processes one item from
 the queue — someone else's patch, a stranger fixing the spelling of "arguements" in a syntax test
-file. He applies it, credits the author, ticks the version counter, patch 9.0.1677. [R5]
+file. He applies it — the stranger's name on the author line, his own on the committer line —
+and ticks the version counter, patch 9.0.1677. [R5]
 
 ~ That is the last thing Bram Moolenaar ever did to Vim.
 
@@ -31,12 +32,13 @@ The repository gives the date of his death as 3 August 2023.
 
 ## One name
 
-Run the org-chart question on Vim in decade windows and the answer does not need a table:
+Run the org-chart question — who actually wrote this thing? — on Vim in decade windows and the
+answer does not need a table:
 
 ```console
-$ git shortlog -sn HEAD --since=2004-01-01 --until=2011-01-01
+$ git shortlog -sn HEAD --since=2004-01-01T00:00:00Z --until=2011-01-01T00:00:00Z
   2649	Bram Moolenaar
-$ git shortlog -sn HEAD --since=2011-01-01 --until=2019-01-01
+$ git shortlog -sn HEAD --since=2011-01-01T00:00:00Z --until=2019-01-01T00:00:00Z
   6517	Bram Moolenaar
 ```
 
@@ -70,14 +72,26 @@ across thirteen years. The git author field, read naively, says Vim's bus factor
 bodies say there was a crowd — but a crowd on the other side of a mailbox, with one man deciding,
 one man typing, one man ticking the counter in `src/version.c`.
 
+Hold the two mechanics side by side. A merged pull request is a door: the contributor's finished
+commit walks into the tree under the contributor's own name, placed there by the contributor's
+own hands. Bram's mailbox was a serving hatch: the patch arrived as text, and whatever happened
+next happened at his keyboard. In his last years the hatch's paperwork grew more generous — from
+April 2021 the patches he applied kept their sender's name on the author line, which is how a
+stranger named THARAK HEGDE can be the author of a commit only Bram ever touched — and by the
+end, 223 names had entered the author column that way, 1,420 commits. [R16] So the author field
+is the wrong place to look for the constitution. Look at the other column. Committer, whole
+history, while he lived: Bram Moolenaar, 17,981. GitHub's robot signature, left by web-button
+actions, four. Another human being: once. [R16]
+
 ## The constitution
 
-The one-name era cracks exactly once while he is alive. On 27 November 2019, at 15:45, the first
-non-Bram author in the history of the repository lands a commit — Christian Brabandt, adding nine
-lines of CI configuration, merged through a GitHub pull request. At 21:57 the same evening, Bram
-reverts it. [R8] Six hours. The revert's message body is empty — nine lines of YAML removed
-without one word of explanation. [R15] Christian had the *permissions* to merge a PR. Permissions
-were not the constitution.
+That once is an evening in November. On 27 November 2019, at 15:45, Christian Brabandt commits
+nine lines of CI configuration with his own hands and merges them through a GitHub pull request —
+the only commit of Bram's lifetime whose committer field names another human, and also, as it
+happens, the first in the whole history with anyone else's name in the author field. [R6, R8]
+At 21:57 the same evening, Bram reverts it. [R8] Six hours. The revert's message body is empty —
+nine lines of YAML removed without one word of explanation. [R15] Christian had the *permissions*
+to merge a PR. Permissions were not the constitution.
 
 Ask for every `Merge pull request` in the entire history, oldest first:
 
@@ -108,7 +122,8 @@ The license names one human being, and promises: *if this changes it will be ann
 
 ## 13 July / 8 August
 
-Git keeps two clocks on every commit, and most of us only ever read one. The author date is when
+Git keeps two clocks on every commit, the way it keeps two names, and most of us only ever read
+one of each. The author date is when
 the work was made; the committer date is when it entered the tree. On almost every commit you
 will ever inspect they agree, or differ by trivia — a rebase, a cherry-pick — and so the eye
 learns to skip the second line. Here is the commit that will teach you to stop skipping it.
@@ -178,8 +193,11 @@ while still working full-time on Vim.
 After that, the record shows continuity, not ceremony. The patch counter did not reset. The
 subject grammar — `patch 9.0.NNNN:` — did not change. The Problem/Solution form is in every
 commit, Christian's included; the new era adds `Signed-off-by:` lines and PR numbers. Since
-3 August the author column holds what it never held in his lifetime — a crowd, six names deep in
-the shortlog — and every one of them files patches in the same form, into the same counter. [R12]
+3 August the author column holds a crowd — six names deep in the shortlog — every one of them
+filing patches in the same form, into the same counter. [R12] And the committer column, which
+held one man's name 17,981 times and another human's exactly once, now belongs mostly to the man
+who was reverted in six hours: Christian Brabandt, 5,881 commits and counting — with the door
+itself, GitHub's merge-button signature, standing open beside the hatch, 434 times. [R16, R17]
 
 ## At home
 
@@ -214,5 +232,7 @@ appropriate places.* It changed. It was announced.
 - **R13** `git log --reverse -S 'flowers' -- README.txt | head -1` — the flowers line enters README.txt 2010-08-07.
 - **R14** `git log --since=2023-07-08 --until=2023-08-09 --reverse` — four commits in thirty-two days: the typo fix, then twenty-nine days of nothing, then 9.0.1678, the merge, and 9.0.1679.
 - **R15** `git show -s --format='%b' d52986e7be` — the revert's message body: empty.
+- **R16** `git log --until=2023-08-03 --format='%an'` (non-Bram: count + unique) + `--format='%cn' | sort | uniq -c` — while he lived: 1,420 non-Bram-authored commits across 223 names, the first `bb01a1ef3` (Yegappan Lakshmanan, 2021-04-26); committer column 17,981 Bram / 4 GitHub / 1 Christian Brabandt.
+- **R17** `git log --since=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn` — the hands after: Christian Brabandt 5,881, GitHub 434, then trivia.
 
 *Full transcripts: `chapters/07-vim.receipts.md` (regenerate with `scripts/receipts-07.sh`).*

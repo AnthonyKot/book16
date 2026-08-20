@@ -68,13 +68,13 @@ $ git -C repos/vim show 4c0089d696 | grep -E '^[+-].*argu' | head -2
 
 ## R6 — fifteen years, one name: decade shortlogs and the first non-Bram author
 ```
-$ git -C repos/vim shortlog -sn HEAD --since=2004-01-01 --until=2011-01-01
+$ git -C repos/vim shortlog -sn HEAD --since=2004-01-01T00:00:00Z --until=2011-01-01T00:00:00Z
   2649	Bram Moolenaar
 ```
 
 ```
-$ git -C repos/vim shortlog -sn HEAD --since=2011-01-01 --until=2019-01-01
-  6522	Bram Moolenaar
+$ git -C repos/vim shortlog -sn HEAD --since=2011-01-01T00:00:00Z --until=2019-01-01T00:00:00Z
+  6517	Bram Moolenaar
 ```
 
 ```
@@ -207,5 +207,39 @@ Revert "Cirrus CI: add a simple CI using BSD"
 ```
 $ git -C repos/vim log --reverse -S 'flowers' --format='%h %ai %s' -- README.txt | head -1
 33aea1875 2010-08-07 13:19:27 +0200 Update README files.  Remove references to extra and lang archives.
+```
+
+## R16 — while he lived: the author column opens (2021), the committer column does not
+```
+$ git -C repos/vim log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | wc -l
+1420
+```
+
+```
+$ git -C repos/vim log --until=2023-08-03 --format='%an' | grep -v '^Bram Moolenaar$' | sort -u | wc -l
+223
+```
+
+```
+$ git -C repos/vim log --reverse --since=2020-01-01 --format='%h %aI %an %s' | grep -v 'Bram Moolenaar' | head -2
+bb01a1ef3 2021-04-26T21:17:52+02:00 Yegappan Lakshmanan patch 8.2.2813: cannot grep using fuzzy matching
+2bf6034e5 2021-05-02T20:16:24+02:00 Dominique Pelle patch 8.2.2825: code in checkreadonly() not fully tested
+```
+
+```
+$ git -C repos/vim log --until=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn
+  17981 Bram Moolenaar
+      4 GitHub
+      1 Christian Brabandt
+```
+
+## R17 — the hands after 3 August: the committer column since his death
+```
+$ git -C repos/vim log --since=2023-08-03 --format='%cn' | sort | uniq -c | sort -rn | head -5
+   5881 Christian Brabandt
+    434 GitHub
+      4 h-east
+      2 dkearns
+      1 K.Takata
 ```
 
