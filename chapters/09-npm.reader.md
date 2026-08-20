@@ -96,9 +96,9 @@ On 7 January 2022, at 23:19, he came back to his own package. Four commits in th
 half minutes. The first adds an ASCII-art American flag and, at the bottom of the file every
 user's program runs first, an infinite loop — printing garbled, corrupted text to the screen,
 forever. He didn't even write anything new: the corrupted-text effect was a joke he'd shipped
-in 2011, a party trick called `.zalgo` ("Snuck in demonic entity," the 2011 note brags; "//
-please no," says the comment above the code). Eleven years later he reached for his own joke
-and put it in a loop with no exit.
+in 2011, a party trick called `.zalgo` ("Snuck in demonic entity," the 2011 note brags;
+"// don't summon zalgo," says the comment above its getter). Eleven years later he reached
+for his own joke and put it in a loop with no exit.
 
 Except — look closely at the loop, as first committed. There's a stray semicolon in it.
 It's a syntax error. The sabotage, as shipped, would have crashed instantly and looped never.

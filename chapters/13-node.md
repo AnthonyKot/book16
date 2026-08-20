@@ -79,12 +79,13 @@ $ git -C repos/node show --stat --format= 0485cc41d5 | tail -1
 empty commit body is not negligence; at this point Node is a handful of people and Ryan is all
 of them who matter, and a two-word subject on a deletion is what total authority over a
 codebase looks like. What git cannot tell me is what he was thinking — whether he meant *never
-again* or *not like this, not yet*. It can only tell me what he did, and what he did set the
-next decade. Node spent five years as the callback platform, grew error-first as a culture,
-and eventually got Promises back through the JavaScript language itself and `async`/`await` on
-top. The founding "choice" everyone cites was made on a Saturday night, against a blocking
-`.wait()`, and then hardened, by nothing but the passage of time and the difficulty of finding
-it, into a story that says the choice was there from the start.
+again* or *not like this, not yet*. It can only tell me what he did. Node then spent roughly
+five years without built-in Promises, becoming the callback platform and growing error-first
+as a culture. Promises returned through the JavaScript language itself; `async`/`await` followed,
+but callback culture shaped the rest of the decade. The founding "choice" everyone cites was
+made on a Saturday night, against a blocking `.wait()`, and then hardened, by nothing but the
+passage of time and the difficulty of finding it, into a story that says the choice was there
+from the start.
 
 ~ In a tree, "never existed" and "was deleted years ago" look exactly the same.
 

@@ -151,13 +151,14 @@ $ git -C repos/php merge-base --is-ancestor 2b0f239b21 HEAD && echo '2b0f239b: A
 ~ A revert removes the change from the tree. It does not remove the change from the graph.
 
 A revert is not a deletion; it is a new commit that undoes an old one, and both remain
-reachable forever. The backdoor's code is gone from the working tree — *not active*, it does
-nothing — but the commit that added it is an ancestor of current HEAD, which means every clone
-of PHP made since March 2021, every release of PHP 8.1 and later on every server it runs on,
-carries the zerodium commit in its ancestry. PHP could have erased it by rewriting history, but
-rewriting changes every hash downstream, breaks every checkout in the world, and would itself
-be a kind of forgery — pretending the tree was never touched. They let it stand. The receipt
-for this chapter is in your own `vendor` directory right now.
+reachable in that history. The backdoor's code is gone from the working tree — *not active*, it does
+nothing — but the commit that added it is an ancestor of current HEAD, so a normal full clone
+of the current PHP repository carries the zerodium commit in its history. A release tarball or
+an installed PHP binary does not: those contain a source snapshot or compiled files, not the
+repository's Git objects. PHP could have removed the commit from future clones by rewriting
+history, but that would replace every descendant hash and force existing clones to reconcile
+an incompatible history. It would also pretend the tree was never touched. They let it stand.
+If you have a full clone of `php-src`, the receipt for this chapter is in its object database.
 
 Two habits, then, before the last object. When identity actually matters — a
 supply-chain question you will get asked — treat the `Author` field as a claim and check it

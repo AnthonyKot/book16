@@ -50,9 +50,10 @@ existed. From where Ryan sat that Saturday, that wasn't a promising foundation t
 future on. It was a false start with a dangerous tool welded into it. So he cut it.
 
 What the history cannot tell us is what he meant by it — *never again*, or *not like this, not
-yet*. It only records what he did. And what he did shaped the next ten years: Node became the
-callback platform, grew its whole callback-taming culture, and only got Promises back years
-later when the JavaScript language itself grew them. The famous "founding choice" was made on
+yet*. It only records what he did. Node then spent roughly five years without built-in
+Promises, becoming the callback platform and growing its whole callback-taming culture.
+Promises returned through the JavaScript language itself; `async`/`await` followed, but callback
+culture shaped the rest of the decade. The famous "founding choice" was made on
 a Saturday night, against one blocking method, and then hardened — through nothing but the
 passage of time and the difficulty of ever finding the deletion — into a legend that says the
 choice was there from the very beginning.

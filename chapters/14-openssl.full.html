@@ -17,7 +17,7 @@
 <p class="kicker">chapter <b>14</b> · full dig · repo <b>openssl/openssl</b> · the fix a certificate forbade</p>
 <h1>Remove Dual EC DRBG again...</h1>
 <p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="14-openssl.html">Remove Dual EC DRBG again...</a>.</em></p>
-<p>One algorithm, one maintainer, six commits, in his own subject lines:</p>
+<p>One algorithm, one maintainer, six commits — five distinct subject lines — in his own words:</p>
 <pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/openssl log --all --reverse --grep='Dual EC' --format='%h %ai %s'
 7fdcb45745 2011-09-09 17:16:43 +0000 Add support for Dual EC DRBG from SP800-90...
 a4870de5aa 2013-09-16 05:23:44 +0100 Disable Dual EC DRBG.
@@ -25,7 +25,7 @@ b49df9502e 2013-09-16 05:23:44 +0100 Disable Dual EC DRBG.
 200f249b8c 2013-12-09 21:54:50 +0000 Remove Dual EC DRBG from FIPS module.
 3b43568d5b 2014-05-12 18:35:30 +0100 Revert "Remove Dual EC DRBG from FIPS module."
 7fb7844f3b 2014-07-11 19:12:21 +0100 Remove Dual EC DRBG again...</code></pre>
-<p><a class="receipt-ref" href="#r7">R7</a> Add. Disable. Remove. <em>Revert the removal.</em> Remove again — the last one with an ellipsis, the tired trailing dots of a chore you have done before. Everything you need is on that one screen; the rest of this chapter is learning to read it. The name on every line is Dr. Stephen Henson, who for a stretch of years was very nearly the entire cryptographic core of OpenSSL by himself.</p>
+<p><a class="receipt-ref" href="#r7">R7</a> Add. Disable — twice, in twin commits. Remove. <em>Revert the removal.</em> Remove again — the last one with an ellipsis, the tired trailing dots of a chore you have done before. Everything you need is on that one screen; the rest of this chapter is learning to read it. The name on every line is Dr. Stephen Henson, who for a stretch of years was very nearly the entire cryptographic core of OpenSSL by himself.</p>
 <h2>What Dual EC was</h2>
 <p>Dual EC DRBG is a random number generator, and for cryptography a random number generator is not a detail — it is the whole game. Every key you make, every session you secure, is only as unguessable as the numbers underneath it; predict the generator and you predict the keys, and the encryption is theatre. Dual EC was one such generator, standardized by the US government's standards body in the mid-2000s. It is also, today, the most notorious cryptographic algorithm of its era: in 2013, leaked documents made public a long-held suspicion among cryptographers that Dual EC carried a deliberate mathematical backdoor — a relationship, hidden in its constants, that would let whoever chose those constants predict its output. The standards body later withdrew it.</p>
 <p>You do not have to trust any of that to feel the story in the git, because the man who added Dual EC told you how much he trusted the whole family it came in. Six months before Dual EC, he laid the groundwork with a subject line that is one of the most honest I have read:</p>

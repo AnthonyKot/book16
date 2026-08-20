@@ -3,7 +3,7 @@
 *This is the full dig — every command, every receipt. The plain-English telling of the same story
 is here: [Remove Dual EC DRBG again...](14-openssl.html).*
 
-One algorithm, one maintainer, six commits, in his own subject lines:
+One algorithm, one maintainer, six commits — five distinct subject lines — in his own words:
 
 ```console
 $ git -C repos/openssl log --all --reverse --grep='Dual EC' --format='%h %ai %s'
@@ -15,7 +15,7 @@ b49df9502e 2013-09-16 05:23:44 +0100 Disable Dual EC DRBG.
 7fb7844f3b 2014-07-11 19:12:21 +0100 Remove Dual EC DRBG again...
 ```
 
-[R7] Add. Disable. Remove. *Revert the removal.* Remove again — the last one with an ellipsis,
+[R7] Add. Disable — twice, in twin commits. Remove. *Revert the removal.* Remove again — the last one with an ellipsis,
 the tired trailing dots of a chore you have done before. Everything you need is on that one
 screen; the rest of this chapter is learning to read it. The name on every line is
 Dr. Stephen Henson, who for a stretch of years was very nearly the entire cryptographic core of

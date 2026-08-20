@@ -111,7 +111,7 @@ the sabotage versions are untagged, in a repository whose last tagged release wa
 ledgers, and the attack lives entirely in the second one. Every `package.json` in the world
 that said `"event-stream": "^3.3.4"` — the caret is npm's default, and it means *any 3.x* —
 resolved to `3.3.6` on its next install and pulled `flatmap-stream` down behind it. The
-blast radius is not the twenty-six lines of the diff. It is the character `^`.
+blast radius is not the three lines that wire in the dependency. It is the character `^`.
 
 ## The wash
 
@@ -195,8 +195,8 @@ $ git -C repos/colors show 074a0f8ed0 -- lib/index.js | grep -E '^\+' | head -8
 [R13] An infinite loop, printing corrupted text to the console of every application that
 loads the library. He didn't write a weapon; he reached for one he'd already shipped.
 `.zalgo` had been in the box since 2011, a party trick from a commit that bragged `Snuck in
-demonic entity`, with `// please no` in the comment above it [R10] — eleven years of being
-the library's joke, now called in a loop with no exit.
+demonic entity`, with `// don't summon zalgo` above its getter [R10] — eleven years of
+being the library's joke, now called in a loop with no exit.
 
 Look at the loop header, though, before reading on. There is a semicolon inside the
 parentheses — `i++;` — and JavaScript will not parse it. As first committed, forty-one

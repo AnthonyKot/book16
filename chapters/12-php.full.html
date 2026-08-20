@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fix typo — Blame</title>
-<meta name="description" content="The complete dig: the eleven-line payload, the timezone and Signed-off-by tells, the revert war, and why the backdoor is still an ancestor of every PHP 8.1+ checkout.">
+<meta name="description" content="The complete dig: the eleven-line payload, the timezone and Signed-off-by tells, the revert war, and why a normal full clone still carries the reverted backdoor commit in its history.">
 <link rel="stylesheet" href="../static/style.css">
 <script src="../static/theme.js"></script>
 </head>
@@ -85,7 +85,7 @@ c730aa26: ANCESTOR of HEAD
 2b0f239b: ANCESTOR of HEAD</code></pre>
 <p><a class="receipt-ref" href="#r8">R8</a> Both of them, still there.</p>
 <p class="beat">A revert removes the change from the tree. It does not remove the change from the graph.</p>
-<p>A revert is not a deletion; it is a new commit that undoes an old one, and both remain reachable forever. The backdoor's code is gone from the working tree — <em>not active</em>, it does nothing — but the commit that added it is an ancestor of current HEAD, which means every clone of PHP made since March 2021, every release of PHP 8.1 and later on every server it runs on, carries the zerodium commit in its ancestry. PHP could have erased it by rewriting history, but rewriting changes every hash downstream, breaks every checkout in the world, and would itself be a kind of forgery — pretending the tree was never touched. They let it stand. The receipt for this chapter is in your own <code>vendor</code> directory right now.</p>
+<p>A revert is not a deletion; it is a new commit that undoes an old one, and both remain reachable in that history. The backdoor's code is gone from the working tree — <em>not active</em>, it does nothing — but the commit that added it is an ancestor of current HEAD, so a normal full clone of the current PHP repository carries the zerodium commit in its history. A release tarball or an installed PHP binary does not: those contain a source snapshot or compiled files, not the repository's Git objects. PHP could have removed the commit from future clones by rewriting history, but that would replace every descendant hash and force existing clones to reconcile an incompatible history. It would also pretend the tree was never touched. They let it stand. If you have a full clone of <code>php-src</code>, the receipt for this chapter is in its object database.</p>
 <p>Two habits, then, before the last object. When identity actually matters — a supply-chain question you will get asked — treat the <code>Author</code> field as a claim and check it against the person's own record: <code>git log --format='%aI %ae'</code> for a time zone that matches their every other commit, <code>git log --author=&lt;name&gt; --grep='Signed-off-by'</code> for a habit that appears once. And when you read that a repository was compromised and cleaned, run <code>merge-base --is-ancestor</code> on the bad commit yourself; "cleaned" almost always means reverted, and reverted means still in there.</p>
 <h2>The locks</h2>
 <p>The reverts removed the payload. But the backdoor was possible because of <em>where</em> PHP lived: its canonical source was the project's own server, <code>git.php.net</code>, with GitHub only a mirror, and that server had password accounts that could be — and were — taken over. The day after:</p>

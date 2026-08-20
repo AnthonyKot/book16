@@ -21,8 +21,8 @@ Picture that afternoon. July 1992, a deadline to ship version 4 of the academic 
 programmer who needs the planner to produce *some* answer, no time to work out the correct one.
 So he types `0.3333333`, shouts into the comment that this is a hack and somebody should really
 do it properly, and ships. This is the story of what happened to that hack over the next
-thirty-three years — three decisions, decades apart — and the surprising truth that the right
-move, every time, was to leave it alone.
+thirty-three years — three decisions across ten years, all about a hack already decades old —
+and the surprising truth that the right move, every time, was to leave it alone.
 
 ## 2015: the fix he doesn't make
 

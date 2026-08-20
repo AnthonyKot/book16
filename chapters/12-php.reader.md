@@ -77,19 +77,19 @@ Here's the part that surprises even people who work with git every day. The boob
 reversed twice. It never made it into a real release. The compromised server was shut down soon
 after. Five years have passed. Surely, then, the malicious commits are long gone from PHP?
 
-They are not. They are still there — still part of the official history of every copy of PHP
-made since 2021, still riding along inside the versions running on servers around the world
-today.
+They are not. They are still part of the official repository history, reachable from current
+PHP branches and therefore downloaded by a normal full clone today. They are not inside PHP
+binaries or installed web servers; those do not carry the repository's Git history.
 
 The reason is a fact about git that trips up nearly everyone: reversing a change does not delete
 it. "Undoing" a commit means *adding a new commit* that cancels it out. Both the harmful change
-and its cancellation stay in the permanent record, side by side, forever. The booby-trap code
+and its cancellation remain in the recorded ancestry, side by side. The booby-trap code
 is inactive — it was cancelled, it does nothing — but the moment it was added is stitched into
-the ancestry of the language for good. PHP could have surgically erased it, but doing so would
-have scrambled the fingerprints of everything that came after, broken every copy in the world,
-and amounted to pretending the attack never happened. They chose to let the scar show. It's the
-more honest choice, and it means a receipt for this story is sitting inside millions of servers
-right now.
+the ancestry of the current repository. PHP could have removed it from future clones by
+rewriting history, but doing so would have changed the fingerprints of everything that came
+after, forced existing clones to reconcile an incompatible history, and amounted to pretending
+the attack never happened. They chose to let the scar show. Anyone can still make a full clone
+of `php-src` and hold the receipt from that Sunday.
 
 ## The locks
 

@@ -5,8 +5,9 @@ payment — was protected, at some point over the last twenty-five years, by a s
 free software called OpenSSL. And for much of that time, the cryptographic heart of OpenSSL was
 maintained, to a startling degree, by one man: Dr. Stephen Henson.
 
-This is the story of six changes he made to one piece of that software, told entirely through
-the little one-line notes programmers attach to their work. Lined up in order, those notes read:
+This is the story of six commits he made to one piece of that software, told entirely through
+the little one-line notes programmers attach to their work. Five distinct notes appear; one of
+them, *Disable Dual EC DRBG*, was committed twice. Lined up as decisions, they read:
 
 > Add support for Dual EC DRBG.
 > Disable Dual EC DRBG.
@@ -91,7 +92,7 @@ once.
 
 ## The hand behind all of it
 
-Every one of those six notes carries the same signature. Henson's first contribution to OpenSSL
+Every one of those six commits carries the same signature. Henson's first contribution to OpenSSL
 was on New Year's Day, 1999. Across the next decade and a half he wrote something like a *third*
 of the entire codebase — Heartbleed in and Heartbleed out, Dual EC in and Dual EC out, all of it.
 
