@@ -20,6 +20,7 @@ g "git -C repos/tensor2tensor show 3d9c62f2ac:tensor2tensor/models/transformer.p
 g "git -C repos/tensor2tensor show 3d9c62f2ac:AUTHORS | tail -2" "git -C repos/tensor2tensor show 3d9c62f2aca9492db5c22676416974005b9dcbae:AUTHORS | tail -2" 3
 echo "## R3 — who commits, and who never does"
 r tensor2tensor 8 shortlog -sn HEAD
+g "git -C repos/tensor2tensor shortlog -sn HEAD | grep -E 'Vaswani|Parmar|Gomez'" "git -C repos/tensor2tensor shortlog -sn HEAD | grep -E 'Vaswani|Parmar|Gomez'" 4
 g "git -C repos/tensor2tensor log --author='Uszkoreit' --oneline | wc -l" "git -C repos/tensor2tensor log --author='Uszkoreit' --oneline | wc -l" 1
 g "git -C repos/tensor2tensor log --author='Polosukhin' --oneline | wc -l" "git -C repos/tensor2tensor log --author='Polosukhin' --oneline | wc -l" 1
 g "git -C repos/tensor2tensor log --author='Llion' --oneline | wc -l" "git -C repos/tensor2tensor log --author='Llion' --oneline | wc -l" 1

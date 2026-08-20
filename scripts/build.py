@@ -156,6 +156,10 @@ CHAPTERS = [
      "Two npm sabotages, opposite mechanics: a stranger who inherited the keys, an owner who never gave them up — and the gap between repository and registry that hid both. Told plainly.", "09-npm"),
     ("09-npm", 'chapter <b>09</b> · full dig · repos <b>event-stream</b> + <b>colors</b> · the two ledgers',
      "The complete dig: the two-line payload in the house style, the helpful week, the four-minute face-wash, and the sabotage still sitting on master.", "09-npm.full"),
+    ("10-t2t.reader", 'chapter <b>10</b> · repo <b>tensorflow/tensor2tensor</b> · the Transformer\'s repository',
+     "The Transformer's code went public three days after the paper — and then trained itself to a perfect score by peeking at the answers. Told plainly.", "10-t2t"),
+    ("10-t2t", 'chapter <b>10</b> · full dig · repo <b>tensorflow/tensor2tensor</b> · the Transformer\'s repository',
+     "The complete dig: the 155-second delivery, the look_right default, Vaswani's zero-loss revert, and the two opposite compatibility rulings.", "10-t2t.full"),
 ]
 
 def receipts_regen_note(stem):

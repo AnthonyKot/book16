@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giving 0 losses — Blame</title>
+<meta name="description" content="The complete dig: the 155-second delivery, the look_right default, Vaswani's zero-loss revert, and the two opposite compatibility rulings.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>10</b> · full dig · repo <b>tensorflow/tensor2tensor</b> · the Transformer's repository</p>
+<h1>Giving 0 losses</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="10-t2t.html">Giving 0 losses</a>.</em></p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor log --reverse --format='%h %ai %an %s' | head -2
+cedf0e2d 2017-06-15 11:24:53 -0700 Ryan Sepassi first commit
+3d9c62f2 2017-06-15 11:27:28 -0700 Ryan Sepassi initial push</code></pre>
+<p>The first commit is one line, a README that says <code># tensor2tensor</code>. The second commit, 155 seconds later, is 74 files and 15,315 lines — and one of those files is <code>models/transformer.py</code>, whole, working, already able to train English–German translation. <a class="receipt-ref" href="#r1">R1</a> Its docstring does not say "Attention Is All You Need." It says:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show 3d9c62f2ac:tensor2tensor/models/transformer.py | sed -n '15,18p'
+"""transformer (attention).
+
+encoder: [Self-Attention, Feed-forward] x n
+decoder: [Self-Attention, Source-Target-Attention, Feed-forward] x n</code></pre>
+<p><a class="receipt-ref" href="#r2">R2</a> Two lines of architecture that would eat the next decade, described with the enthusiasm of a parts list. The paper had gone to arXiv three days earlier. This repository is where its code came out to live, and the birth is not a birth — it is a delivery. The name on both commits is Ryan Sepassi, the engineer with permission to push, and the <code>AUTHORS</code> file in the push names exactly one author: <code>Google Inc.</code> <a class="receipt-ref" href="#r2">R2</a> I went looking for the paper's people. Some arrive in the following weeks and stay for years; three of the eight never touch this history at all:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor log --author='Uszkoreit' --oneline | wc -l
+0</code></pre>
+<p><a class="receipt-ref" href="#r3">R3</a> Same for Polosukhin, same for Llion Jones. The architecture arrived in public git as a fait accompli: a company named as author, an engineer doing the push, the inventors appearing later, if at all. The history I wanted had happened somewhere else, in a repository I could never clone.</p>
+<h2>The projection</h2>
+<p>This git says so on almost every commit, if you read the trailers: <code>PiperOrigin-RevId: 159726434</code>. Piper is Google's internal monorepo; every interesting commit here is an export from it, stamped with the internal revision it mirrors. What you are reading is a projection of a workshop onto a public wall — and in week one, the projector showed too much:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show 01787ca8a5 | grep -E '^[+-]' | grep -iE 'blaze|brain' | head -2
+-./blaze-bin/third_party/py/tensor2tensor/data_generators/replace_oov \
+-      (see learning/brain/google/python/ops/candidate_sampling.py)</code></pre>
+<p><a class="receipt-ref" href="#r4">R4</a> For six days the public tree carried Google's internal build paths and a pointer into <code>learning/brain/google</code>. The cleanup commit's subject is disarmingly frank — <code>Add leakr dictionary to prevent internal stuff leaking out</code> — and its public diff is two deletions, because the dictionary itself, the list of things that must not leak, stayed inside. <a class="receipt-ref" href="#r4">R4</a> By day six they knew: the projection shows the office.</p>
+<h2>look_right</h2>
+<p>The dig at the center of this repository needs one piece of background. A model like this learns by predicting the next word of a sentence it is already holding. During training the full sentence is in memory, so the code must blindfold each position — a <em>mask</em> — to keep it from reading the words it is supposed to be predicting. The mask is the exam conditions. Take it away, and the exam is open-book, and the model doesn't learn language; it learns to copy.</p>
+<p>Six weeks after launch, on the first of August, a commit arrives whose subject is about translation data — <code>More WMT corrections, port image problems to Problem.</code> <a class="receipt-ref" href="#r5">R5</a> Folded into it, among the day's ported chore-work, the local masked-attention function gets a new signature:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show 75270907db -- tensor2tensor/models/common_attention.py | grep -B1 -A2 'masked_local_attention_1d'
+-def masked_local_attention_1d(
+-    q, k, v, block_length=128, name=None):
+-  """Attention to the source position and a neigborhood to the left of it.
++def masked_local_attention_1d(q, k, v,
++                              block_length=128, look_right=True,
++                              use_whole_block=False, name=None):</code></pre>
+<p><a class="receipt-ref" href="#r6">R6</a> Read the old docstring against the new default. The name promises a mask. The old documentation promised <em>a neighborhood to the left</em> — the past only. The new version can also look right, and looking right is on by default. There are honest reasons to want the option — an encoder, reading a finished sentence, may look wherever it likes — and this is exactly the kind of commit I skim in my own review queue: a bulk port, subject about something else, forty files of Tuesday. The next day the whole file moved from <code>models/</code> to <code>layers/</code> in a housekeeping commit <a class="receipt-ref" href="#r7">R7</a>, so by the end of the week even the address on the change was new.</p>
+<p>Now train something on that code path, because this is the part worth sitting in. Your model's loss — the running measure of how wrong it still is — starts to fall. It keeps falling. It falls past where your last run flattened out, past what the paper reports, and it is still going, and for a while this is simply the best training run you have ever watched. Everything you know says a lower loss is a better model. You start composing the message to the team. Somewhere in there — an hour in, a day in, depending on how much you wanted it — a different feeling arrives, the one that took me years to install: this is more improvement than the change I made can explain.</p>
+<p class="beat">In a model that predicts the future, a perfect score is not mastery. It is a leak.</p>
+<p>On August 4, the person who reads the curve correctly is the first author of the paper:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show -s --format=fuller a0bd0177bf | head -8
+Author:     Ashish Vaswani &lt;avaswani@google.com&gt;
+AuthorDate: Fri Aug 4 14:41:57 2017 -0700
+
+    Reverted back to the previous masked_local_attention_1d because the current
+    one was giving 0 losses indicating that it was peeking into the future.</code></pre>
+<p><a class="receipt-ref" href="#r8">R8</a> <em>Giving 0 losses indicating that it was peeking into the future.</em> A blindfold with an opt-out, opted out — and the man who knew what the blindfold was for read a perfect score as the proof it was off. Sixty-nine hours after the default landed, his revert deletes the parameter, restores the left-only neighborhood, and writes the diagnosis into the commit message, where the next person staring at a miraculous curve on this code will find it. No postmortem, no incident channel the public can read. Just the sentence, left where it would be needed.</p>
+<h2>This breaks existing models</h2>
+<p>June 30, 2017 — the library is sixteen days old. Shazeer finds the subword tokenizer isn't invertible: text in, tokens, text out, and you don't always get your text back. His fix does not hide its cost:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show -s --format=fuller 98be812807 | head -7
+Author:     Noam Shazeer &lt;noam@google.com&gt;
+
+    Fix subword_text_tokenizer to make it invertible again.   This breaks
+    existing models and vocabularies.</code></pre>
+<p><a class="receipt-ref" href="#r9">R9</a> <em>This breaks existing models and vocabularies</em> — in the subject line, undisguised. Every model anyone had trained in the library's first two weeks became a museum piece that Friday. Correctness won, and it was the obvious call, because the world's investment was sixteen days deep.</p>
+<p>Two and a half years later, an outside contributor sends the kind of fix I would like to think I'd have sent. Reading the positional-encoding code — the formula that tells a Transformer where each word sits in the sentence — they notice the count starts at zero, and propose the tidier arithmetic:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show e3e54900d3 -- tensor2tensor/layers/common_attention.py | grep -E '^[+-].*position'
+-  position = tf.to_float(tf.range(length) + start_index)
++  position = tf.to_float(tf.range(1, 1+length) + start_index)</code></pre>
+<p><a class="receipt-ref" href="#r10">R10</a> Count from one instead of zero. One line. Nothing about it looks dangerous: no file format changes, nothing fails to load, every test that ran before runs after. It is merged on December 12, 2019, and sits on HEAD for nine days — nine days in which the change is, by every visible measure, fine. Then:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show -s --format=fuller e4ea462e73 | head -9
+Author:     T2T Team &lt;no-reply@google.com&gt;
+Commit:     Copybara-Service &lt;copybara-worker@google.com&gt;
+
+    *** Reason for rollback ***
+
+    This change will break existing checkpoints in a hard to debug, hard to
+    notice manner. Existing checkpoints will still load and run, but produce
+    entirely incorrect results.</code></pre>
+<p><a class="receipt-ref" href="#r11">R11</a> By the end of 2019 the world was two years deep in trained Transformers, and every one of them had learned, in its millions of weights, to expect the position signal exactly where the old counting put it. Shift the numbering and nothing crashes — the checkpoints <em>still load and run</em> — they just quietly stop meaning anything. So the same project that broke every vocabulary at sixteen days refused a one-line correction at two and a half years. Nothing in the code had changed sides. The installed base had.</p>
+<p class="beat">The spec is not the paper. The spec is the weights people have already trained, and the weights have shipped.</p>
+<h2>HEAD</h2>
+<p>After that, the repository winds down the way exported research repositories do: 2,228 commits in 2018, then 1,192, then 75, then single digits, then four. <a class="receipt-ref" href="#r13">R13</a> Kaiser's last commit changes one word in the README —</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor show 302a04f0e4 -- README.md | grep -E '^[+-].*(mode|deprecated)'
+-of users. It is now in maintenance mode &amp;mdash; we keep it running and welcome
++of users. It is now deprecated &amp;mdash; we keep it running and welcome</code></pre>
+<p>— and the final commit in the history is <code>T2T Team — Internal change</code>, 2023-04-01 at 03:18: an automated copyright-year bump, machinery stamping dates on a finished building. <a class="receipt-ref" href="#r13">R13</a></p>
+<h2>At home</h2>
+<p>Since this dig I pickaxe the guards. <code>git log -S</code> on the names of your safety mechanisms — <code>mask</code>, <code>causal</code>, <code>look_right</code>, whatever enforces your invariants — because the commit that loosens a guard is almost never <em>about</em> the guard; it rides inside the day's chore-work, and pickaxe is how you find it. Read commit subjects for <code>breaks existing</code> and <code>Reason for rollback</code> while you're there — in research code those are the real changelog. And the next time one of your own metrics improves more than your change can explain, don't compose the good-news message yet. Ask what the code can suddenly see.</p>
+<p>One more thing the pickaxe turns up here, and I'll leave you with it, because it is still at HEAD:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/tensor2tensor blame -L 251,251 tensor2tensor/bin/t2t_trainer.py
+6d9274e12 (Noam Shazeer 2018-04-15 23:19:49 -0700 251)   # TODO(noam): ask rsepassi for help here.</code></pre>
+<p><a class="receipt-ref" href="#r12">R12</a> Noam Shazeer, a Sunday night in April 2018. Sepassi's last commit is March 2019; Shazeer's is that September. He never asked, or the answer isn't here.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/tensor2tensor log --reverse | head -2</code> + <code>show --stat cedf0e2df6</code> + <code>--shortstat 3d9c62f2ac</code> — <code># tensor2tensor</code> (1 line), then 155 seconds later 74 files, 15,315 insertions.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/tensor2tensor show 3d9c62f2ac:tensor2tensor/models/transformer.py</code> (495 lines; the docstring) + <code>show 3d9c62f2ac:AUTHORS</code> — "Google Inc."</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/tensor2tensor shortlog -sn HEAD</code> + <code>log --author=Uszkoreit/Polosukhin/Llion | wc -l</code> — Kaiser 673, Shazeer 166, Parmar 92, Vaswani 57, Gomez 30; the other three paper authors: zero commits each.</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/tensor2tensor show 01787ca8a5</code> — "Add leakr dictionary to prevent internal stuff leaking out": deletes <code>blaze-bin</code> path and <code>learning/brain/google</code> pointer, day six.</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/tensor2tensor log -S look_right -- '*.py'</code> — the pickaxe timeline: the sliding-window work (Jul 28), the new signature (Aug 1, inside "More WMT corrections"), the revert (Aug 4).</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/tensor2tensor show 75270907db -- .../common_attention.py</code> — <code>masked_local_attention_1d</code> gains <code>look_right=True</code> as default; old docstring promised "a neigborhood to the left."</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/tensor2tensor show --summary f6799b9515</code> — the file renames <code>models/ → layers/</code> (89%) on Aug 2, mid-incident.</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/tensor2tensor show -s --format=fuller a0bd0177bf</code> — Vaswani, Aug 4: "giving 0 losses indicating that it was peeking into the future"; the diff deletes <code>look_right</code>.</li><li id="r9"><span class="rid">R9</span> <code>git -C repos/tensor2tensor show -s --format=fuller 98be812807</code> — Shazeer, day 16: "This breaks existing models and vocabularies," in the subject.</li><li id="r10"><span class="rid">R10</span> <code>git -C repos/tensor2tensor show e3e54900d3</code> — PR #1758: <code>tf.range(length)</code> → <code>tf.range(1, 1+length)</code>, merged 2019-12-12.</li><li id="r11"><span class="rid">R11</span> <code>git -C repos/tensor2tensor show --format=fuller e4ea462e73</code> — the rollback, nine days later: "break existing checkpoints in a hard to debug, hard to notice manner… entirely incorrect results."</li><li id="r12"><span class="rid">R12</span> <code>git -C repos/tensor2tensor log -S 'ask rsepassi'</code> + <code>blame -L 251,251 tensor2tensor/bin/t2t_trainer.py</code> + last Sepassi/Shazeer commits — the TODO from 2018-04-15 still at HEAD; Sepassi leaves 2019-03, Shazeer 2019-09.</li><li id="r13"><span class="rid">R13</span> <code>git -C repos/tensor2tensor log --format='%ad' --date=format:%Y | uniq -c</code> + <code>show 302a04f0e4 -- README.md</code> + <code>log -1</code> — 2,228 commits in 2018 to 4 in 2023; "maintenance mode" → "deprecated" (Kaiser's last); final commit 2023-04-01 03:18, "Internal change."</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
