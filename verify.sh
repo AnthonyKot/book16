@@ -41,7 +41,7 @@ fi
 
 
 # --- chapter 02 -> repos/log4j2 ; chapter 03 -> repos/bitcoin ---
-for pair in "02-log4j2:log4j2" "03-bitcoin:bitcoin" "04-xz:xz" "05-git:git" "07-vim:vim" "10-t2t:tensor2tensor" "11-ffmpeg:ffmpeg" "12-php:php" "13-node:node"; do
+for pair in "02-log4j2:log4j2" "03-bitcoin:bitcoin" "04-xz:xz" "05-git:git" "07-vim:vim" "10-t2t:tensor2tensor" "11-ffmpeg:ffmpeg" "12-php:php" "13-node:node" "14-openssl:openssl"; do
   ch="${pair%%:*}"; rp="repos/${pair##*:}"; m="chapters/${ch}.md"
   [ -f "$m" ] || continue
   if [ -d "$rp/.git" ]; then

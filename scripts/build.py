@@ -172,6 +172,10 @@ CHAPTERS = [
      "Everyone knows Node chose callbacks over Promises. Git knows Node HAD Promises for eight months in 2009 — and that someone deleted them. Told plainly.", "13-node"),
     ("13-node", 'chapter <b>13</b> · full dig · repo <b>nodejs/node</b> · the deletion behind the folklore',
      "The complete dig: the 306-line Promise deletion, why you can't find it, and the founder's second deletion that the next lead un-broke — still in HEAD.", "13-node.full"),
+    ("14-openssl.reader", 'chapter <b>14</b> · repo <b>openssl/openssl</b> · the fix a certificate forbade',
+     "A maintainer deleted a suspected-backdoor algorithm from OpenSSL — and a compliance process made him put it back. The revert war, in his own commit messages. Told plainly.", "14-openssl"),
+    ("14-openssl", 'chapter <b>14</b> · full dig · repo <b>openssl/openssl</b> · the fix a certificate forbade',
+     "The complete dig: add / disable / remove / revert-the-removal / remove-again, the 'not accepted for 2.0.7' body, and the maintainer who typed all of it and then vanished.", "14-openssl.full"),
 ]
 
 def receipts_regen_note(stem):
