@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>As discussed — Blame</title>
+<meta name="description" content="The FFmpeg/Libav schism as git recorded it: a 24-hour revert, 1,151 merges at two in the morning, and an office that outlived its occupant. Told plainly.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>11</b> · repo <b>FFmpeg/FFmpeg</b> · the fork war</p>
+<h1>As discussed</h1>
+<p>On the 19th of January 2011, the lead developer of FFmpeg — the software engine that decodes video for half the internet, inside browsers and phones and players you use daily — filed a one-line change with a one-sentence explanation:</p>
+<blockquote>Reason is that this has been mistakely commited as discussed.</blockquote>
+<p>Two spelling mistakes and the world's most boring phrase: <em>as discussed</em>. The change he was undoing had been filed the afternoon before, by another senior developer, and it did exactly one thing: it deleted seven lines from the project's org-chart file. A heading — <em>Project Leader</em> — a name, and a three-word job description: <em>final design decisions</em>.</p>
+<p>The name in the deleted lines was Michael Niedermayer. The person restoring them was Michael Niedermayer. Someone had deleted the leader's office from the org chart; a day later, the leader put it back, <em>as discussed</em>. Both entries point at discussions — a mailing-list thread, a conversation — that the project's ledger does not contain. What the ledger contains instead is everything the argument caused people to <em>do</em>, for the next eleven years. That turns out to be the better record.</p>
+<h2>January</h2>
+<p>Some background, told fairly, because everyone in this story is a serious engineer acting on conviction. FFmpeg in 2011 was ten years old; its founder was long gone; and it was run the way many aging projects are: one enormously prolific successor held final say over everything. That structure has real virtues — coherent direction, someone who can say no — and real costs: everything waits on one person, and the senior developers maintaining whole subsystems wanted authority to live with the people doing the maintaining, decisions made by review rather than by office. Both are legitimate ways to run a project. The argument between them happened on a mailing list. The ledger recorded only its chores: one day, a new contributor guide declaring a strict rule — <em>merge commits are forbidden</em> (a merge being the operation that folds one line of development into another; forbidding them keeps history tidy). The next day, the org-chart deletion. The day after, the restore.</p>
+<p>Within weeks, the group behind the deletion left — taking a complete copy of the code and its entire history, as open source allows — and founded a parallel project under a new name: <strong>Libav</strong>. For the next several years, two nearly identical projects developed side by side, each releasing its own version of the same ten-year inheritance.</p>
+<h2>The two-in-the-morning merges</h2>
+<p>What the leader did next is the strangest sustained pattern I have ever seen in a ledger.</p>
+<p>Seventy-five days after "merge commits are forbidden" entered his project's own documentation, Niedermayer performed a merge — of the <em>rival project's entire tree</em>, folded into FFmpeg, at 01:51 in the morning, from a source he had named, for reasons the ledger never explains, <code>qatar</code>. Then he did it again the next night. And the next.</p>
+<p>Over the following three years the ledger records <strong>1,151</strong> of these merges. Every single one authored by him. No one else ever did one.</p>
+<p>Understand what each of those entries is. Merging a rival's tree is not a click. It means reading everything they changed since yesterday; it means, whenever both projects touched the same file — constantly, for two projects sharing everything — resolving the collision by hand and owning the result. Some days that's five minutes; some days it's the whole evening. I have put off a <em>single</em> merge like that for a week. He did eleven hundred and fifty-one. And the ledger records the hours: the most common time of day for these entries is two in the morning. The second most common is two in the afternoon. The timestamps say when. They do not say why, and I won't guess on a living man's behalf. Whatever you choose to call it — devotion, stubbornness, strategy, insomnia — the effect is plain: for three years, nothing Libav built was allowed to escape FFmpeg. The rival's every improvement arrived, nightly, resolved by one man's hands.</p>
+<p>And then, in April 2014, it stops. The last of the 1,151 merges is a routine one — an assembler conversion, two files in conflict — with no goodbye in it, no line drawn. The source called qatar simply never appears again. The ledger cannot say why the cadence ended; the habit ended the way habits end.</p>
+<h2>The word</h2>
+<p>What were the two projects fighting over, in the ledger itself? Among other things: a single word. Every source file in the project opens with a boilerplate sentence — <em>This file is part of FFmpeg.</em> In March 2011 the departing project, reasonably enough, renamed its copy: one commit exchanged the word in 1,335 files at once. And because the two trees kept absorbing each other's work, the word became tidal — every merge re-imported one name, every cleanup restored the other, for years.</p>
+<p>Today you can ask the ledger one narrow question: which sentence stands in FFmpeg's current code? The answer: <em>part of Libav</em> appears in zero files. <em>Part of FFmpeg</em> appears in 5,042. One part of a fork's long outcome, reduced to a single search.</p>
+<p>There is even a fossil of the reconciliation. In 2017, FFmpeg merged a Libav change that had reorganized its command-line tools into a folder called <code>avtools</code>. FFmpeg's own famous tool lived elsewhere, under its own name. The merged result put the file at a <em>third</em> address — <code>fftools/ffmpeg.c</code> — a path that had existed in neither project: Libav's folder idea, FFmpeg's file name, the exact same bytes FFmpeg always had. Six years into the split, the two inheritances were still being spliced together, one path at a time. (It left a scar, too: ask git for that famous file's history and it now appears to begin in 2017 — seventeen years amputated by a rename no tool can see through.)</p>
+<h2>The office</h2>
+<p>Which brings the story back to the seven deleted lines, because that little section of the org chart has a complete sixteen-year biography, and its last two entries say more than all of 2011.</p>
+<p><strong>July 2015.</strong> Niedermayer edits the section himself — and removes only his own name. The heading stays. <em>Final design decisions</em> stays. What remains in the file, for the next seven years, is an office with nobody in it: a title, a rule, and a blank where a person used to be. He doesn't stop working — a decade later he is still one of the most active developers in the project. He takes his name off the door and leaves the office standing.</p>
+<p><strong>September 2022.</strong> The empty office is finally taken down. And the person who files that change is Anton Khirnov — by then the third-most-prolific contributor in the project's entire history, and one of the developers who had left for Libav in 2011. wound down years before; the people had, one by one, come back to the shared tree. His explanation is four words:</p>
+<blockquote>The position does not exist anymore.</blockquote>
+<p>Not <em>he lost</em>. Not <em>we won</em>. A fact, recorded eleven years late, by someone who had once left over it. The 2011 entries had each cited a discussion the ledger never held. This one cites nothing. There was nothing left to discuss.</p>
+<h2>At home</h2>
+<p>If you work with a shared codebase, two habits from this dig. When you want the real story of a project's governance, don't read its documentation — search the history of its org-chart file for the <em>headings</em>, and read closely the entry that deletes a name but leaves the role, and the one, maybe years later, that deletes the empty role. And when a project tells you its rules, check them against its record. FFmpeg's written rule said merge commits are forbidden. Its record says 1,151 of them, all by one man, most often at two in the morning. Believe the record.</p>
+<p>---</p>
+<p><em>The seven-line deletion and its restore, the no-merge rule, the 1,151 qatar merges and their hour histogram, the 0-versus-5,042 word count, the path born in neither parent, and the four-word ending are all real and public, reproducible with a git command each. The full technical dig is here: <a href="11-ffmpeg.full.html">As discussed — the full dig</a>.</em></p>
+
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

@@ -160,6 +160,10 @@ CHAPTERS = [
      "The Transformer's code went public three days after the paper — and then trained itself to a perfect score by peeking at the answers. Told plainly.", "10-t2t"),
     ("10-t2t", 'chapter <b>10</b> · full dig · repo <b>tensorflow/tensor2tensor</b> · the Transformer\'s repository',
      "The complete dig: the 155-second delivery, the look_right default, Vaswani's zero-loss revert, and the two opposite compatibility rulings.", "10-t2t.full"),
+    ("11-ffmpeg.reader", 'chapter <b>11</b> · repo <b>FFmpeg/FFmpeg</b> · the fork war',
+     "The FFmpeg/Libav schism as git recorded it: a 24-hour revert, 1,151 merges at two in the morning, and an office that outlived its occupant. Told plainly.", "11-ffmpeg"),
+    ("11-ffmpeg", 'chapter <b>11</b> · full dig · repo <b>FFmpeg/FFmpeg</b> · the fork war',
+     "The complete dig: the seven deleted lines, the qatar merges, the licence-header string war, and the heading removed by a returned forker.", "11-ffmpeg.full"),
 ]
 
 def receipts_regen_note(stem):
