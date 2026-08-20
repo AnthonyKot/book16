@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>add flat map — Blame</title>
+<meta name="description" content="The complete dig: the two-line payload in the house style, the helpful week, the four-minute face-wash, and the sabotage still sitting on master.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>09</b> · full dig · repos <b>event-stream</b> + <b>colors</b> · the two ledgers</p>
+<h1>add flat map</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="09-npm.html">add flat map</a>.</em></p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream show e3163361fe -- index.js package.json | grep -E '^[+-]' | grep -vE '^[+-]{3}'
++  , flatmap = require('flatmap-stream')
++es.flatmap = flatmap
++    "flatmap-stream": "^0.1.0",</code></pre>
+<p>Two lines of JavaScript and a dependency entry. <code>add flat map</code>, says the subject line, and that is what it is: a flat-map helper, imported and re-exported. If you maintain anything on npm you have merged this commit a hundred times.</p>
+<p>And in this particular repository, the shape has a pedigree. <code>event-stream</code> was Dominic Tarr's, born in 2011 as a single <code>map</code> function. By 2012 he had decided what the library <em>was</em> — not a body of code but a façade, a thin file re-exporting a dozen tiny single-purpose packages, which is what good npm citizenship looked like in 2012: one module, one function, compose everything. Sit in that Tuesday for a second, because it is a reasonable place to be. Small modules mean small reviews; a helper shared between libraries is a helper fixed once. So when he wants <code>map</code> to be reusable, he does this to his own founding function:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream show 53c59a38da -- index.js package.json | grep -E '^\+' | grep -iE 'map|version'
++  , map = require('map-stream')
++es.map = map
++    "map-stream": "0.0.1"</code></pre>
+<p><a class="receipt-ref" href="#r1">R1</a> Import, assign, depend. The entire implementation of the thing the first commit was is now three lines, and every helper after it follows the pattern: <code>through</code>, <code>split</code>, <code>pause-stream</code>, <code>duplexer</code>. Hold the two diffs side by side. Six years apart, they are the same sentence. I have read the 2018 one a dozen times and I would have merged it without slowing down — it is not an intrusion into this codebase, it is this codebase's native language, spoken fluently, completing a set the author left unfinished.</p>
+<p class="beat">The safest place to hide a malicious change is inside the project's own idea of a normal one.</p>
+<p>The sentence was written by the wrong hand. And the package it pulls down — <code>flatmap-stream</code> — is where the crime lived: inside it, dormant until the right build ran, sat code that harvested bitcoin wallets. &lt;!-- CHECK: flatmap-stream@0.1.1's encrypted payload targeted the Copay wallet's build; discovered November 2018 — public incident record, not provable from this repo. --&gt; None of that is in this repository, and never was:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream log -S copay --all --oneline | wc -l
+0
+<span class="tok-prompt">$</span> git -C repos/event-stream log -S bitcoin --all --oneline | wc -l
+0</code></pre>
+<p><a class="receipt-ref" href="#r7">R7</a> The weapon lived in the other package, on the registry. What this git holds is something the registry cannot show you: the shape of the hand that placed it, and the proof that the shape was borrowed from the victim.</p>
+<h2>The seam</h2>
+<p>How does the wrong hand get to write to <code>master</code> at all? Here is the entire handover, as git recorded it:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream log --author='Dominic Tarr' --format='%h %aI %s' | head -1
+7319862 2017-10-10T08:50:06+13:00 Merge pull request #107 from Rolias/master
+<span class="tok-prompt">$</span> git -C repos/event-stream log --reverse --author=北川 --format='%h %aI %an &lt;%ae&gt; %s' | head -1
+a74c9b2 2018-09-04T08:12:15+00:00 北川 &lt;right9ctrl@outlook.com&gt; upgrade dependencies</code></pre>
+<p><a class="receipt-ref" href="#r2">R2</a> Dominic's last act is merging someone else's README fix in October 2017. Eleven months of silence. Then a new name — 北川, an Outlook address, every timestamp at <code>+0000</code>, a timezone Dominic never once used — and it does not arrive as a contributor. No pull request, no merge commit, no note in <code>AUTHORS</code>, no goodbye from the old maintainer or hello from the new one. One committer stops; another starts, already holding the keys. That is what a handoff of trust looks like from the inside. It looks like nothing.</p>
+<h2>3.3.5</h2>
+<p>The new maintainer's entire first week, in order:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream log --author=北川 --reverse --format='%h %aI %s' | head -9
+a74c9b2 2018-09-04T08:12:15+00:00 upgrade dependencies
+0cc6c7f 2018-09-04T08:53:07+00:00 add map and split examples
+ee8f8e4 2018-09-04T09:19:17+00:00 remove trailing in split example
+c08d14b 2018-09-05T04:13:50+00:00 better pretty.js example
+05b0224 2018-09-05T05:06:29+00:00 update readme
+918d4a3 2018-09-05T05:27:34+00:00 3.3.5
+50c0edb 2018-09-06T08:09:04+00:00 add note for gulp 4 in readme
+0f3738c 2018-09-09T07:15:41+00:00 add collect alias for write array
+e316336 2018-09-09T08:07:49+00:00 add flat map</code></pre>
+<p><a class="receipt-ref" href="#r3">R3</a> Eight commits over five days, every one of them what a good new maintainer does — documentation, examples, a note about Gulp 4. Two of them are load-bearing. <code>3.3.5</code>, a version bump after nothing but README work, is a test of the channel: does npm still accept a publish from this account? It does. And <code>add collect alias for write array</code>, fifty-two minutes before the payload, is one more three-line sentence in the house dialect — the same shape, rehearsed one last time on something harmless. Then the ninth commit completes the set, and nine minutes later comes the number that turns it into a shipment:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream show -s --format='%h %aI %s' e3163361fe 5999958dfc
+e316336 2018-09-09T08:07:49+00:00 add flat map
+5999958 2018-09-09T08:17:22+00:00 3.3.6</code></pre>
+<p><a class="receipt-ref" href="#r5">R5</a> <code>3.3.6</code> is two changed lines — the version string, twice. There is no git tag for it; the sabotage versions are untagged, in a repository whose last tagged release was years old. <a class="receipt-ref" href="#r5">R5</a> That gap matters more than it looks, because git tags and npm versions are different ledgers, and the attack lives entirely in the second one. Every <code>package.json</code> in the world that said <code>"event-stream": "^3.3.4"</code> — the caret is npm's default, and it means <em>any 3.x</em> — resolved to <code>3.3.6</code> on its next install and pulled <code>flatmap-stream</code> down behind it. The blast radius is not the twenty-six lines of the diff. It is the character <code>^</code>.</p>
+<h2>The wash</h2>
+<p>Then the most instructive four minutes in the repository. A week after the payload ships, 北川 cleans the house — and watch what "clean" means here:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream show -s --format='%h %aI %s' 908fee5c65 2bd63d58fe 8bc742ba91
+908fee5 2018-09-16T11:14:19+00:00 add filter and rewrite flatmap
+2bd63d5 2018-09-16T11:16:18+00:00 update package.json
+8bc742b 2018-09-16T11:18:12+00:00 update readme</code></pre>
+<p>11:14, the <code>require('flatmap-stream')</code> is deleted and the helper is rewritten as a local function. 11:16, the dependency is removed and the version jumps to <code>4.0.0</code>. 11:18, the README documents the new local helper as though that had been the point all along. <a class="receipt-ref" href="#r6">R6</a></p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/event-stream show 2bd63d58fe -- package.json | grep -E '^[+-].*(version|flatmap)'
+-  "version": "3.3.6",
++  "version": "4.0.0",
+-    "flatmap-stream": "^0.1.0",</code></pre>
+<p><a class="receipt-ref" href="#r6">R6</a> This is not a revert. There is no "Revert" in any message and <code>git log --diff-filter</code> will never surface it: the dependency is dissolved in place, the major version is bumped so that <code>^3.3.4</code> will <em>not</em> follow into <code>4.x</code>, and the release tag <code>4.0.0</code> is hung not on the commit that removed the dependency but on the README commit two minutes later. <a class="receipt-ref" href="#r6">R6</a> Clone this repository today, check out <code>master</code>, read <code>package.json</code>: clean. No <code>flatmap-stream</code>, no trace. Meanwhile npm went on serving <code>3.3.6</code> to every unpinned installer for two more months, until a stranger opened the dependency in November and found the wallet stealer. &lt;!-- CHECK: npm continued serving event-stream@3.3.6 until the November 2018 discovery — registry/incident record, external to this repo. --&gt; The repository's face was washed eight weeks before anyone knew the face was dirty.</p>
+<p>And it stays washed. The last commit in this git is the attacker removing a CI config line, <code>4.0.1</code>, a tidy housekeeping bump — and the <code>author</code> field of <code>package.json</code>, unchanged across 322 commits, still reads <code>Dominic Tarr</code>. <a class="receipt-ref" href="#r8">R8</a> No revert ever lands here, no <code>3.3.7</code>, no <code>SECURITY.md</code>. The fix the world consumed happened on npm and in countless downstream lockfiles; git's clock simply stops, on a clean tree, under the wrong name.</p>
+<p class="beat">A repository can be spotless and a lie at the same time; <code>master</code> shows you the face, not the shipment.</p>
+<h2>23:19</h2>
+<p>Three years later, on another Friday night, the same two ledgers point in opposite directions.</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/colors log -4 --format='%h %ai %s'
+6bc50e7 2022-01-07 23:22:34 -0500 Bump to `v1.4.44-liberty-2`
+5d2d242 2022-01-07 23:21:02 -0500 Fix bug
+137c6da 2022-01-07 23:19:44 -0500 Bump to `v1.4.44-liberty`
+074a0f8 2022-01-07 23:19:03 -0500 Adds new American flag module</code></pre>
+<p><a class="receipt-ref" href="#r12">R12</a> Four commits, three and a half minutes, and this time the hand is not a stranger's. This is <code>colors</code> — <code>"hello".red</code>, a fixture near the top of npm's most-depended-on lists — and the author of all four commits is Marak Squires, who started it as a 24-line toy on a Friday night in 2010, under a README that read, in full, <code>colors are awesome yo</code>. <a class="receipt-ref" href="#r9">R9</a> On the branch he is pushing to, his previous commit is from June 2015 <a class="receipt-ref" href="#r18">R18</a>; in the years between, a developer named David Hyde had quietly become the project — 74 commits, every release tag — while <code>package.json</code> still said <code>"author": "Marak Squires"</code> and the push rights, as these four commits prove, still answered to the name on the door. <a class="receipt-ref" href="#r11">R11</a> By late 2021 Marak had been saying publicly that he was done maintaining popular packages for free. &lt;!-- CHECK: Marak's public statements (Nov 2020 GitHub post, Jan 2022) about no longer doing free open-source maintenance — external record; the protest framing is his, stated off-repo. --&gt; What he did about it, git recorded at 23:19:03. The first commit adds an ASCII American flag and, at the bottom of the file every <code>require('colors')</code> executes:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/colors show 074a0f8ed0 -- lib/index.js | grep -E '^\+' | head -8
++/* remove this line after testing */
++let am = require('../lib/custom/american');
++am();
++for (let i = 666; i &lt; Infinity; i++;) {
++  if (i % 333) {
++    // console.log('testing'.zalgo.rainbow)
++  }
++  console.log('testing testing testing testing testing testing testing'.zalgo)</code></pre>
+<p><a class="receipt-ref" href="#r13">R13</a> An infinite loop, printing corrupted text to the console of every application that loads the library. He didn't write a weapon; he reached for one he'd already shipped. <code>.zalgo</code> had been in the box since 2011, a party trick from a commit that bragged <code>Snuck in demonic entity</code>, with <code>// please no</code> in the comment above it <a class="receipt-ref" href="#r10">R10</a> — eleven years of being the library's joke, now called in a loop with no exit.</p>
+<p>Look at the loop header, though, before reading on. There is a semicolon inside the parentheses — <code>i++;</code> — and JavaScript will not parse it. As first committed, forty-one seconds before the version bump that published it, the sabotage was a <code>SyntaxError</code>: it would have crashed every app instantly and looped never. Seventy-eight seconds after the bump, this:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/colors show 5d2d242f65
+5d2d242 Fix bug
+-for (let i = 666; i &lt; Infinity; i++;) {
++for (let i = 666; i &lt; Infinity; i++) {</code></pre>
+<p><a class="receipt-ref" href="#r14">R14</a> <code>Fix bug</code>. Sit in those seventy-eight seconds. He has just detonated a protest he has been building toward for months, and it doesn't parse. And what surfaces, at 23:21 on a Friday night, is not the protester — it is twelve years of reflex: the code did not do what he intended, so he found the character, fixed it, and shipped again, the way he had a thousand times before. The message is the most ordinary one in the repository. The only difference between this <code>Fix bug</code> and every other is that here, the intended behavior was the failure. Then one more bump, <code>liberty-2</code>, so the working loop is the one people install, and he stops. Whatever speech you remember from that week is not in this tree — <code>git log -S 'no more'</code>, <code>-G 'free work'</code>, all empty <a class="receipt-ref" href="#r16">R16</a>; git holds the workmanlike correction, not the argument he was making elsewhere.</p>
+<p>Here is where the two ledgers finish trading places. The folklore says colors was sabotaged and then cleaned up. Ask git:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/colors branch -a --contains 074a0f8ed0
+* master
+<span class="tok-prompt">$</span> git -C repos/colors tag --contains 074a0f8ed0   # (empty)</code></pre>
+<p><a class="receipt-ref" href="#r15">R15</a> The cleanup happened on npm, which removed the poisoned releases &lt;!-- CHECK: npm removed the colors 1.4.44-liberty releases (served as 1.4.1–1.4.4) after 2022-01-08 — registry record, external to this repo. --&gt; — releases whose version numbers, <code>1.4.1</code> through <code>1.4.4</code>, were never committed here at all; git's only 2022 versions are the two slogans. <a class="receipt-ref" href="#r17">R17</a> But the repository was never touched. Nobody hit revert — the newest revert in this git is from 2018 <a class="receipt-ref" href="#r15">R15</a> — no tag moved, no force-push came. <code>event-stream</code> inverted, exactly: there, git is clean and the registry served the poison; here, the registry is clean and git still holds it.</p>
+<h2>At home</h2>
+<p>One habit covers both halves of this chapter: reconcile what you installed with the repository you think it came from. Take a dependency you actually ship, take the exact version out of your lockfile, and run <code>git tag --contains</code> — or just look for the tag. If the version you are running does not correspond to anything the repository will admit to, you have found a gap, and everything in this chapter lived in one. While you are there, glance at the last year of <code>git log --format='%an %ae'</code> for a name that arrived with keys and no introduction.</p>
+<p>Four years on, <code>colors</code> has never been reverted: clone it today and the loop is right there on <code>master</code>, still waiting under <code>/* remove this line after testing */</code>. And at the tip of <code>event-stream</code>'s washed, quiet history, the <code>author</code> field still says Dominic Tarr.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/event-stream show 53c59a38da -- index.js package.json</code> — 2012 "refactor out map": <code>es.map = require('map-stream')</code>, the house style established by the author.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/event-stream log --author='Dominic Tarr' | head</code> + <code>log --reverse --author=北川</code> — last Dominic act Oct 2017 (a merge); first 北川 commit 2018-09-04, <code>right9ctrl@outlook.com</code>, <code>+0000</code>, direct push, no merge/AUTHORS note.</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/event-stream log --author=北川 --reverse | head -9</code> — the eight pre-payload commits over five days; <code>3.3.5</code> is a README-only publish.</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/event-stream show e3163361 -- index.js package.json</code> — the payload: <code>+ flatmap = require('flatmap-stream')</code>, <code>+ es.flatmap = flatmap</code>, <code>+ "flatmap-stream": "^0.1.0"</code>.</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/event-stream show -s e316336 5999958</code> + <code>tag --list 3.3.6</code> — <code>add flat map</code> 08:07:49, <code>3.3.6</code> 08:17:22 (573s later), no tag.</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/event-stream show -s 908fee5 2bd63d5 8bc742b</code> + <code>show 2bd63d5 -- package.json</code> + <code>for-each-ref refs/tags</code> — 11:14/11:16/11:18: require removed, dep dropped, <code>3.3.6</code>→<code>4.0.0</code>, tag <code>4.0.0</code> hung on the README commit. Not a revert.</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/event-stream log -S copay/-S bitcoin/-S wallet --all</code> — all zero; the payload never lived in this repo.</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/event-stream log -1</code> + <code>show HEAD:package.json | grep author</code> — HEAD is 北川's <code>4.0.1</code> testling cleanup; <code>"author"</code> still <code>Dominic Tarr</code>.</li><li id="r9"><span class="rid">R9</span> <code>git -C repos/colors log --reverse | head</code> + <code>show 270314c:ReadMe.md</code> — day one 2010-06-11 02:56, 24 lines, README "colors are awesome yo".</li><li id="r10"><span class="rid">R10</span> <code>git -C repos/colors log --all --reverse -S zalgo | head -1</code> + <code>show 4b6bc29 -- colors.js</code> — <code>.zalgo</code> added 2011-03-15, message "Snuck in demonic entity."; <code>// don't summon zalgo</code>.</li><li id="r11"><span class="rid">R11</span> <code>git -C repos/colors shortlog -sn --all</code> + <code>--since=2018 --until=2020</code> + <code>show HEAD:package.json | grep author</code> — DABH 74 commits leads all-time and owns 2018–19; <code>"author": "Marak Squires"</code>.</li><li id="r12"><span class="rid">R12</span> <code>git -C repos/colors log -4</code> — the four liberty commits, 2022-01-07 23:19:03–23:22:34.</li><li id="r13"><span class="rid">R13</span> <code>git -C repos/colors show 074a0f8 -- lib/index.js</code> — the <code>for (… i &lt; Infinity)</code> loop printing <code>.zalgo</code>, under <code>/* remove this line after testing */</code>.</li><li id="r14"><span class="rid">R14</span> <code>git -C repos/colors show 5d2d242</code> — <code>Fix bug</code>: <code>i++;</code> → <code>i++</code>, a one-character SyntaxError fix, 78s after the first version bump, 92s before the second.</li><li id="r15"><span class="rid">R15</span> <code>git -C repos/colors branch -a --contains 074a0f8</code> + <code>tag --contains</code> + <code>log --all --grep=Revert | head -1</code> — payload is on <code>master</code>, on no tag; newest revert in the repo is 2018.</li><li id="r16"><span class="rid">R16</span> <code>git -C repos/colors log --all -S 'no more'</code> + <code>-G 'free work|unpaid|I will no longer'</code> — both empty; the protest text is not in this repository.</li><li id="r17"><span class="rid">R17</span> <code>git -C repos/colors log --all -G '1\.4\.[1-9]' -- package.json</code> + <code>for-each-ref refs/tags | tail -1</code> — only the two <code>liberty</code> version bumps; <code>1.4.1</code>–<code>1.4.4</code> never committed; newest tag <code>v1.4.0</code> (2019).</li><li id="r18"><span class="rid">R18</span> <code>git -C repos/colors log --first-parent --author=Marak | head</code> — on <code>master</code>, Marak's commit before the 2022 sabotage is <code>90dd85b</code>, 2015-06-17.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

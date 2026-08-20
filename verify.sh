@@ -91,6 +91,23 @@ if [ -f "$m" ]; then
   done
 fi
 
+# --- chapter 09 (cross-repo): each hash must exist in at least one of the named clones ---
+m=chapters/09-npm.md
+if [ -f "$m" ]; then
+  CH09_REPOS="event-stream colors"
+  for h in $(grep -oE '\b[0-9a-f]{10}\b' "$m" | sort -u); do
+    found=0
+    for rp in $CH09_REPOS; do
+      [ -d "repos/$rp/.git" ] && git -C "repos/$rp" cat-file -e "${h}^{object}" 2>/dev/null && { found=1; break; }
+    done
+    [ $found -eq 1 ] || { echo "FAIL $m: hash $h not in any ch09 clone"; fail=1; }
+  done
+  echo "checked $(grep -oE '\b[0-9a-f]{10}\b' "$m" | sort -u | wc -l) hashes against ch09 clones (union)"
+  for r in $(grep -oE '\[R[0-9]+\]' "$m" | tr -d '[]' | sort -u); do
+    n=${r#R}; grep -qE "^- \*\*R${n}\*\* " "$m" || { echo "FAIL $m: $r cited but no receipt line"; fail=1; }
+  done
+fi
+
 # --- internal links in html resolve ---
 for html in index.html about.html chapters/*.html; do
   [ -f "$html" ] || continue

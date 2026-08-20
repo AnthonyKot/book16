@@ -151,6 +151,10 @@ CHAPTERS = [
      "MS-DOS, the-algorithm, Swift: three companies published their history as a git repo, and each decided differently what history is — told plainly.", "08-costume"),
     ("08-costume", 'chapter <b>08</b> · full dig · three repos · the corporate costume',
      "The complete dig: the 1982 date with a 2018 clock second, the scrub authored before the dump it apologizes for, and the license header planted into 2010.", "08-costume.full"),
+    ("09-npm.reader", 'chapter <b>09</b> · repos <b>event-stream</b> + <b>colors</b> · the two ledgers',
+     "Two npm sabotages, opposite mechanics: a stranger who inherited the keys, an owner who never gave them up — and the gap between repository and registry that hid both. Told plainly.", "09-npm"),
+    ("09-npm", 'chapter <b>09</b> · full dig · repos <b>event-stream</b> + <b>colors</b> · the two ledgers',
+     "The complete dig: the two-line payload in the house style, the helpful week, the four-minute face-wash, and the sabotage still sitting on master.", "09-npm.full"),
 ]
 
 def receipts_regen_note(stem):
