@@ -180,6 +180,10 @@ CHAPTERS = [
      "A 1992 placeholder — 'THIS IS A HACK TO GET V4 OUT THE DOOR' — that PostgreSQL's most careful engineer refuses to fix, and restores when someone else removes it. Told plainly.", "15-postgres"),
     ("15-postgres", 'chapter <b>15</b> · full dig · repo <b>postgres/postgres</b> · the hack nobody dares fix',
      "The complete dig: the 0.3333333 selectivity guess, the XXX that inverted into 'do not fix me', and the enum feature landed as a warning.", "15-postgres.full"),
+    ("16-empty.reader", 'chapter <b>16</b> · five repos · the commit that changes nothing',
+     "Commits that alter zero bytes and exist on purpose — doorbells for machines, markers for readers, receipts for work already done. Told plainly.", "16-empty"),
+    ("16-empty", 'chapter <b>16</b> · full dig · five repos · the commit that changes nothing',
+     "The complete dig: the tree-equals-parent mechanism, the 2 a.m. mirror trigger, the four QUIC phase markers, and the backport that had nothing left to apply.", "16-empty.full"),
 ]
 
 def receipts_regen_note(stem):
