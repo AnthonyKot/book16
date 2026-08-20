@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THIS IS A HACK TO GET V4 OUT THE DOOR — Blame</title>
+<meta name="description" content="The complete dig: the 0.3333333 selectivity guess, the XXX that inverted into 'do not fix me', and the enum feature landed as a warning.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>15</b> · full dig · repo <b>postgres/postgres</b> · the hack nobody dares fix</p>
+<h1>THIS IS A HACK TO GET V4 OUT THE DOOR</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="15-postgres.html">THIS IS A HACK TO GET V4 OUT THE DOOR</a>.</em></p>
+<p>There is a number in the query planner of PostgreSQL — the database under a large share of the world's applications — and the number is one third:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres show d31084e9d1:src/backend/optimizer/plan/initsplan.c | sed -n '195,198p'
+		 * XXX If we have a func clause set selectivity to 1/3, 
+		 *     really need a true selectivity function.
+		 */
+		clauseinfo-&gt;selectivity = (Cost)0.3333333;</code></pre>
+<p><a class="receipt-ref" href="#r1">R1</a> When the planner meets a condition it cannot estimate — a function call in a <code>WHERE</code> clause, something with no statistics behind it — it guesses that one third of the rows will match, and plans the whole query on that guess. Why a third? No reason. It is a placeholder, and it says so: <code>XXX ... really need a true selectivity function</code> — <code>XXX</code> being programmer for <em>this is wrong, replace it</em>. The estimate is older than this repository, which was imported in 1996 from a decade of prior work at Berkeley. In a neighboring file the same guess wears a fuller confession, dated in the source itself:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres show d31084e9d1:src/backend/optimizer/path/clausesel.c | sed -n '242,245p'
+	 ** This is not an operator, so we guess at the selectivity.  
+	 ** THIS IS A HACK TO GET V4 OUT THE DOOR.  FUNCS SHOULD BE
+	 ** ABLE TO HAVE SELECTIVITIES THEMSELVES.
+	 **     -- JMH 7/9/92</code></pre>
+<p><a class="receipt-ref" href="#r2">R2</a> Picture the afternoon it was written: 9 July 1992, Berkeley, someone shipping version 4 of the academic Postgres against a deadline, needing a number to make the planner produce <em>a</em> plan, having no time to compute the right one, typing <code>0.3333333</code> and then shouting into the comment, in capitals, that this was a hack and someone should really do it properly before it mattered. Then they got V4 out the door. The rest of this story is three decisions, thirty years apart, about that shout.</p>
+<h2>2015: the fix he doesn't make</h2>
+<p>September 2015. Tom Lane — committing to this project since 1998 — is working in exactly the file that guess lives in. His commit is titled <code>Allow planner to use expression-index stats for function calls in WHERE</code> <a class="receipt-ref" href="#r3">R3</a>, and it does real work: where a function has an expression index with gathered statistics, the planner can now use those instead of guessing. He has, in other words, built the beginnings of the very thing the 1992 comment cried out for — a true selectivity function — for the cases he can prove. The bare <code>0.3333333</code> fallback, sitting right there, is the obvious next thing to clean up. Every case he <em>can't</em> cover with statistics still routes through a number a Berkeley grad student admitted was a hack. Delete it, pick something defensible — 0.5, say — and finish the job the comment has been begging to have finished for twenty-three years.</p>
+<p>He doesn't. From the same commit's message:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres log -1 --format='%b' 39df0f150c | grep -iE 'twenty-three|not to do'
+changing a default estimate that's survived for twenty-three years seems
+like something not to do without a lot more testing than I care to put</code></pre>
+<p><a class="receipt-ref" href="#r3">R3</a> He improves only the cases he can back with evidence, and leaves the guess exactly where it is — not because he thinks a third is correct, but because it has <em>survived twenty-three years</em>. Every index built, every query tuned, every application that ever ran acceptably on this database did so downstream of that number. Change it and you re-plan all of them at once: some faster, some ruinously slower, and no way to know which before real workloads hit it. The number is wrong, and it is also the thing an entire ecosystem has quietly grown to fit.</p>
+<p class="beat">A number that has been wrong for long enough is not a mistake. It is a contract.</p>
+<h2>2023: the feature he won't ship</h2>
+<p>Eight years on, the same instinct in a sharper form. People had long wanted a particular feature: the ability to delete one value from an <code>enum</code> type — <code>ALTER TYPE ... DROP VALUE</code>. It sounds easy. It is a trap, and rather than build it wrong or wait for someone else to, Tom Lane landed this:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres log -1 --format='%s%n%n%b' af3ee8a086 | head -5
+Add some notes about why "ALTER TYPE enum DROP VALUE" is hard.
+
+In hopes of putting these where any would-be implementer is sure to
+find them, make a placeholder grammar production for ALTER DROP VALUE
+and put them there.  This is really just a docs patch, though.</code></pre>
+<p><a class="receipt-ref" href="#r6">R6</a> He added the syntax to the grammar — so the database will <em>parse</em> <code>ALTER TYPE ... DROP VALUE</code> — and wired it to do exactly one thing: fail, and print the reasons it is hard.</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres show af3ee8a086 -- src/backend/parser/gram.y | grep -E '^\+' | sed -n '4,10p'
++				 * The following problems must be solved before this can be
++				 * implemented:
++				 * - There must be no instance of the target value in
++				 *   any table.
++				 * - The value must not appear in any catalog metadata,
++				 *   such as stored view expressions or column defaults.
++				 * - The value must not appear in any non-leaf page of a
++				 *   btree (and similar issues with other index types).</code></pre>
+<p><a class="receipt-ref" href="#r7">R7</a> He could have written those hazards on a wiki or a mailing list — places the next person will not look before they start coding. The grammar file, at the exact syntax they are about to implement, is the one place they cannot miss it. So he put the checklist there, guarding a feature that does not exist, and said so in the message: <em>this is really just a docs patch.</em></p>
+<p class="beat">He shipped the reasons not to ship it, at the door the next person has to walk through.</p>
+<h2>2025: the fix he undoes</h2>
+<p>Now the decision that turns restraint into law. Ten years after 2015, a well-meaning refactor had finally done the tidy thing — dropped that <code>0.3333333</code> fallback for a class of function calls, on the reasonable grounds that the planner had better options now. Tom Lane put it back:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres blame -L 1606,1612 HEAD -- src/backend/utils/adt/selfuncs.c
+1eccb9315070 (Tom Lane 2025-09-20 12:44:52 -0400 1606) 		 * If we have no stats and it's a function call, estimate 0.3333333.
+1eccb9315070 (Tom Lane 2025-09-20 12:44:52 -0400 1607) 		 * This seems a pretty unprincipled choice, but Postgres has been
+1eccb9315070 (Tom Lane 2025-09-20 12:44:52 -0400 1608) 		 * using that estimate for function calls since 1992.  The hoariness
+1eccb9315070 (Tom Lane 2025-09-20 12:44:52 -0400 1609) 		 * of this behavior suggests that we should not be in too much hurry
+1eccb9315070 (Tom Lane 2025-09-20 12:44:52 -0400 1610) 		 * to use another value.</code></pre>
+<p><a class="receipt-ref" href="#r4">R4</a> Read the 1992 comment and this one together, because between them the instruction has completely reversed. The original said <code>XXX ... really need a true selectivity function</code> — <em>fix me.</em> This one says the choice is <code>unprincipled</code>, admits it plainly, and then concludes that its <code>hoariness</code> — its sheer age — is the reason <code>not to be in too much hurry to use another value</code>. <em>Do not fix me.</em> The most authoritative engineer in the project restored a number a grad student called a hack in 1992, and left a warning for whoever next feels the urge to be clever about it. On HEAD today the estimate is still one third <a class="receipt-ref" href="#r5">R5</a>, now defended not despite its wrongness but because of how long the wrongness has held.</p>
+<h2>The hand</h2>
+<p>You keep meeting the same name because it is, to a startling degree, one person. Tom Lane's first commit, in 1998, was not a landmark feature:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/postgres log --author='Tom Lane' --reverse --format='%h %ai %s' | head -1
+502769d0dee 1998-10-01 01:26:45 +0000 Change HPUX loader flags to trap null pointer derefs
+<span class="tok-prompt">$</span> git -C repos/postgres rev-list --count --author='Tom Lane' HEAD
+16863</code></pre>
+<p><a class="receipt-ref" href="#r8">R8</a> Loader flags to catch null-pointer dereferences. Sixteen thousand eight hundred sixty-three commits later — more than anyone else in the project's history — the thread running through that enormous body of work is not what he added but what he judged safe to leave alone. The 1992 hack he guards. The <code>enum</code> feature he declines and documents. The engineering that is easiest to admire is the commit that adds something; the engineering that keeps a thirty-year-old database trustworthy is the commit that adds a warning where a feature was demanded, or restores a wrong number on purpose and tells you why not to touch it.</p>
+<h2>At home</h2>
+<p>The habit from this dig is to stop reading <code>XXX</code>, <code>HACK</code>, and <code>TODO</code> as simple confessions of unfinished work. Some are. But before you clean one up, do what Tom Lane did: look for the <em>prior attempt</em>. Pickaxe the ugly constant — <code>git log -S</code> — or <code>git blame</code> the embarrassing comment, and read the commits around it. If someone with more context already stood where you're standing and chose not to fix it, their reason is usually recorded, and it is usually that the ugly thing has become load-bearing in ways the diff can't show. The tell is a <em>second</em> comment layered over the first: not <code>fix this</code>, but <code>here is why the obvious fix is the dangerous one</code>. When you find that, you have found the most valuable and least visible thing a long-lived codebase holds — a decision someone was careful enough to make, and then careful enough to explain to you before you undid it.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/postgres show d31084e9d1:src/backend/optimizer/plan/initsplan.c | sed -n '195,198p'</code> — the 1996 imported root: <code>XXX ... set selectivity to 1/3 ... really need a true selectivity function</code>, then <code>= (Cost)0.3333333</code>.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/postgres show d31084e9d1:src/backend/optimizer/path/clausesel.c | sed -n '242,245p'</code> — the same estimate's fuller confession: <code>THIS IS A HACK TO GET V4 OUT THE DOOR ... -- JMH 7/9/92</code>.</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/postgres log -1 39df0f150c</code> + <code>--format='%b'</code> — 2015-09-24, Tom Lane, "Allow planner to use expression-index stats…": keeps the fallback because "changing a default estimate that's survived for twenty-three years seems like something not to do."</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/postgres blame -L 1606,1612 HEAD -- src/backend/utils/adt/selfuncs.c</code> — 2025-09-20, Tom Lane restores the estimate: "unprincipled choice, but Postgres has been using that estimate … since 1992. The hoariness of this behavior suggests that we should not be in too much hurry to use another value."</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/postgres grep -n '0.3333333' HEAD -- src/backend/utils/adt/selfuncs.c</code> — the estimate is still on HEAD.</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/postgres log -1 af3ee8a086</code> — 2023-10-03, Tom Lane, "Add some notes about why 'ALTER TYPE enum DROP VALUE' is hard": a placeholder grammar production so an implementer is "sure to find them."</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/postgres show af3ee8a086 -- src/backend/parser/gram.y</code> — the added production only raises <code>FEATURE_NOT_SUPPORTED</code>, above a checklist of the unsolved problems.</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/postgres log --author='Tom Lane' --reverse | head -1</code> + <code>rev-list --count --author='Tom Lane' HEAD</code> — first commit 1998-10-01 ("Change HPUX loader flags…"); 16,863 commits, the most of anyone in the project.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

@@ -176,6 +176,10 @@ CHAPTERS = [
      "A maintainer deleted a suspected-backdoor algorithm from OpenSSL — and a compliance process made him put it back. The revert war, in his own commit messages. Told plainly.", "14-openssl"),
     ("14-openssl", 'chapter <b>14</b> · full dig · repo <b>openssl/openssl</b> · the fix a certificate forbade',
      "The complete dig: add / disable / remove / revert-the-removal / remove-again, the 'not accepted for 2.0.7' body, and the maintainer who typed all of it and then vanished.", "14-openssl.full"),
+    ("15-postgres.reader", 'chapter <b>15</b> · repo <b>postgres/postgres</b> · the hack nobody dares fix',
+     "A 1992 placeholder — 'THIS IS A HACK TO GET V4 OUT THE DOOR' — that PostgreSQL's most careful engineer refuses to fix, and restores when someone else removes it. Told plainly.", "15-postgres"),
+    ("15-postgres", 'chapter <b>15</b> · full dig · repo <b>postgres/postgres</b> · the hack nobody dares fix',
+     "The complete dig: the 0.3333333 selectivity guess, the XXX that inverted into 'do not fix me', and the enum feature landed as a warning.", "15-postgres.full"),
 ]
 
 def receipts_regen_note(stem):
