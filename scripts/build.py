@@ -164,6 +164,10 @@ CHAPTERS = [
      "The FFmpeg/Libav schism as git recorded it: a 24-hour revert, 1,151 merges at two in the morning, and an office that outlived its occupant. Told plainly.", "11-ffmpeg"),
     ("11-ffmpeg", 'chapter <b>11</b> · full dig · repo <b>FFmpeg/FFmpeg</b> · the fork war',
      "The complete dig: the seven deleted lines, the qatar merges, the licence-header string war, and the heading removed by a returned forker.", "11-ffmpeg.full"),
+    ("12-php.reader", 'chapter <b>12</b> · repo <b>php/php-src</b> · the backdoor signed by the founder',
+     "In 2021 a remote-code-execution backdoor was committed to PHP under Rasmus Lerdorf's name, tagged \"Fix typo\" — and git's own metadata proves he didn't write it. Told plainly.", "12-php"),
+    ("12-php", 'chapter <b>12</b> · full dig · repo <b>php/php-src</b> · the backdoor signed by the founder',
+     "The complete dig: the eleven-line payload, the timezone and Signed-off-by tells, the revert war, and why the backdoor is still an ancestor of every PHP 8.1+ checkout.", "12-php.full"),
 ]
 
 def receipts_regen_note(stem):

