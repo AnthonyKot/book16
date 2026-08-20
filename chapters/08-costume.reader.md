@@ -1,0 +1,152 @@
+# Nothing much to see here
+
+Every entry in a software project's ledger carries two timestamps, and almost nobody ever
+looks at the second one. The first says when the work was *written*. The second says when it
+was *filed*. In a normal week of programming they are the same moment, so the second date
+disappears from your attention, the way the issue date on a passport does.
+
+In 2018, Microsoft published the source code of MS-DOS — the operating system of the early
+eighties — as a public repository. The entry holding MS-DOS version 1.25 is dated 3 March
+1982. The entry holding version 2.0 is dated 12 August 1983. Scroll past the dates and you
+are touring a museum: here is the eighties, filed in the eighties.
+
+Look at the second timestamp and both entries were filed on the same Friday evening —
+21 September 2018. That much is honest enough; of course a 2018 release was filed in 2018.
+The strange part is smaller. The 1982 date and the 2018 date show *the same second on the
+clock*. Written at 51 minutes and 26 seconds past the hour in 1982; filed at 51 minutes and
+26 seconds past the hour, thirty-six years later. The 1983 entry does it too, at its own
+second, 53:34.
+
+Nobody's Wednesday in 1982 lands on the same tick of the clock as their curator's Friday in
+2018 — unless it is the same clock. And it is: the tool Microsoft used has a quirk. Tell it
+only a calendar day — "date this entry 3 March 1982" — and it fills in the missing time of
+day from the clock on the wall, right now. Whoever backdated the museum typed a date from
+1982, and the actual moment of typing bled through into the forgery.
+
+~ The planted date is precise about everything except the thing it plants.
+
+## The drawer
+
+I want to be fair to the man at the keyboard, because the files themselves are real, and
+because I might have made the same choice. In September 2018 a Microsoft program manager
+named Rich Turner had two folders of forty-year-old assembly code and a museum to open. The
+files carry their own dates inside them — dated revision notes at the top of each file,
+maintained by hand, bookkeeping from before bookkeeping software. If he filed the folders
+under 2018, the ledger would read as a museum whose every exhibit is labeled *acquired
+Thursday*. So he did what a curator does: he read the newest revision note in each folder —
+03/03/82 in one, 08/12/83 in the other — and put that on the plaque.
+
+But a folder is not a day. Inside the "1982" folder sits a program whose revision notes keep
+going: a fix from July 1982, an August 1982 entry where the author swears at his own program
+for crashing the same way twice — *"Damn! Overflowed again!"* — then January 1983, then May
+1983. A commit dated March 1982 containing work from a year later. The folder is a drawer
+someone emptied into the ledger, a career flattened to an afternoon.
+
+The drawer even contains its own confession. Sitting beside the eighties code is the email
+that delivered it — written by Tim Paterson, the original author of DOS, in **December 2013**,
+explaining to an archivist what the folder is. Ask the ledger who wrote that email and when,
+and it answers with a straight face: Rich Turner, 3 March 1982. The ledger's attribution
+system is not a witness. It names whoever made the copy.
+
+One more thing about this museum, and it is my favorite thing in it. In the 1983 code there
+is a roster of the original DOS team, kept the way you keep a whiteboard: *Tim Paterson
+(Ret.)* — retired; *Nancy Panners (Parenting)* — out on leave; *Mark Zbikowski*; *Chris
+Peters (BIOS)*. In 2024, Microsoft added a new wing to the museum — MS-DOS 4.0, half a
+million lines — and the person who filed it was Mark Zbikowski himself, forty years later,
+under the message `MZ is back!`. In the newer code his roster has been compressed to bare
+initials: TP, AR, MZ, CP. One annotation survived the compression: *NP (Parenting)*. The
+names shrank; the courtesy didn't.
+
+## The second first commit
+
+Five years later, Twitter made the opposite set of choices. In March 2023 the company
+published "the algorithm" — the code that ranks what you see. Microsoft published real files
+under invented dates; Twitter published under true dates something that isn't really a
+history.
+
+Start where a ledger starts, at the first entry. Its author is a nameless team account with
+no email address. Its title is a product name. And its note says, in corporate passive, that
+this first entry is a *replacement* — an earlier first entry existed, was public long enough
+to need removing ("publicly-available Twitter user information"), and was erased. The
+original first page survives only as the reason given for replacing it.
+
+The replacement kept a hole. The published code still contains the instruction *load the file
+of author lists* — the actual lists of accounts the system paid special attention to — and
+that file has never existed in the public ledger. Not deleted; never there. A ghost with a
+doorknob. You can see the exact shape of the secret — four named categories, loaded at
+startup — and never its contents.
+
+What were the four categories? That is why anyone remembers this repository. The published
+ranking code counted, for its metrics, whether a post's author was: Elon; a "power user"; a
+Democrat; a Republican. A comment in the code explains that these lists were "used purely
+for metrics collection," a safety check to make sure no update quietly hurt one group more
+than another. Maybe so. Three entries into the public ledger, those lines were deleted.
+
+And here the two timestamps — the ones that undid Microsoft's museum — print something
+stranger. The publication went out at 5:36 in the evening, Central time. The deletion of the
+Elon and party lines was *written* at 1:39 in the afternoon Pacific — nearly two hours before
+the publication — and *filed* three minutes after it. A written-at date can be faked, as
+Microsoft just demonstrated, so treat it carefully. But this is Twitter's own metadata, in
+Twitter's own release. What the company's published timeline presents is: cleanup written,
+release shipped, cleanup filed. The deletion was already waiting when the world hit refresh —
+not composed in a three-minute panic after the outcry.
+
+~ Somewhere in the metadata there is always a clock that wasn't in the meeting.
+
+The rest of the ledger is short. In its entire life, this repository has entries from exactly
+four named human beings — six entries, all within the first four days — and twenty-five bulk
+snapshots from the faceless team account. After mid-2023 it goes silent for 783 days. Then,
+in September 2025, one enormous entry arrives under six quiet words: "update for-you
+recommendations code." Inside, political labels are back — an AI model, Grok, now classifies
+each post as politics-left or politics-right — and next to each one sits a fresh comment:
+*"Purely for metrics tracking. Does not affect the recommendations."*
+
+## The room they shipped
+
+Apple did the thing the other two didn't dare.
+
+When the Swift programming language went public in December 2015, Apple didn't publish a
+snapshot, and it didn't dress the dates. It published the actual ledger, back to the actual
+beginning: ten minutes to midnight on a Saturday in July 2010, Chris Lattner, alone, five
+years before the public would learn Swift existed. The first entry contains nothing at all —
+an empty folder, filed like a held breath. Thirteen minutes later the entire language is nine
+files, and the compiler's main program is one empty function that does nothing. The entry's
+title, typed at four minutes past midnight: *"initial checkin, nothing much to see here."*
+
+They published that shrug. They published all of it — five years of a language being invented
+in secret, including everything a company would normally be embarrassed by. Twenty-four
+thousand entries still reference Apple's internal bug tracker, tickets you will never be able
+to read. And for five days in July 2011, Swift methods were declared with the keyword `meth`
+— until a commit removed it with the explanation, smiley included, that the new syntax
+"eliminates drug references. :)". A design meeting, preserved verbatim, forever.
+
+Apple's costume is one garment. Every file from the secret years now opens with a legal
+header: *part of the Swift.org open source project, Copyright 2014–2015*. Ask the ledger who
+wrote that line in the oldest files and it says Chris Lattner, July 2010 — five years before
+Swift.org existed, four years before the earliest year in its own copyright. The header was
+stamped onto history the night before publication. It is Microsoft's move, run in reverse:
+Microsoft forged the date and kept the files; Apple kept the dates and forged the letterhead.
+The night before you publish your history, someone from legal walks through it, and the walk
+leaves footprints.
+
+## At home
+
+If you take one habit from this, take the two clocks. Next time you inherit a codebase — a
+vendored library, a fork, a migration, anything "open-sourced" — print both dates on its
+ledger and read the gaps. Written-at far from filed-at is always a story: an import, a
+rescue, a patch that outlived its author, or a plaque. Then compare the files against their
+own wrapping: a revision note dated after its entry, a copyright younger than the line it
+sits on, an email from 2013 wearing 1982. Contents and container are packed by different
+hands, and they disagree exactly where somebody made a decision.
+
+The box Microsoft packed says *MS-DOS v1.25 Release*, and the date on the plaque is the date
+of nothing. The box Twitter packed says *Twitter Recommendation Algorithm*, and holds no
+algorithm's history — thirty-one photographs of one. The box Apple packed says there is
+nothing much to see here. It is the only one of the three with everything inside.
+
+---
+
+*The twin clock-seconds, the 2013 email filed under 1982, the deletion written two hours
+before the release it cleans up, and the license header from the future are all real and
+public, reproducible with a git command each. The full technical dig is here:
+[Nothing much to see here — the full dig](08-costume.full.html).*

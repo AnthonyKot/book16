@@ -147,6 +147,10 @@ CHAPTERS = [
      "The complete dig: php's empty tree, cpython's September-in-August, Linus's cut in writing, redis at 10:30:00, openttd's crashed SVN, and Linux's four roots.", "06-genesis.full"),
     ("05-git", 'chapter <b>05</b> · full dig · repo <b>git/git</b> · the night the names were made',
      "The complete dig: the false law, the 177-second copyright, the empty announcement, the 01:10 flip, and the formatting-only patch that amended the constitution.", "05-git.full"),
+    ("08-costume.reader", 'chapter <b>08</b> · three repos · the corporate costume',
+     "MS-DOS, the-algorithm, Swift: three companies published their history as a git repo, and each decided differently what history is — told plainly.", "08-costume"),
+    ("08-costume", 'chapter <b>08</b> · full dig · three repos · the corporate costume',
+     "The complete dig: the 1982 date with a 2018 clock second, the scrub authored before the dump it apologizes for, and the license header planted into 2010.", "08-costume.full"),
 ]
 
 def receipts_regen_note(stem):
