@@ -58,9 +58,10 @@ def render(md):
             i+=1; continue
         if ln.strip()=="":
             i+=1; continue
-        # paragraph: gather until blank
+        # paragraph: gather until blank (authoring comments like <!-- CHECK: --> never render)
         para=[ln]; i+=1
         while i<len(lines) and lines[i].strip()!="" and not lines[i].startswith(("#","```",">")):
+            if lines[i].lstrip().startswith("<!--"): i+=1; continue
             para.append(lines[i]); i+=1
         text=" ".join(para)
         if text.startswith("~ "):
