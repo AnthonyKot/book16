@@ -74,8 +74,8 @@ Bitcoin's lead maintainer signed a tag for a "critical bug-fix release" — for 
 then moved real money. Ask the obvious follow-up: is that commit part of today's Bitcoin? No. It's
 reachable from exactly one place in the entire repository — the tag itself. Delete the tag and the
 signed critical release becomes reachable from nothing. (The fix didn't vanish; today's history
-carries a byte-identical twin under a different hash, left over from a long-ago rebuild of the
-project's early history.) A tag isn't just decoration on history. Sometimes it's the only surviving
+carries an identical change — same author, same date, same diff — under a different hash, left
+over from a long-ago rebuild of the project's early history.) A tag isn't just decoration on history. Sometimes it's the only surviving
 witness to a version of history the main branch walked away from — and "everything important is
 reachable from the main branch" is an assumption a signed critical release is quietly disproving.
 
