@@ -208,6 +208,10 @@ CHAPTERS = [
      "curl's first commit contains a compiled copy of curl — because five weeks earlier its maintainer's source disk died. Told plainly.", "22-curl"),
     ("22-curl", 'chapter <b>22</b> · full dig · repo <b>curl/curl</b> · the first commit is a recovery',
      "The complete dig: the 144-file shovel-load, the crash entry inside it, the HttpGet pre-history, and twenty-six years between one author's first and latest commits.", "22-curl.full"),
+    ("23-heartbleed.reader", 'chapter <b>23</b> · repo <b>openssl/openssl</b> · CVE-2014-0160',
+     "The famous Heartbleed commit never shipped — its twin, thirty-nine seconds younger on another branch, is the one that bled. Told plainly.", "23-heartbleed"),
+    ("23-heartbleed", 'chapter <b>23</b> · full dig · repo <b>openssl/openssl</b> · CVE-2014-0160',
+     "The complete dig: the ancestry test the folklore fails, the 39-second twin, the author fields vs the Submitted-by line, the absent check, and the two-if fix.", "23-heartbleed.full"),
 ]
 
 # Source prefixes are stable production IDs: receipt generators and manuscript links use them.
@@ -226,7 +230,7 @@ DRAFTS = {
     "02-log4j2", "03-bitcoin", "05-git", "06-genesis",
     "08-costume", "11-ffmpeg", "13-node", "16-empty",
     "17-dirtycow", "18-signatures", "19-openttd",
-    "20-redis", "21-iojs", "22-curl",
+    "20-redis", "21-iojs", "22-curl", "23-heartbleed",
 }
 
 def public_kicker(stem, kicker):
