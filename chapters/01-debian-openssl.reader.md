@@ -1,7 +1,7 @@
 # The nine minutes
 
 It is a Tuesday afternoon in May 2006, and somewhere a maintainer named Kurt Roeckx has a bug to
-close before he gets up from his desk. Not a glamorous bug. A tooling complaint — someone else's
+close before he gets up. Not a glamorous bug. A tooling complaint — someone else's
 warning on someone else's code, waiting for you to make the red text stop.
 
 He opens the file. He makes a small change. Nine minutes later he commits it and, in every sense
