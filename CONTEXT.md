@@ -28,6 +28,9 @@ locators in their head.
   no hindsight-flattering. The reader should think "I might have done this."
 - **Chapter changes how the reader reads their own repo.** Each chapter ends with what to run
   at home — woven in, not a boxed sidebar.
+- **Reader cut ≤ 2,000 words.** The counter is prose-only: `grep -v '^<!--' NN-x.reader.md | wc -w`
+  (authoring comments excluded; the italic footer and code panels count). Settled 2026-08-21 after
+  two sessions counted the same file differently.
 - External (non-git) facts carry `<!-- CHECK: -->` markers until an adversarial review pass
   clears them, then `<!-- VERIFIED: evidence + source URL -->` comments preserve the invisible
   audit trail (book14 pipeline: draft → grok/agy/codex reviews → canonical).
