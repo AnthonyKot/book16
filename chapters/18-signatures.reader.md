@@ -6,7 +6,8 @@ taught me to run it.
 
 In April 2014, the OpenSSL project shipped the most anxiously awaited release in its history —
 version 1.0.1g, the one that closed the Heartbleed hole while a large share of the internet's
-servers stood bleeding their private keys to anyone who asked. Ask git today to verify the
+servers stood bleeding their private keys to anyone who asked.
+<!-- VERIFIED: Heartbleed = CVE-2014-0160, disclosed 2014-04-07; OpenSSL 1.0.1g released 2014-04-07 as the fix; ~17% (~half a million) of trusted secure web servers were believed vulnerable, exposing private keys. https://heartbleed.com/ and https://www.cisa.gov/news-events/alerts/2014/04/08/openssl-heartbleed-vulnerability-cve-2014-0160 --> Ask git today to verify the
 cryptographic signature on that release's tag — the tag cut by the world's most important
 cryptography project, at the peak of the worst cryptographic emergency it would ever face — and
 here is the complete answer:
@@ -81,7 +82,8 @@ reachable from the main branch" is an assumption a signed critical release is qu
 
 The same trick turns tag headers into a staffing chart. During the Log4Shell fire in December 2021,
 the three emergency patch releases were signed in eight days by three *different* maintainers, one
-of them tagging a release another had prepared the night before. No changelog records that hand-off;
+of them tagging a release another had prepared the night before.
+<!-- VERIFIED: Log4Shell = CVE-2021-44228, disclosed 2021-12-09/10; 2.15.0/2.16.0/2.17.0 were the emergency-response releases. https://www.cisa.gov/news-events/alerts/2021/12/10/apache-log4j-vulnerability-cve-2021-44228 and https://logging.apache.org/log4j/2.x/security.html --> No changelog records that hand-off;
 the tag headers do. When people say the world's infrastructure runs on a handful of tired
 volunteers passing a baton, this is what the primary source looks like: three names, eight days, one
 burning project.

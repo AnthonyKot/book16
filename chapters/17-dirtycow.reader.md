@@ -71,11 +71,13 @@ web traffic hitting his own servers and pulled a live, working exploit for this 
 of the capture. The attack caught in the act, not imagined in a lab. (The "not Paul" is his own
 joke, a man tired of being confused with someone else, now preserved forever in the kernel's
 permanent record because he happened to notice a fire that had smoldered since 2005.)
+<!-- VERIFIED: Phil Oester discovered CVE-2016-5195 (Dirty COW) from an exploit found in captured inbound HTTP traffic to a server he ran; a local privilege-escalation race in the kernel's copy-on-write memory handling. https://en.wikipedia.org/wiki/Dirty_COW and https://www.helpnetsecurity.com/2016/10/21/dirty-cow-linux-kernel-zero-day/ -->
 
 The fix was authored on October 13th and committed five days later, on the 18th — the day before
 the public write-ups appeared, with a request to ship it back through every supported kernel. Five
 days between a finished fix and its public commit, ending the day before the world is told, is the
 shape a coordinated disclosure leaves behind.
+<!-- VERIFIED: CVE-2016-5195 publicly disclosed 2016-10-19/20; the fix commit is dated 2016-10-18. https://en.wikipedia.org/wiki/Dirty_COW and https://www.helpnetsecurity.com/2016/10/21/dirty-cow-linux-kernel-zero-day/ -->
 
 The repair itself was tiny — thirteen lines — and its idea was, in spirit, the very thing Linus
 tried in 2005: check the dirty bit properly. It took eleven years to ship, not because the idea was
@@ -95,6 +97,7 @@ and left nothing in the logs. It was patched in the mainline kernel within days 
 report — but between "the mainline kernel" and "the billions of devices running it" stands every
 vendor and carrier who has to ship the update, and many never did. The fix was eleven years late to
 the source, and for a great many phones it never arrived at all.
+<!-- VERIFIED: CVE-2016-5195 affected Linux kernels from 2.6.22 (Sep 2007) to before 4.8.3; local privilege escalation via the COW race; affected Linux servers and Android devices; reliable and leaves no log trace. https://en.wikipedia.org/wiki/Dirty_COW and https://access.redhat.com/security/vulnerabilities/DirtyCow -->
 
 ## At home
 
