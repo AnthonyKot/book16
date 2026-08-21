@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>07</b> · repo <b>postgres/postgres</b> · the hack nobody dares fix</p>
+<p class="kicker">chapter <b>05</b> · repo <b>postgres/postgres</b> · the hack nobody dares fix</p>
 <h1>THIS IS A HACK TO GET V4 OUT THE DOOR</h1>
 <p>Buried inside PostgreSQL — the database quietly running underneath a huge share of the world's software — there is a number, and the number is one third.</p>
 <p>Here is what it does. When the database receives a query, it has to <em>plan</em> how to run it, and to plan well it needs to estimate how many rows each condition will match. Usually it has statistics to work from. But when a condition is something it can't measure — a function call in a <code>WHERE</code> clause, say — it has to fall back on a pure guess, and its guess is: one third of the rows will match. That single number then shapes how the entire query gets executed.</p>

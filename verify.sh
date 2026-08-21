@@ -16,7 +16,7 @@ else
 fi
 
 # --- final public reading order ---
-expected_order=$(printf '%s\n' 05-git 01-debian-openssl 13-node 02-log4j2 08-costume 04-xz 15-postgres 07-vim)
+expected_order=$(printf '%s\n' 04-xz 01-debian-openssl 10-t2t 14-openssl 15-postgres 12-php 09-npm 07-vim)
 actual_order=$(sed -n '/<h2>Chapters<\/h2>/,/<\/ol>/p' index.html \
   | grep '<li><span class="num">' \
   | sed -E 's/.*href="chapters\/([^".]+)\.html".*/\1/')

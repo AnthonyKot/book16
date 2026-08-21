@@ -14,7 +14,7 @@
   <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
 </div></header>
 <main class="wrap">
-<p class="kicker">chapter <b>03</b> · repo <b>nodejs/node</b> · the deletion behind the folklore</p>
+<p class="kicker">P.S. <b>draft</b> · repo <b>nodejs/node</b> · the deletion behind the folklore</p>
 <h1>Remove promises</h1>
 <p>Every programmer who has touched Node.js knows its origin story. Node — the software that runs much of the internet's plumbing, the thing that made JavaScript a serious server language — was built on <em>callbacks</em>. Instead of a clean way to say "do this, then do that with the result," you handed the system a function to phone back when it finished, and those phone-back functions nested inside each other until code drifted rightward across the screen in a shape programmers named, with feeling, "the pyramid of doom" and "callback hell." An entire decade of libraries existed just to make it bearable. And it was all traced back to a founding decision: Node's creator chose callbacks over the cleaner alternative the JavaScript world would eventually standardize, a thing called Promises.</p>
 <p>That is the story everyone repeats. It is also, in a specific and provable way, false — and the proof has been sitting in Node's own history the whole time, in a spot almost nobody thinks to look.</p>

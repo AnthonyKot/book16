@@ -189,18 +189,18 @@ CHAPTERS = [
 # Source prefixes are stable production IDs: receipt generators and manuscript links use them.
 # Public chapter numbers follow the final eight-chapter reading order.
 FINAL_ORDER = {
-    "05-git": "01",
+    "04-xz": "01",
     "01-debian-openssl": "02",
-    "13-node": "03",
-    "02-log4j2": "04",
-    "08-costume": "05",
-    "04-xz": "06",
-    "15-postgres": "07",
+    "10-t2t": "03",
+    "14-openssl": "04",
+    "15-postgres": "05",
+    "12-php": "06",
+    "09-npm": "07",
     "07-vim": "08",
 }
 DRAFTS = {
-    "03-bitcoin", "06-genesis", "09-npm", "10-t2t",
-    "11-ffmpeg", "12-php", "14-openssl", "16-empty",
+    "02-log4j2", "03-bitcoin", "05-git", "06-genesis",
+    "08-costume", "11-ffmpeg", "13-node", "16-empty",
 }
 
 def public_kicker(stem, kicker):

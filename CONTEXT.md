@@ -48,11 +48,36 @@ locators in their head.
 
 - `scout/` — 23 grok reports + 23 codex verify/extend reports + SELECTION.md (Round 1 ranking;
   v2 with Round 2 + codex digs pending).
-- Final public sequence (source IDs remain stable for receipts): 05 Git → ch.01; 01 Debian
-  OpenSSL → ch.02; 13 Node → ch.03; 02 Log4j2 → ch.04; 08 Costume → ch.05; 04 xz →
-  ch.06; 15 Postgres → ch.07; 07 Vim → ch.08.
+- Final public sequence, second edition (source IDs remain stable for receipts): 04 xz → ch.01;
+  01 Debian OpenSSL → ch.02; 10 t2t → ch.03; 14 Dual EC → ch.04; 15 Postgres → ch.05;
+  12 PHP → ch.06; 09 npm → ch.07; 07 Vim → ch.08. (2026-08-21, from the SDE reader test,
+  user's constraint: exactly 4 out / 4 in, order and rework delegated to the working sessions.
+  OUT: Git — readers "didn't get it"; Costume — "messy, no plot", scored 4; Node — weak plot,
+  "I'd replace right away"; Log4j2 — scored 6 with a rewrite-level concision complaint, and it
+  is the corpus's most-retold folklore, so its surprise budget is lowest. IN: PHP, npm, t2t,
+  Dual EC — Dual EC matches the formula the reader rewarded (one person, one artifact,
+  restraint, real stakes). Order logic: xz opens (user's pick); xz→Debian OpenSSL is a
+  deliberate contrast (attack, then honest mistake); t2t and Postgres are breathers between
+  the security chapters; PHP→npm pairs repo forgery with registry sabotage; Vim keeps the
+  elegy close.)
 - The other eight completed investigations remain accessible under `P.S. Drafts` on the contents
   page, but are not part of the numbered book.
+
+## SDE reader test (2026-08-21, in progress)
+
+Full scoreboard from a professional-engineer reader: **Postgres and Vim best** ("more or less
+well written" — the writing carried them); **xz 7**; **Log4j2 6**; **Debian OpenSSL and Node
+"kind of ok"** — entertaining but not high-quality writing/story (OpenSSL misses the
+significance of the bug; Node has a weak plot → demoted); **Costume 4 → demoted**; **Git
+worst** — readers "didn't get it". Calibration: this reader scores PROSE QUALITY first
+(the two most-restrained chapters won), then real-world consequence; clever-meta and
+whimsy registers (Costume, Git) rate low even when model reviewers and blind sims rate them
+high. Recurring note: write more concisely, and end with the real post-factum impact (for
+xz: how far the payload actually got, the sshd/libsystemd target, the Jia Tan working-hours
+research; for Debian OpenSSL: the two years of guessable keys). Open follow-ups: impact
+endings for xz and Debian OpenSSL (sourced, VERIFIED-marked); concision trims on flagged
+chapters; soft sim defects on t2t/npm. (The 4-out/4-in swap itself landed — see the sequence
+note above.)
 
 ## Fix backlog (blind reader-test pass, 2026-08-19)
 
