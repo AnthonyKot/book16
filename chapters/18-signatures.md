@@ -145,7 +145,7 @@ assumption a signed critical release is quietly disproving.
 The same reading turns tag headers into a staffing chart. In December 2021, during the Log4Shell
 emergency, the three patch releases that fought the fire — 2.15.0, 2.16.0, 2.17.0 — were tagged in
 eight days by three *different* people, Ralph Goers, Matt Sicker, and Gary Gregory, and 2.17.0's
-release commit was authored by Goers the night before Gregory tagged it [R8].
+release commit was authored by Goers the night before Gregory tagged it [R7].
 <!-- VERIFIED: Log4Shell = CVE-2021-44228, disclosed 2021-12-09/10; 2.15.0/2.16.0/2.17.0 were the emergency-response releases. https://www.cisa.gov/news-events/alerts/2021/12/10/apache-log4j-vulnerability-cve-2021-44228 and https://logging.apache.org/log4j/2.x/security.html -->
 No changelog records the hand-off; the `tagger` field does. When people say the world's
 infrastructure runs on a handful of tired volunteers passing a baton, this is the primary source:
@@ -179,4 +179,4 @@ ever shipped. Nothing looks in that gap for you. That is why it is the place to 
 - **R4** `git -C repos/xz cat-file -e 'v5.6.0^{tree}:m4/build-to-host.m4'` (absent, both tags) + `log --all -- m4/build-to-host.m4` (zero commits) + `log -S 'build-to-host.m4' -- m4/.gitignore` — the signed trees omit the payload path; the ignore-list line is Jia Tan's, 2024-02-15, nine days before 5.6.0.
 - **R5** `git -C repos/bitcoin cat-file -p refs/tags/v0.3.20.2` — signed tag, tagger Gavin Andresen, 2011-03: "critical bug-fix release"; target commit `52248a757b...`.
 - **R6** `merge-base --is-ancestor` (no) + `for-each-ref --contains` (only the tag) + `git patch-id --stable` — the signed commit is outside HEAD's history; HEAD carries a patch-identical twin `f36b494aeb...` under a different hash.
-- **R8** `for-each-ref` + `cat-file -p` on `rel/2.15.0`, `rel/2.16.0`, `rel/2.17.0` — three PGP-bearing tags across eight days of December 2021; taggers Ralph Goers, Matt Sicker, Gary Gregory; 2.17.0's target commit authored by Goers, tagged by Gregory.
+- **R7** `for-each-ref` + `cat-file -p` on `rel/2.15.0`, `rel/2.16.0`, `rel/2.17.0` — three PGP-bearing tags across eight days of December 2021; taggers Ralph Goers, Matt Sicker, Gary Gregory; 2.17.0's target commit authored by Goers, tagged by Gregory.

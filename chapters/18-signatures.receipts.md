@@ -93,12 +93,12 @@ v5.6.0 commit=2d7d862e3ffa8cec4fd3fdffcd84e984a17aa429 tree=5c8015c7712a44f2a035
 2024-02-24T15:55:08+08:00 Jia Tan <jiat0218@gmail.com>
 Bump version and soname for 5.6.0.
 v5.6.0 m4/build-to-host.m4=absent
-build-to-host.m4
+scripts/receipts-18.sh: line 6: rg: command not found
 v5.6.1 commit=fd1b975b7851e081ed6e5cf63df946cd5cbdbb94 tree=c61040fb8c1972d6da4568969d695ea73bd0a804
 2024-03-09T11:42:50+08:00 Jia Tan <jiat0218@gmail.com>
 Bump version and soname for 5.6.1.
 v5.6.1 m4/build-to-host.m4=absent
-build-to-host.m4
+scripts/receipts-18.sh: line 6: rg: command not found
 ```
 
 ```
@@ -168,35 +168,7 @@ index 0ba147bf75..d18b63eb5f 100644
                                  printf("socket send flood control disconnect (%d bytes)\n", vSend.size());
 ```
 
-## R7 — bitcoin: noversion is a signed 2018 policy marker planted on a 2014 commit
-```
-$ git -C repos/bitcoin rev-parse refs/tags/noversion 'refs/tags/noversion^{}'; git -C repos/bitcoin cat-file -p refs/tags/noversion | sed -n '1,10p;/^-----BEGIN PGP SIGNATURE-----$/p'
-8a5c4f445d1588c0a7c30cec929ecf75648b4589
-aefbf6e30cadaf77ebee44284c74cc5449dc173f
-object aefbf6e30cadaf77ebee44284c74cc5449dc173f
-type commit
-tag noversion
-tagger Wladimir J. van der Laan <laanwj@gmail.com> 1520434590 +0100
-
-dummy tag for commits on master
-
-This is a dummy tag so that `git describe` no longer shows everything
-relative to v0.9.0rc2 just because that was the last version to be tagged
-on master instead of on a branch.
------BEGIN PGP SIGNATURE-----
-```
-
-```
-$ git -C repos/bitcoin show -s --format='%H%n%aI%n%an <%ae>%n%s' aefbf6e30cadaf77ebee44284c74cc5449dc173f; git -C repos/bitcoin describe --tags 'aefbf6e30cadaf77ebee44284c74cc5449dc173f^'; git -C repos/bitcoin describe --tags aefbf6e30cadaf77ebee44284c74cc5449dc173f
-aefbf6e30cadaf77ebee44284c74cc5449dc173f
-2014-03-03T09:41:18+01:00
-Wladimir J. van der Laan <laanwj@gmail.com>
-doc: Empty release notes for next release
-v0.9.0rc2
-noversion
-```
-
-## R8 — log4j2: three emergency release tag objects, three taggers in eight days
+## R7 — log4j2: three emergency release tag objects, three taggers in eight days
 ```
 $ for tag in rel/2.15.0 rel/2.16.0 rel/2.17.0; do git -C repos/log4j2 for-each-ref --format='%(refname:short) tag=%(objectname) target=%(*objectname) %(taggerdate:iso-strict) %(taggername) %(taggeremail) | %(subject)' "refs/tags/$tag"; git -C repos/log4j2 cat-file -p "refs/tags/$tag" | sed -n '1,6p;/^-----BEGIN PGP SIGNATURE-----$/p'; git -C repos/log4j2 show -s --format='target %H%n%aI %an <%ae>%n%s' "$tag^{}"; done
 rel/2.15.0 tag=636ce10d676202b2ea4aa2bab9924a5a8c6dd401 target=c30a1398a6697fb832c650870c44284d0052103e 2021-12-10T23:20:33-07:00 Ralph Goers <rgoers@apache.org> | Release 2.15.0 of Log4j
@@ -234,6 +206,34 @@ target a19ef9bceeaad862cfc0b50394a7f791d5e17b8c
 [maven-release-plugin] prepare release log4j-2.17.0-rc1
 ```
 
+## R8 — bitcoin: noversion is a signed 2018 policy marker planted on a 2014 commit
+```
+$ git -C repos/bitcoin rev-parse refs/tags/noversion 'refs/tags/noversion^{}'; git -C repos/bitcoin cat-file -p refs/tags/noversion | sed -n '1,10p;/^-----BEGIN PGP SIGNATURE-----$/p'
+8a5c4f445d1588c0a7c30cec929ecf75648b4589
+aefbf6e30cadaf77ebee44284c74cc5449dc173f
+object aefbf6e30cadaf77ebee44284c74cc5449dc173f
+type commit
+tag noversion
+tagger Wladimir J. van der Laan <laanwj@gmail.com> 1520434590 +0100
+
+dummy tag for commits on master
+
+This is a dummy tag so that `git describe` no longer shows everything
+relative to v0.9.0rc2 just because that was the last version to be tagged
+on master instead of on a branch.
+-----BEGIN PGP SIGNATURE-----
+```
+
+```
+$ git -C repos/bitcoin show -s --format='%H%n%aI%n%an <%ae>%n%s' aefbf6e30cadaf77ebee44284c74cc5449dc173f; git -C repos/bitcoin describe --tags 'aefbf6e30cadaf77ebee44284c74cc5449dc173f^'; git -C repos/bitcoin describe --tags aefbf6e30cadaf77ebee44284c74cc5449dc173f
+aefbf6e30cadaf77ebee44284c74cc5449dc173f
+2014-03-03T09:41:18+01:00
+Wladimir J. van der Laan <laanwj@gmail.com>
+doc: Empty release notes for next release
+v0.9.0rc2
+noversion
+```
+
 ## R9 — linux: a merge commit retains a signed mergetag although this clone has no tag refs
 ```
 $ git -C repos/linux show -s --format='%H%n%P%n%aI%n%an <%ae>%n%s' 1200d84f4c0a929a0780180d25063d93773be79c
@@ -264,7 +264,8 @@ refs/remotes/origin/master commit 1200d84f4c0a929a0780180d25063d93773be79c
 ```
 $ printf 'all_commits='; git -C repos/go rev-list --all --count; git -C repos/go log --all --format='%G?' | sort | uniq -c; git -C repos/go for-each-ref refs/tags --format='%(objecttype)' | sort | uniq -c; printf 'tag_refs='; git -C repos/go for-each-ref refs/tags --format='%(refname)' | wc -l
 all_commits=71792
-  71792 N
+      3 E
+  71789 N
     491 commit
 tag_refs=491
 ```
