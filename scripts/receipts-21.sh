@@ -38,5 +38,9 @@ g "printf 'v3.3.0_tagged_commit '; git -C repos/node rev-parse 'v3.3.0^{}'; prin
 echo "## R10 — the files at the tags change title from io.js to Node.js and name v3.3.0 as v4's baseline"
 g "git -C repos/node show 'v3.3.0^{}:CHANGELOG.md' | sed -n '1,8p'" "git -C repos/node show 'v3.3.0^{}:CHANGELOG.md' | sed -n '1,8p'" 9
 g "git -C repos/node show 'v4.0.0^{}:CHANGELOG.md' | sed -n '1,14p'" "git -C repos/node show 'v4.0.0^{}:CHANGELOG.md' | sed -n '1,14p'" 15
+echo "## R11 — the 16 stranded commits are reachable from NO other ref, branch or tag"
+g "git -C repos/node rev-list --count origin/archived-io.js-v0.10 --not \$(git -C repos/node for-each-ref --format='%(refname)' | grep -v 'archived-io.js-v0.10'); git -C repos/node tag --contains e7dec60a63b9171465fd4037a04aeb709198aea2 | wc -l" "git -C repos/node rev-list --count origin/archived-io.js-v0.10 --not \$(git -C repos/node for-each-ref --format='%(refname)' | grep -v 'archived-io.js-v0.10'); git -C repos/node tag --contains e7dec60a63b9171465fd4037a04aeb709198aea2 | wc -l" 3
+echo "## R12 — the io.js release line in the repository's own tags: v1, v2, v3 across 2015"
+g "for t in v1.0.0 v2.0.0 v3.0.0 v3.3.0; do git -C repos/node for-each-ref --format='%(refname:short) %(taggerdate:iso8601-strict) %(taggername) | %(subject)' \"refs/tags/\$t\"; done" "for t in v1.0.0 v2.0.0 v3.0.0 v3.3.0; do git -C repos/node for-each-ref --format='%(refname:short) %(taggerdate:iso8601-strict) %(taggername) | %(subject)' \"refs/tags/\$t\"; done" 5
 } > "$out"
 echo "wrote $out ($(wc -l < "$out") lines)"

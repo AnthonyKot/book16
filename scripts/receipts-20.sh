@@ -45,5 +45,9 @@ echo "## R11 — April 9: the first founder-authored commit after the merge, now
 g "git -C repos/redis log --reverse --author='antirez@gmail.com' --format='%H %aI %an %s' 5e7333d2dd2950afa0bb3df06ab926afcc42db7d..HEAD | head -1" "git -C repos/redis log --reverse --author='antirez@gmail.com' --format='%H %aI %an %s' 5e7333d2dd2950afa0bb3df06ab926afcc42db7d..HEAD | head -1" 2
 g "git -C repos/redis show -s --format='%H%nAuthor: %an <%ae>%nAuthorDate: %aI%nCommit: %cn <%ce>%nCommitDate: %cI%nSubject: %s%nParents: %P%n%n%b' 96a0cfdea27fa28f93b8071ec1b3c6ef8b315298" "git -C repos/redis show -s --format='%H%nAuthor: %an <%ae>%nAuthorDate: %aI%nCommit: %cn <%ce>%nCommitDate: %cI%nSubject: %s%nParents: %P%n%n%b' 96a0cfdea27fa28f93b8071ec1b3c6ef8b315298" 14
 g "git -C repos/redis log HEAD --author='antirez@gmail.com' --since='2025-01-01T00:00:00Z' --until='2026-01-01T00:00:00Z' --format='%an' | LC_ALL=C sort | uniq -c" "git -C repos/redis log HEAD --author='antirez@gmail.com' --since='2025-01-01T00:00:00Z' --until='2026-01-01T00:00:00Z' --format='%an' | LC_ALL=C sort | uniq -c" 4
+echo "## R12 — the 2009 root's COPYING: permissive BSD terms, before everything"
+g "git -C repos/redis show ed9b544e10b84cd43348ddfab7068b610a5df1f7:COPYING | head -5" "git -C repos/redis show ed9b544e10b84cd43348ddfab7068b610a5df1f7:COPYING | head -5" 6
+echo "## R13 — 2024-03-20: the relicense commit on HEAD, ten months before the second root"
+g "git -C repos/redis show -s --format='%H%nAuthor: %aI %an <%ae>%nSubject: %s' 0b34396924eca4edc524469886dc5be6c77ec4ed" "git -C repos/redis show -s --format='%H%nAuthor: %aI %an <%ae>%nSubject: %s' 0b34396924eca4edc524469886dc5be6c77ec4ed" 4
 } > "$out"
 echo "wrote $out ($(wc -l < "$out") lines)"

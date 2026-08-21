@@ -302,3 +302,21 @@ $ git -C repos/redis log HEAD --author='antirez@gmail.com' --since='2025-01-01T0
     129 antirez
 ```
 
+## R12 — the 2009 root's COPYING: permissive BSD terms, before everything
+```
+$ git -C repos/redis show ed9b544e10b84cd43348ddfab7068b610a5df1f7:COPYING | head -5
+Copyright (c) 2006-2009, Salvatore Sanfilippo
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+```
+
+## R13 — 2024-03-20: the relicense commit on HEAD, ten months before the second root
+```
+$ git -C repos/redis show -s --format='%H%nAuthor: %aI %an <%ae>%nSubject: %s' 0b34396924eca4edc524469886dc5be6c77ec4ed
+0b34396924eca4edc524469886dc5be6c77ec4ed
+Author: 2024-03-20T22:38:24+00:00 Pieter Cailliau <pieter@redis.com>
+Subject: Change license from BSD-3 to dual RSALv2+SSPLv1 (#13157)
+```
+

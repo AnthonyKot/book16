@@ -483,3 +483,19 @@ This list of changes is relative to the last io.js v3.x branch release, v3.3.0. 
 * **util**: The `util.is*()` functions have been deprecated, beginning with deprecation warnings in the documentation for this release, users are encouraged to seek more robust alternatives in the npm registry, (Sakthipriyan Vairamani) [#2447](https://github.com/nodejs/node/pull/2447).
 ```
 
+## R11 — the 16 stranded commits are reachable from NO other ref, branch or tag
+```
+$ git -C repos/node rev-list --count origin/archived-io.js-v0.10 --not $(git -C repos/node for-each-ref --format='%(refname)' | grep -v 'archived-io.js-v0.10'); git -C repos/node tag --contains e7dec60a63b9171465fd4037a04aeb709198aea2 | wc -l
+16
+0
+```
+
+## R12 — the io.js release line in the repository's own tags: v1, v2, v3 across 2015
+```
+$ for t in v1.0.0 v2.0.0 v3.0.0 v3.3.0; do git -C repos/node for-each-ref --format='%(refname:short) %(taggerdate:iso8601-strict) %(taggername) | %(subject)' "refs/tags/$t"; done
+v1.0.0 2015-01-20T12:39:09+11:00 Rod Vagg | 2015-01-14 io.js v1.0.0 Release
+v2.0.0 2015-05-04T14:35:21-07:00 Rod Vagg | 2015-05-04 io.js v2.0.0 Release
+v3.0.0 2015-08-04T14:23:10-07:00 Rod Vagg | 2015-08-04 io.js v3.0.0 Release
+v3.3.0 2015-09-02T22:29:58+10:00 Rod Vagg | 2015-09-02 io.js v3.3.0 Release
+```
+
