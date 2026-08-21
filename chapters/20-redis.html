@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove myself too — Blame</title>
+<meta name="description" content="The commit that removed the cluster node named "myself" was also its author's goodbye. Four and a half years later he came back — as a brand-new root. Told plainly.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · repo <b>redis/redis</b> · the departure and the return</p>
+<h1>Remove myself too</h1>
+<p>On the 22nd of June, 2020, the most prolific author in the history of Redis — the in-memory database — committed a small tidy-up whose subject line reads, in full: <em>"Clarify maxclients and cluster in conf. Remove myself too."</em></p>
+<p>Read the code and the second sentence is a dry technical note. In a Redis cluster, every machine keeps a list of all the machines, and that list includes an entry for the one you are standing on — the node the code literally calls <code>"myself"</code>. When counting the cluster's network connections, you shouldn't count a connection to yourself. So the fix subtracts one from the tally. Remove the "myself" node. <em>Remove myself too.</em></p>
+<p>It is a pun, and I cannot prove it was intended — git records subject lines and diffs, not states of mind. But hold the two halves side by side. The man writing it is Salvatore Sanfilippo, who signs his commits <em>antirez</em>. Within days he will stop committing to Redis, and he will not commit again for four and a half years. Of all the sentences to leave on the way out, the ledger caught this one: a maintainer subtracting <em>myself</em> from the count of who is present.</p>
+<h2>The one-name project</h2>
+<p>To feel the departure you have to feel the scale of the presence. Ask the ledger who wrote Redis's commits and the answer is barely a list: one email address — appearing under both "antirez" and "Salvatore Sanfilippo" — accounts for 7,188 of the project's 13,257 commits. More than half. More than the other 1,500-odd contributors put together. The yearly counts read like a pulse: from about three hundred commits in the quietest year to nearly nine hundred in the busiest, every single year from 2009 through 2020. This is not a founder who wrote version one and moved to management. This is the hand still on the keys eleven years in.</p>
+<p>Three days after "Remove myself too," he filed one more small comment fix — his last commit on the main line for a very long time. That same week he published a farewell post titled "The end of the Redis adventure": he was stepping down as maintainer — <em>"I never wanted to be a software maintainer,"</em> he wrote — and handing the daily work to others. The ledger doesn't record reasons. It records results, and the result is measurable to the second: one thousand six hundred and seventy-seven days of silence. Across 2021, 2022, 2023, and 2024, the number of commits antirez made to Redis is zero.</p>
+<h2>The four years</h2>
+<p>What happens when the person behind half a project's commits walks away? The thing that is supposed to happen and so rarely does: it kept going. In 2021, for the first year on record, the most active author is someone else — Oran Agra, one of the two people the farewell post had named — and the founder is nowhere in the year's list. The crowd that had always worked in the one name's shadow kept the database shipping for four years without a single founder commit.</p>
+<p>Then, in the fourth year of the silence, the ground moved — and the tree itself records it. In March 2024, a one-commit change titled "Change license from BSD-3 to dual RSALv2+SSPLv1" moved Redis off the permissive license it had carried since its first day. Fifteen years of one social contract — the 2009 root's license file literally opens with Salvatore's name and the words "redistribution and use … are permitted" — ended in a single commit. Within days, contributors and companies forked the last permissively-licensed version and carried the old contract forward under a new name, at the Linux Foundation. That is the world in which what happens next happens.</p>
+<h2>Four roots</h2>
+<p>Most projects have exactly one first commit. Ask this repository for its parentless beginnings — commits with no history behind them — and it has four. Two are boring: imported histories of bundled dependencies. But look at the outer two. The oldest, March 2009: <code>first commit</code>, by antirez. And the newest, January 27th, 2025: also by antirez — a <em>second</em> parentless beginning, nearly sixteen years after the first and 1,677 days into his silence, titled <code>First internal release.</code> Twenty-one files, seven thousand lines, planted in one stroke, with no parent.</p>
+<p>Precision matters here: this is not a second copy of Redis. It is the independent history of a new module — vector sets — which was stitched into the main tree a few weeks later. But the precision makes it stranger, not smaller. The founder's return to his own project enters the record not as a commit on the history he left, but as a fresh origin: authored in private, numbered from one, joined in afterwards. Redis now has two beginnings, by the same man, sixteen years apart.</p>
+<p>And the first page of the second beginning deserves to be read the way you'd read the opening line of a will. The complete license file at that new root:</p>
+<blockquote>This code is Copyright (C) 2024-2025 Salvatore Sanfilippo.</blockquote>
+<blockquote>All Rights Reserved.</blockquote>
+<p>Two lines. The man whose project's first page once said <em>use this freely</em> returns, mid-license- war, with a first page that grants nothing at all — and the name on it is not a company's. It is his own.</p>
+<p>That lasts five weeks. In March 2025, one commit — "LICENSE: change copyright to Redis Ltd." — edits the file. Watch exactly what moves and what stays. The <em>name on the holder line</em> changes: Salvatore's out, the company's in. The <em>terms</em> do not: "All Rights Reserved" sits untouched through both versions. Git records the textual change, not the legal arrangement behind it. But the sequence it preserves says enough: for five weeks the founder's return bore his own name, and then it bore the company's.</p>
+<h2>The return</h2>
+<p>In April 2025 the new root was merged into the main line — the branch that had run without him for four years — and a week later the founder was committing again as an ordinary contributor, under his full legal name now, typo in his own subject line and all. By year's end he was back over a hundred commits. He returned. But the ledger is exact about the route: not a continuation of the history he left — a new origin, carrying a first page that granted nothing, his for five weeks, the company's after.</p>
+<h2>What it proves, and what it doesn't</h2>
+<p>Git takes you to the edge of this story and no further. It proves the strange shape: a man subtracts <em>myself</em> from a count and goes silent for 1,677 days; the license his project was born under is replaced in one commit; he comes back as a brand-new beginning whose first page says <em>All Rights Reserved</em> — over his name, then over the company's. It proves nothing about the why — the fights, the fork, whatever led to the return. Those live in blog posts and press releases. What's worth carrying away is the shape itself: when the terms a project is shared under become contested, the fight does not stay in the LICENSE file. It reaches into the topology of the history — a sixteen-year-old repository grows a second birthday, and a founder's homecoming gets filed under <code>First internal release.</code></p>
+<h2>At home</h2>
+<p>Distrust the singular "first commit." When you inherit a repository — especially one that has been through an acquisition, a relicense, a corporate handoff — ask git for <em>all</em> of its roots (<code>git log --max-parents=0 --all</code>). Every parentless commit is a place where history was <em>started</em> rather than continued: an import, a squash, a fresh line dropped into an old project. Read the author and date on each one. Then read the license file <em>as it existed at that exact commit</em>, not at the tip — the tip tells you where the project landed; each root tells you the moment someone decided to start a clock over. And read the holder line as carefully as the terms. The most important word on a first page is often not the license at all. It is the name in front of it.</p>
+<p>---</p>
+<p><em>The "Remove myself too" commit and its minus-one diff, the 1,677-day silence, the four parentless roots, the two-line All-Rights-Reserved license, and the five-week holder change are all real and public, reproducible with a git command each. The full technical dig is here: <a href="20-redis.full.html">Remove myself too — the full dig</a>.</em></p>
+
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

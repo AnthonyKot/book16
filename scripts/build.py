@@ -184,6 +184,30 @@ CHAPTERS = [
      "Commits that alter zero bytes and exist on purpose — doorbells for machines, markers for readers, receipts for work already done. Told plainly.", "16-empty"),
     ("16-empty", 'chapter <b>16</b> · full dig · five repos · the commit that changes nothing',
      "The complete dig: the tree-equals-parent mechanism, the 2 a.m. mirror trigger, the four QUIC phase markers, and the backport that had nothing left to apply.", "16-empty.full"),
+    ("17-dirtycow.reader", 'chapter <b>17</b> · repo <b>torvalds/linux</b> · CVE-2016-5195',
+     "Linus fixed a memory race in 2005, and two days later it was undone for an excellent reason. Eleven years on, he fixed it again — and confessed in the commit message. Told plainly.", "17-dirtycow"),
+    ("17-dirtycow", 'chapter <b>17</b> · full dig · repo <b>torvalds/linux</b> · CVE-2016-5195',
+     "The complete dig: the 2005 fix, the s390 undo, the two clocks that turned a theoretical race into Dirty COW, and the exploit found in captured traffic.", "17-dirtycow.full"),
+    ("18-signatures.reader", 'chapter <b>18</b> · seven repos · what a signature covers',
+     "The release that fixed Heartbleed is not signed. The xz releases that carried a backdoor are. What a tag object actually attests — told plainly.", "18-signatures"),
+    ("18-signatures", 'chapter <b>18</b> · full dig · seven repos · what a signature covers',
+     "The complete dig: 'error: no signature found' on 1.0.1g, the signed xz trees that omit the payload, and a critical Bitcoin fix reachable only from its tag.", "18-signatures.full"),
+    ("19-openttd.reader", 'chapter <b>19</b> · repo <b>OpenTTD/OpenTTD</b> · the typo that wasn\'t',
+     "A stranger fixed an obvious typo in a table of constants. Two days later it was reverted, because the value only looked wrong — and the revert wrote the reason where the next person would look. Told plainly.", "19-openttd"),
+    ("19-openttd", 'chapter <b>19</b> · full dig · repo <b>OpenTTD/OpenTTD</b> · the typo that wasn\'t',
+     "The complete dig: the one-cell change, the one-in-twelve toll gate that made the numbers incomparable, and the five-line comment still standing seven years on.", "19-openttd.full"),
+    ("20-redis.reader", 'chapter <b>20</b> · repo <b>redis/redis</b> · the departure and the return',
+     "The commit that removed the cluster node named \"myself\" was also its author's goodbye. Four and a half years later he came back — as a brand-new root. Told plainly.", "20-redis"),
+    ("20-redis", 'chapter <b>20</b> · full dig · repo <b>redis/redis</b> · the departure and the return',
+     "The complete dig: the minus-one diff, the 1,677-day silence, the parentless 2025 root whose LICENSE granted nothing, and the holder line that changed five weeks later.", "20-redis.full"),
+    ("21-iojs.reader", 'chapter <b>21</b> · repo <b>nodejs/node</b> · the fork war on a stranded branch',
+     "Sixteen commits on an archived branch preserve the private war room where Node.js was forked — and the seam where the reunion was declared rather than merged. Told plainly.", "21-iojs"),
+    ("21-iojs", 'chapter <b>21</b> · full dig · repo <b>nodejs/node</b> · the fork war on a stranded branch',
+     "The complete dig: the governance draft, the four-week clock, the binary renamed out and back, and a changelog baseline that git will not confirm as ancestry.", "21-iojs.full"),
+    ("22-curl.reader", 'chapter <b>22</b> · repo <b>curl/curl</b> · the first commit is a recovery',
+     "curl's first commit contains a compiled copy of curl — because five weeks earlier its maintainer's source disk died. Told plainly.", "22-curl"),
+    ("22-curl", 'chapter <b>22</b> · full dig · repo <b>curl/curl</b> · the first commit is a recovery',
+     "The complete dig: the 144-file shovel-load, the crash entry inside it, the HttpGet pre-history, and twenty-six years between one author's first and latest commits.", "22-curl.full"),
 ]
 
 # Source prefixes are stable production IDs: receipt generators and manuscript links use them.
@@ -201,6 +225,8 @@ FINAL_ORDER = {
 DRAFTS = {
     "02-log4j2", "03-bitcoin", "05-git", "06-genesis",
     "08-costume", "11-ffmpeg", "13-node", "16-empty",
+    "17-dirtycow", "18-signatures", "19-openttd",
+    "20-redis", "21-iojs", "22-curl",
 }
 
 def public_kicker(stem, kicker):

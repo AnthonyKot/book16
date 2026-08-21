@@ -9,10 +9,14 @@ cd "$(dirname "$0")"
 fail=0
 
 # --- unresolved factual markers ---
-if grep -R -n --include='*.md' '<!-- CHECK:' chapters; then
-  echo "FAIL unresolved factual CHECK comments remain in chapters"; fail=1
+# Scope: the manuscripts build.py publishes (NN-name.md and NN-name.reader.md).
+# Excluded on purpose: *.fable.md (pre-gate drafts, where CHECK markers are the
+# point) and *-review*.md / *-review-prompt.md (reviewers quote the markers).
+pub_md=$(ls chapters/*.md | grep -vE '\.(fable|receipts)\.md$' | grep -vE 'review')
+if grep -n '<!-- CHECK:' $pub_md; then
+  echo "FAIL unresolved factual CHECK comments remain in published manuscripts"; fail=1
 else
-  echo "checked zero unresolved factual CHECK comments"
+  echo "checked zero unresolved factual CHECK comments in $(echo "$pub_md" | wc -l) published manuscripts"
 fi
 
 # --- final public reading order ---
@@ -60,7 +64,7 @@ fi
 
 
 # --- chapter 02 -> repos/log4j2 ; chapter 03 -> repos/bitcoin ---
-for pair in "02-log4j2:log4j2" "03-bitcoin:bitcoin" "04-xz:xz" "05-git:git" "07-vim:vim" "10-t2t:tensor2tensor" "11-ffmpeg:ffmpeg" "12-php:php" "13-node:node" "14-openssl:openssl" "15-postgres:postgres"; do
+for pair in "02-log4j2:log4j2" "03-bitcoin:bitcoin" "04-xz:xz" "05-git:git" "07-vim:vim" "10-t2t:tensor2tensor" "11-ffmpeg:ffmpeg" "12-php:php" "13-node:node" "14-openssl:openssl" "15-postgres:postgres" "17-dirtycow:linux" "19-openttd:openttd" "20-redis:redis" "21-iojs:node" "22-curl:curl"; do
   ch="${pair%%:*}"; rp="repos/${pair##*:}"; m="chapters/${ch}.md"
   [ -f "$m" ] || continue
   if [ -d "$rp/.git" ]; then
@@ -88,6 +92,24 @@ if [ -f "$m" ]; then
     [ $found -eq 1 ] || { echo "FAIL $m: hash $h not in any ch06 clone"; fail=1; }
   done
   echo "checked $(grep -oE '\b[0-9a-f]{10}\b' "$m" | sort -u | wc -l) hashes against ch06 clones (union)"
+  for r in $(grep -oE '\[R[0-9]+\]' "$m" | tr -d '[]' | sort -u); do
+    n=${r#R}; grep -qE "^- \*\*R${n}\*\* " "$m" || { echo "FAIL $m: $r cited but no receipt line"; fail=1; }
+  done
+fi
+
+# --- chapter 18 (cross-repo): each hash must exist in at least one of the named clones ---
+m=chapters/18-signatures.md
+if [ -f "$m" ]; then
+  CH18_REPOS="openssl xz bitcoin log4j2 linux go cpython"
+  # tagger lines carry Unix timestamps that look like 10-digit hashes; exclude them
+  for h in $(grep -v '^tagger ' "$m" | grep -oE '\b[0-9a-f]{10,40}\b' | sort -u); do
+    found=0
+    for rp in $CH18_REPOS; do
+      [ -d "repos/$rp/.git" ] && git -C "repos/$rp" cat-file -e "${h}^{object}" 2>/dev/null && { found=1; break; }
+    done
+    [ $found -eq 1 ] || { echo "FAIL $m: hash $h not in any ch18 clone"; fail=1; }
+  done
+  echo "checked $(grep -v '^tagger ' "$m" | grep -oE '\b[0-9a-f]{10,40}\b' | sort -u | wc -l) hashes against ch18 clones (union)"
   for r in $(grep -oE '\[R[0-9]+\]' "$m" | tr -d '[]' | sort -u); do
     n=${r#R}; grep -qE "^- \*\*R${n}\*\* " "$m" || { echo "FAIL $m: $r cited but no receipt line"; fail=1; }
   done

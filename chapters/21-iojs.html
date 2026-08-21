@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Said public when I meant private — Blame</title>
+<meta name="description" content="Sixteen commits on an archived branch preserve the private war room where Node.js was forked — and the seam where the reunion was declared rather than merged. Told plainly.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · repo <b>nodejs/node</b> · the fork war on a stranded branch</p>
+<h1>Said public when I meant private</h1>
+<p>Every repository you clone carries branches you never look at, and most of them are noise. But in the official Node.js repository there is an archived branch holding sixteen commits that are reachable from nothing else — not from the main line, not from any other branch, not from a single one of the project's tags. Sixteen commits stranded on a shelf. The last of them, October 29th, 2014, carries this subject line:</p>
+<blockquote>Said public when I meant private.</blockquote>
+<p>The change is one word, in a set of meeting minutes. A line that read <em>when we made the repo public it was messaged as only being for "four weeks"</em> should have read <em>private</em>.</p>
+<p>A typo fix — the most mundane commit imaginable. It is also a confession, because the sentence being corrected is about a secret. In the autumn of 2014, the future of Node.js — the platform running an enormous share of the internet's servers — was being planned in a private repository, on a clock, by people rehearsing a governance revolution. The stranded branch is the war room, accidentally preserved. And the typo fix is my favourite kind of receipt: nobody writing "Said public when I meant private" thinks they are writing history.</p>
+<p>One caution before we go in. These minutes are the organizers' record. Joyent, the company that stewarded Node at the time, kept no diary on this shelf. What survives here is one side's diagnosis, not the other side's answer.</p>
+<h2>The rehearsal</h2>
+<p>On October 1st, 2014, the branch acquires its plan: a draft "contribution policy" written not for Joyent's repository but for a new one, <code>node-forward/node</code>. The diff quietly redirects every pointer away from the company's repo — and adds a section that had never existed in Node before, titled <strong>Governance</strong>.</p>
+<p>It names a technical committee drawn from the project's active contributors. It records that invitations went to two more people who "have not accepted but are still invited to participate." And it writes down one rule that tells you exactly what wound the document was built around:</p>
+<blockquote>No more than 30% of the TC membership can be affiliated with the same employer.</blockquote>
+<p>Nobody writes that sentence in the abstract. It names employer concentration as the problem this group chose to write down — which is their diagnosis, not proof of what the company was doing.</p>
+<h2>Four weeks</h2>
+<p>They committed their meeting minutes, which is why any of this is knowable. The section being corrected by that typo fix reads, in full:</p>
+<blockquote><code>node-forward/node</code> going public — when we made the repo private it was messaged as only being</blockquote>
+<blockquote>for "four weeks" — "four weeks" is up on November 8th — someone on the Advisory Board needs to</blockquote>
+<blockquote>remind Joyent of this in the next advisory board meeting so they aren't suprised by it — @mikeal</blockquote>
+<blockquote>will work on the messaging in the README to make it clear this is a "soft" fork and not a "hard"</blockquote>
+<blockquote>fork.</blockquote>
+<p>Every line is load-bearing. The repository is private, but only for four weeks, and the clock runs out on November 8th. Someone has to <em>remind Joyent</em> before the deadline, so the company isn't surprised. And the last worry is about wording: make clear this is a soft fork, not a hard one. These are people working out whether a pressure campaign has become a split, trying to warn the other side before going public — and keeping minutes of it, committed like code, because committing things like code was the only way they knew how to be.</p>
+<h2>io.js</h2>
+<p>The soft fork went public with a new name. On December 1st the README's opening line — Node's old one-sentence description — is replaced with:</p>
+<blockquote>io.js … This repository began as a GitHub fork of joyent/node where contributions, releases, and</blockquote>
+<blockquote>contributorship are under an open governance model.</blockquote>
+<p>An origin story in the first sentence and the manifesto in the second: <em>open governance</em>, the phrase the whole war was about. Five weeks later the split reaches the deepest place a fork can reach — the name of the program itself. A commit titled "build: rename binary from node to iojs" walks the build system and installer from <code>node</code> to <code>iojs</code>. When a fork renames its binary, it has stopped being a pressure campaign and become a product.</p>
+<p>And it shipped like one. The repository's own tags record the pace: io.js v1.0.0 in January 2015, v2.0.0 in May, v3.0.0 in August, v3.3.0 in September. Three major versions in eight months. Hold those numbers — they matter more than anything else here.</p>
+<h2>The homecoming</h2>
+<p>Then the war ends the way the minutes always hoped it would. In August 2015 a commit titled "node: rename from io.js to node" explains itself in five words: <em>based on the recent convergence.</em> That June, the two communities had agreed to merge their codebases under a neutral body — the Node.js Foundation, hosted by the Linux Foundation — with stewardship of the company's repositories transferring there. The diff is January's rename played backwards: 96 files, <code>iojs</code> becoming <code>node</code> again.</p>
+<p>Renaming the executable settled the product's name. The first reunified release is where you find out what the <em>history</em> settled.</p>
+<h2>The seam</h2>
+<p>That release was called Node.js <strong>v4.0.0</strong> — not 0.13, not 1.0. Its changelog opens by announcing its own baseline: <em>"This list of changes is relative to the last io.js v3.x branch release, v3.3.0."</em> The published numbering keeps the fork's counting — v1, v2, v3, then Node v4. The rebels' release record became the official one.</p>
+<p>Now ask git the same question. Is io.js v3.3.0 an ancestor of Node v4.0.0?</p>
+<p>It is not. The two tagged releases sit on lines that had already diverged — 151 commits on one side, 209 on the other, from a common base. The connection was made with a document instead: someone cherry-picked the io.js v3.3.0 changelog entry onto the v4 line as its own commit, so the new project's release record would <em>read</em> continuous where the graph is not.</p>
+<p>These are two layers answering different questions, and both answers are honest. The continuity asserted between those two releases is editorial, not ancestral. It doesn't mean the projects never merged during convergence — it means the v3.3.0 release commit is not in v4.0.0's parent chain. This particular continuity was declared, not merged.</p>
+<h2>What it cost</h2>
+<p>The bill for that seam is small, specific, and still sitting there. Node's public version numbers start at 4 because somebody else spent 1, 2, and 3 — the fork's counting is permanent. And the v4.0.0 changelog enumerates its changes relative to a release it does not descend from, which is a live hazard for the two things engineers actually do with release history: ask for every commit between two releases, or bisect across them. Do either across that boundary and you are walking a graph the changelog does not describe. I have been burned by smaller seams: the moment you read a "relative to" line as an ancestry claim, your tooling and your document disagree — and the document is the one that sounds authoritative.</p>
+<p>What the fork actually won isn't in the diff at all: the governance model named in that December README, carried into a foundation the following summer. What it left in the repository is a version number, a changelog baseline, and sixteen commits on a shelf.</p>
+<h2>At home</h2>
+<p>Two habits, both cheap. First: your repository's remote branches are an archive of the arguments the project survived. List them, find the stranded ones, and ask what they hold that the main line doesn't. A branch nobody merged and nobody deleted is often where the interesting history is.</p>
+<p>Second: when a project claims lineage — "version 4 continues version 3" — check whether the claim is ancestral or editorial. <code>git merge-base --is-ancestor v3 v4; echo $?</code> answers in one character: <code>0</code> means the graph agrees, <code>1</code> means the continuity lives in a document. Both kinds are legitimate, and neither is a lie. But they are different claims, and the day you're bisecting across the seam or trusting a changelog to list every change, the difference becomes yours to discover. The documents tell you the story the project agreed on. The graph tells you how the commits relate. Read both, and mind the seam.</p>
+<p>---</p>
+<p><em>The stranded branch and its sixteen commits, the "four weeks" minutes, the governance draft with its 30% rule, the binary renamed out and back, and the changelog that claims a baseline git will not confirm are all real and public, reproducible with a git command each. The full technical dig is here: <a href="21-iojs.full.html">Said public when I meant private — the full dig</a>.</em></p>
+
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

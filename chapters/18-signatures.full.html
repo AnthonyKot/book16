@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>error: no signature found — Blame</title>
+<meta name="description" content="The complete dig: 'error: no signature found' on 1.0.1g, the signed xz trees that omit the payload, and a critical Bitcoin fix reachable only from its tag.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · full dig · seven repos · what a signature covers</p>
+<h1>error: no signature found</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="18-signatures.html">error: no signature found</a>.</em></p>
+<p>I run <code>git tag -v</code> about as often as I run <code>git blame</code> — which is to say almost never, right up until the moment I need it and it tells me something I did not want to know. Here is the moment that taught me to run it. In April 2014, the OpenSSL project shipped the most anxiously awaited release in its history — version 1.0.1g, the one that closed the Heartbleed hole while a large share of the internet's servers stood bleeding their private keys into anyone who asked. Ask git today to verify the signature on that release's tag — the tag cut by the world's most important cryptography project, at the peak of the worst cryptographic emergency it would ever face — and here is the complete answer <a class="receipt-ref" href="#r1">R1</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/openssl tag -v OpenSSL_1_0_1g
+object b2d951e4232d2f90168f9a3dd0b7df9ecf2d81a8
+type commit
+tag OpenSSL_1_0_1g
+tagger Dr. Stephen Henson &lt;steve@openssl.org&gt; 1396889744 +0100
+
+OpenSSL 1.0.1g release tag
+error: no signature found</code></pre>
+<p>The release that repaired the internet's encryption is not signed. Not badly signed, not signed with an expired key — <em>not signed</em>. And almost nobody has ever noticed, because almost nobody ever asks. This chapter is about the asking: one command, <code>git cat-file -p</code> pointed at a tag, and the one thing it reliably reveals — not whether a release is safe, but whether the ceremony you are trusting is even there.</p>
+<h2>Four lines and maybe a promise</h2>
+<p>The whole chapter lives inside one distinction most working engineers have never had a reason to draw. The tag most people meet is a bookmark: a name pointing at a commit. But git also has the <em>annotated</em> tag — a real object in the database, with a four-line header (what it points at, its name, who made it, when) and a message. And optionally, at the very bottom, a block of PGP armor: a cryptographic signature.</p>
+<p>Here is the trap. <strong>Annotated is not signed.</strong> The four lines and the ceremony are present either way; the tagger's name looks equally official in both. The only difference between "a release attested by its maintainer" and "a note anyone could have typed" is whether a signature block sits at the bottom — and nothing in daily git usage ever shows you the bottom. <code>git tag -v</code> is the question. The OpenSSL answer above is what "no" sounds like.</p>
+<p>And the record is gentle with the man who cut that tag. The bounds-check fix that closed Heartbleed is authored by the same Stephen Henson at 00:51 in the morning of April 6th; the release-prep commit and its tag carry the same timestamp to the second, 17:55 on April 7th [R1, R2]. This is a man in the middle of the worst week of his professional life, tagging the release the entire world is refreshing for, at the instant he ships it. The signature is the step that guards against an adversary nobody in that room had spare attention for, and it is exactly the kind of step that evaporates under load. The habit did arrive, later: a pre-release tag two years on, <code>OpenSSL_1_1_0-pre6</code>, carries a PGP block, cut by Matt Caswell <a class="receipt-ref" href="#r2">R2</a>. Ceremony showed up after the emergency that most needed it — which is how ceremony usually shows up.</p>
+<p>So I came away with a tidy rule: an unsigned release is the thing to worry about. Then I opened a different repository.</p>
+<h2>The signature that attested nothing useful</h2>
+<p>Ten years later, the xz-utils compression library shipped the most infamous poisoned releases in the history of open source — 5.6.0 and 5.6.1, carrying a backdoor into the world's servers. (That attack is this book's opening chapter; here we only care what its <em>tags</em> look like.) Read one the way we just read OpenSSL's <a class="receipt-ref" href="#r3">R3</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/xz cat-file -p refs/tags/v5.6.0 | sed -n '1,7p'
+object 2d7d862e3ffa8cec4fd3fdffcd84e984a17aa429
+type commit
+tag v5.6.0
+tagger Jia Tan &lt;jiat0218@gmail.com&gt; 1708762926 +0800
+
+XZ Utils 5.6.0
+-----BEGIN PGP SIGNATURE-----</code></pre>
+<p>There it is — the block the panicked OpenSSL release lacked. The attacker put a PGP signature on his work. If your rule was "unsigned is the danger, signed is safe," the most dangerous release of the decade sails straight through, pennant up.</p>
+<p>Now look at what that block actually covers, because the mechanics are the entire lesson. A signed tag attests to the object named in its first line — here a <em>commit</em> (<code>object 2d7d862e… type commit</code>), and therefore that commit's tree, its snapshot of files. So ask git whether the backdoor's delivery vehicle, a build file called <code>m4/build-to-host.m4</code>, is <em>in</em> the tree this signature ultimately vouches for <a class="receipt-ref" href="#r4">R4</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/xz cat-file -e 'v5.6.0^{tree}:m4/build-to-host.m4' &amp;&amp; echo present || echo absent
+absent</code></pre>
+<p>Absent. Across the entire repository — every branch, all of history — that file was modified in exactly zero commits <a class="receipt-ref" href="#r4">R4</a>. It never existed in git. It lived only in the release <em>tarball</em>, the bundle installers actually consume, which is built from the tree and then, in the gap between tree and bundle, had the poisoned file slipped in. This clone cannot tell you whether any keyring would even accept the signature block; that is not the point. The point is that whatever the block attests, it attests a tree — and the tree is clean. The weapon rode in the one part of the shipment no signature named. Nine days earlier, the same hands had added a single line to the repository — <code>build-to-host.m4</code>, in git's ignore file <a class="receipt-ref" href="#r4">R4</a> — so that if the carrier ever showed up on a developer's disk, git would say nothing.</p>
+<p>Set the two releases side by side and they are the same lesson from opposite directions. One protected the world and carried no attestation. The other wore the full ceremony and attacked the world. <em>A signature answers exactly one question — was this object the one attested? — and says nothing about what got shipped under its name.</em> Ceremony and safety are simply not the same axis, and every instinct that fuses them is exploitable.</p>
+<h2>A coda: the fix only a tag remembers</h2>
+<p>One more turn of the same key, quicker, because it changes what you think a tag even <em>is</em>. In March 2011, Bitcoin's lead maintainer Gavin Andresen cut a signed tag whose message skips the ceremony <a class="receipt-ref" href="#r5">R5</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/bitcoin cat-file -p refs/tags/v0.3.20.2 | sed -n '1,7p'
+object 52248a757b25581339ca6e00cc0da05bfdb04dc8
+type commit
+tag v0.3.20.2
+tagger Gavin Andresen &lt;gavinandresen@gmail.com&gt; 1299250125 -0500
+
+critical bug-fix release (block download failures due to too-small sendbuffer)</code></pre>
+<p>A critical fix, for software that by then moved real money. Now ask the obvious follow-up — is that commit part of today's Bitcoin? <a class="receipt-ref" href="#r6">R6</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/bitcoin merge-base --is-ancestor 52248a757b... HEAD &amp;&amp; echo yes || echo no
+no
+<span class="tok-prompt">$</span> git -C repos/bitcoin for-each-ref --contains 52248a757b...
+refs/tags/v0.3.20.2</code></pre>
+<p>The commit the tag signs is reachable from exactly one ref in the whole repository — the tag itself. Delete that tag and the <em>signed</em> critical release of March 2011 is reachable from nothing. The fix did not vanish: today's history carries a patch-identical twin — same author, same date, same subject, same <code>git patch-id</code> — under a completely different hash <a class="receipt-ref" href="#r6">R6</a>. Somewhere in Bitcoin's chaotic early conversions, the line of history was rebuilt, the twin went forward, and the original — the one with the signature on it — was left standing off to the side like a demolished building's doorway. A tag is not decoration on history. Sometimes it is the only witness to a version of history the branches walked away from, and "everything important is reachable from <code>main</code>" is an assumption a signed critical release is quietly disproving.</p>
+<p>The same reading turns tag headers into a staffing chart. In December 2021, during the Log4Shell emergency, the three patch releases that fought the fire — 2.15.0, 2.16.0, 2.17.0 — were tagged in eight days by three <em>different</em> people, Ralph Goers, Matt Sicker, and Gary Gregory, and 2.17.0's release commit was authored by Goers the night before Gregory tagged it <a class="receipt-ref" href="#r7">R7</a>. No changelog records the hand-off; the <code>tagger</code> field does. When people say the world's infrastructure runs on a handful of tired volunteers passing a baton, this is the primary source: three names, eight days, one burning project.</p>
+<h2>At home</h2>
+<p>The habit costs one command. Next time you rely on a release tag — before you build from it, cite it, or trust it — read the object instead of the ref:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git cat-file -p refs/tags/v1.2.3</code></pre>
+<p>Four lines, a message, and maybe a signature block. Read each with the right suspicion: the <code>tagger</code> is a claim, not a verified identity; a <code>-----BEGIN PGP SIGNATURE-----</code> is signature <em>material</em>, not proof anything verified it (to actually check it you need the key, and <code>git tag -v</code> will tell you the rest); and the object in the first line is what the signature reaches — which is not a promise that the tarball you are about to install matches it. Then ask the one question your risk actually turns on. If it is provenance, verify the signature against a key you trust. If it is "am I running what this names," check reachability with <code>git merge-base --is-ancestor</code>. And if it is xz's question — does the artifact match the attested tree — then compare them, because that gap is boring scaffolding in ten thousand projects and, in exactly one, was the worst supply-chain attack ever shipped. Nothing looks in that gap for you. That is why it is the place to look.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/openssl tag -v OpenSSL_1_0_1g</code> — annotated tag, tagger Dr. Stephen Henson, 2014-04-07; <code>error: no signature found</code>.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/openssl show -s ... 96db9023b881...</code> + <code>merge-base --is-ancestor</code> + <code>cat-file -p refs/tags/OpenSSL_1_1_0-pre6</code> — the Heartbleed bounds-check fix authored 2014-04-06T00:51, an ancestor of the 1.0.1g release commit (same-second tag at 2014-04-07T17:55); the 2016 pre6 tag carries a PGP block, tagger Matt Caswell.</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/xz cat-file -p refs/tags/v5.6.0</code> (and <code>v5.6.1</code>) — poisoned-release tags carry PGP signature blocks, tagger Jia Tan, 2024.</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/xz cat-file -e 'v5.6.0^{tree}:m4/build-to-host.m4'</code> (absent, both tags) + <code>log --all -- m4/build-to-host.m4</code> (zero commits) + <code>log -S 'build-to-host.m4' -- m4/.gitignore</code> — the signed trees omit the payload path; the ignore-list line is Jia Tan's, 2024-02-15, nine days before 5.6.0.</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/bitcoin cat-file -p refs/tags/v0.3.20.2</code> — signed tag, tagger Gavin Andresen, 2011-03: "critical bug-fix release"; target commit <code>52248a757b...</code>.</li><li id="r6"><span class="rid">R6</span> <code>merge-base --is-ancestor</code> (no) + <code>for-each-ref --contains</code> (only the tag) + <code>git patch-id --stable</code> — the signed commit is outside HEAD's history; HEAD carries a patch-identical twin <code>f36b494aeb...</code> under a different hash.</li><li id="r7"><span class="rid">R7</span> <code>for-each-ref</code> + <code>cat-file -p</code> on <code>rel/2.15.0</code>, <code>rel/2.16.0</code>, <code>rel/2.17.0</code> — three PGP-bearing tags across eight days of December 2021; taggers Ralph Goers, Matt Sicker, Gary Gregory; 2.17.0's target commit authored by Goers, tagged by Gregory.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

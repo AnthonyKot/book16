@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>This major disk crash — Blame</title>
+<meta name="description" content="The complete dig: the 144-file shovel-load, the crash entry inside it, the HttpGet pre-history, and twenty-six years between one author's first and latest commits.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · full dig · repo <b>curl/curl</b> · the first commit is a recovery</p>
+<h1>This major disk crash</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="22-curl.html">This major disk crash</a>.</em></p>
+<p>The first commit of curl contains a copy of curl.</p>
+<p>Here is the ledger's own listing — a selection from the tree of the root commit, dated December 29th, 1999, titled <code>Initial revision</code>, 144 files, 37,273 insertions [R1, R2]:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl ls-tree -r --long ae1912cb0d494b48d514d937826c9fe83ec96c4d | awk '$5=="CHANGES" || $5=="Makefile" || $5=="config.cache" || $5=="config.log" || $5=="config.status" || $5=="curl-6.3.1.tar.gz" || $5=="src/curl" || $5 ~ /^curl.*patch$/'
+100644 blob 34cc7bf83ce0739690cee6e5fab993d7acb685d9   72928	CHANGES
+100644 blob 0eaf99620d26bd02992030c4382f71e16af72b7d   12983	Makefile
+100644 blob ba8353a0d1c15691912bff0769341cc08866f2a8    4548	config.cache
+100644 blob ac13614e42bc5ec48a804e41635c876ba4969e1c    3858	config.log
+100755 blob 8c3de4b68fa32c94f7c8a4ea91fe9f000eb20b0d   20162	config.status
+100644 blob 38bba51aa8910f0d41d755f44a007753df656eb0  242680	curl-6.3.1.tar.gz
+100644 blob 25a1b3b60c7861ca33acca5ec01c72a6358c7185   19010	curl.beos-patch
+100644 blob 242e308f9f25c6b3e7d2de4521e69ec2d70446cc   36246	curl_631_general.patch
+100644 blob 03738dbc037c1ff723ef4fe469e402bda88c70a7    2328	curl_63_form.patch
+100644 blob 9df65e232bb489e07de21815f07975d429441eb0    3051	curl_63_partialdl.patch
+100755 blob cba40a4c0c9a3d5d2992840616c9f4f7d8af9340 1830293	src/curl</code></pre>
+<p>Look at what is in there. <code>config.cache</code>, <code>config.log</code>, <code>config.status</code> — the droppings a build leaves behind, files I would normally keep out of a repository. A stack of <code>.patch</code> files. A release tarball of the <em>previous</em> version, <code>curl-6.3.1.tar.gz</code>, a quarter megabyte of compressed history sitting inside the history. And <code>src/curl</code>, mode <code>100755</code>, 1.8 million bytes: a compiled, executable binary of the program, checked into its own first commit.</p>
+<p>No one composes a first commit like this. A first commit like this is not composed at all. It is a shovel-load — a working directory picked up whole, dirt and all, and set down inside a version-control system. Which raises the only question worth asking about it: what happened right before this?</p>
+<p>For once, the repository answers in plain words.</p>
+<h2>Five weeks earlier</h2>
+<p>Among those 144 files is <code>CHANGES</code>, the project's hand-kept log — 72,928 bytes of it, years of dated entries, already ancient at the moment of the "first" commit. Its top entries are days old: Version 6.4, with work dated the 27th and 28th of December <a class="receipt-ref" href="#r3">R3</a>, the day before the root. This is not a cold archive being deposited. It is a working tree in mid-stride.</p>
+<p>Scroll down a page and you reach late November, and this <a class="receipt-ref" href="#r4">R4</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl show ae1912cb0d494b48d514d937826c9fe83ec96c4d:CHANGES | sed -n '43,52p'
+   different directories than the sources.
+
+Version 6.3.1
+
+Daniel (23 November 1999):
+ - I've had this major disk crash. My good old trust-worthy source disk died
+   along with the machine that hosted it. Thank goodness most of all the
+   things I've done are either backed up elsewhere or stored in this CVS
+   server!</code></pre>
+<p>The disk died on November 23rd. The repository begins thirty-six days later. Curl's "Initial revision" is not an initiation — the sequence makes it read as a recovery: everything that survived, gathered up and committed in one motion, tarball and binary and build droppings included, by someone who had just watched a machine take his source with it.</p>
+<p>And the ballast goes back over the side soon enough. Twelve days later <a class="receipt-ref" href="#r6">R6</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl show --format='%H%n%aI%n%an &lt;%ae&gt;%n%s' --stat 067a75e8957a91fb3407d1112931991998ae9219
+067a75e8957a91fb3407d1112931991998ae9219
+2000-01-10T23:29:47+00:00
+Daniel Stenberg &lt;daniel@haxx.se&gt;
+removed junk files
+
+ config.cache            |   86 ----
+ config.h                |  220 ---------
+ config.log              |   90 ----
+ config.status           |  492 ------------------
+ curl-6.3.1.tar.gz       |  Bin 242680 -&gt; 0 bytes
+ curl.beos-patch         |  695 --------------------------
+ curl_631_general.patch  | 1265 -----------------------------------------------
+ curl_63_form.patch      |   92 ----
+ curl_63_partialdl.patch |  106 ----
+ 9 files changed, 3046 deletions(-)</code></pre>
+<p>The subject is blunt: <code>removed junk files</code>. The tarball, the patches, the config droppings — 3,046 lines of recovery scaffolding, deleted once the project was safely breathing again. But deleted from the <em>tip</em>, not from history. The shovel-load is still sitting in the root, permanently, which is the only reason this chapter can show it to you. The emergency was cleaned up; the evidence of the emergency is forever.</p>
+<h2>Before the beginning</h2>
+<p><code>CHANGES</code> has one more thing to say, and it is about how far back a project can reach past its own first commit. Read the file's <em>bottom</em> — its oldest entries <a class="receipt-ref" href="#r5">R5</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl show ae1912cb0d494b48d514d937826c9fe83ec96c4d:CHANGES | tail -12
+ - Implemented URLs (and skipped the old syntax).
+ - Output is written to stdout, so to achieve the above example, do:
+   httpget http://143.54.10.6/info_logo.gif &gt; test.gif
+
+Version 1.1
+ Daniel Stenberg &lt;Daniel.Stenberg@sth.frontec.se&gt;
+ - Adjusted it slightly to accept named hosts on the command line. We
+   wouldn't wanna use IP numbers for the rest of our lifes, would we?
+
+Version 1.0
+  Rafael Sagula &lt;sagula@inf.ufrgs.br&gt;
+  - Wrote the initial httpget, which started all this!</code></pre>
+<p>The log does not begin with curl, and it does not begin with Daniel Stenberg. It bottoms out at a tool called <strong>HttpGet</strong>, version 1.0, by Rafael Sagula — <em>"Wrote the initial httpget, which started all this!"</em> — with Stenberg arriving at version 1.1 as the person who "Adjusted it slightly." The project's own history file, kept at the repository's tip, supplies the dates: Sagula released HttpGet 0.1 on November 11th, 1996; Stenberg's first release with his additions came on December 17th of that year, and he quickly became the project's maintainer <a class="receipt-ref" href="#r5">R5</a>.</p>
+<p>So the true stack of beginnings runs: someone else's tool, 1996; Stenberg takes it over, weeks later; it becomes curl; a disk dies, November 1999; and only <em>then</em>, December 1999, does the git-visible "Initial revision" happen — a recovery snapshot of an already three-year-old project originally written by somebody else. Every layer of that is invisible if you read the root commit's subject line and stop.</p>
+<h2>The other endpoint</h2>
+<p>Run the camera forward, because the man shoveling his surviving files into CVS at the end of 1999 is still here. Ask the clone for his latest commit <a class="receipt-ref" href="#r8">R8</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl log --author='^Daniel Stenberg &lt;' --perl-regexp --format='%H %aI %cI %an &lt;%ae&gt; %s' 695aa15743685a9d46c4c41bb9c95221d4659541 | head -1
+695aa15743685a9d46c4c41bb9c95221d4659541 2026-08-18T23:58:16+02:00 2026-08-19T07:49:55+02:00 Daniel Stenberg &lt;daniel@haxx.se&gt; urldata: remove the aptr struct</code></pre>
+<p>His first commit is this repository's root. His latest, as of this dig, is its <em>tip</em> — August 18th, 2026, at two minutes to midnight, still refactoring internals. Same email address on both. A little over twenty-six years apart, with 39,474 commits and 1,507 mailmapped authors in between, of which Stenberg authored 20,578 <a class="receipt-ref" href="#r7">R7</a>.</p>
+<p>But the record is more honest than a monopoly, and the exceptions are the part I would frame <a class="receipt-ref" href="#r10">R10</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/curl log --use-mailmap --format='%ad%x09%aN' --date=format:'%Y' 695aa15743685a9d46c4c41bb9c95221d4659541 | awk -F '\t' '{count[$1 SUBSEP $2]++; years[$1]=1} END {for (year in years) {max=0; leader=""; for (key in count) {split(key, part, SUBSEP); if (part[1]==year &amp;&amp; (count[key]&gt;max || (count[key]==max &amp;&amp; part[2]&lt;leader))) {max=count[key]; leader=part[2]}} if (leader != "Daniel Stenberg") print year, max, leader}}' | sort -n
+2008 649 Yang Tse
+2009 492 Yang Tse
+2013 664 Steve Holme
+2014 664 Steve Holme
+2025 1352 Viktor Szakats
+2026 888 Viktor Szakats</code></pre>
+<p>Six calendar years when somebody else out-authored Stenberg: Yang Tse in the late 2000s, Steve Holme in the mid-2010s, and — look at the dates — Viktor Szakats right now, in 2025 and 2026.</p>
+<p>Be careful what that proves. These rows do not show a handover: they show annual author counts, nothing about who holds the keys, and the 2026 figure runs only to the August pin. Stenberg authored the tip commit himself. What the rows do show is work distributing — the one-person project has never been only one person, and at the head of the history the year's volume has moved to someone else without a single commit marking it as a moment.</p>
+<h2>What was almost lost</h2>
+<p>Here is why the 1999 shovel-load is more than a curiosity. The tool whose source sat on that dying disk is now, by its own project's estimate, running in more than twenty billion installations — inside phones, cars, tablets, game consoles, servers, and desktop operating systems. Practically all of it is still maintained by a project where one person authored more than half the commits.</p>
+<p>In November 1999, one physical home of that future was the "good old trust-worthy source disk," and it died. What stood between curl and oblivion was the unglamorous redundancy the entry itself names — the CVS server and backups kept elsewhere — and then, thirty-six days later, a root commit that preserved a working tree whole enough to include its own tarball, patches, build residue, and compiled binary. The ugliest first commit in this book is ugly for the best reason there is: it was made by someone who had just learned, the hard way, what happens when the tidy version of your project exists in only one place.</p>
+<h2>At home</h2>
+<p>Go look at your project's actual beginning — not the README's story, the root: <code>git rev-list --max-parents=0 HEAD</code>, then <code>git ls-tree -r --long &lt;root&gt;</code>, and sort your eye by size. Read what is really in there. A tarball inside the tree, build droppings, a compiled binary, a <code>CHANGES</code> file already years long — any of those can be a fossil of the day someone moved, rescued, or recovered the project, and the subject line may not say so. Then read the oldest log file <em>as it existed at the root</em> (<code>git show &lt;root&gt;:CHANGES | tail</code>), because the pre-history of a project — the other tool it used to be, the other person who started it — survives in the files when it survives at all.</p>
+<p>And when the root turns out to be a shovel-load, before you judge whoever made it, check its date against the nearest disaster. Somewhere near the ugliest first commit you will ever inherit, there may be a sentence like <em>I've had this major disk crash</em> — written by the person who saved everything you now get to read.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/curl rev-list --max-parents=0 ...</code> + <code>show --shortstat ... ae1912cb0d49...</code> — the sole root: 1999-12-29, Daniel Stenberg, "Initial revision," 144 files, 37,273 insertions.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/curl ls-tree -r --long ae1912cb0d49... | awk ...</code> — the root tree holds <code>config.cache</code>/<code>config.log</code>/<code>config.status</code>, four <code>.patch</code> files, the prior release tarball <code>curl-6.3.1.tar.gz</code> (242,680 bytes), and the built executable <code>src/curl</code> (mode 100755, 1,830,293 bytes).</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/curl show ae1912cb0d49...:CHANGES | sed -n '1,25p'</code> — the root <code>CHANGES</code> opens at Version 6.4 with entries dated 27–28 December 1999, the days before the root commit.</li><li id="r4"><span class="rid">R4</span> <code>... | sed -n '43,52p'</code> — the 1999-11-23 entry: "I've had this major disk crash. My good old trust-worthy source disk died along with the machine that hosted it. Thank goodness most of all the things I've done are either backed up elsewhere or stored in this CVS server!"</li><li id="r5"><span class="rid">R5</span> <code>... :CHANGES | tail -12</code> + <code>show 695aa157...:docs/HISTORY.md | sed -n '15,24p'</code> — the log bottoms out at HttpGet 1.0 by Rafael Sagula ("Wrote the initial httpget, which started all this!"), Stenberg at 1.1 ("Adjusted it slightly"); HISTORY.md dates HttpGet 0.1 to 1996-11-11 and Stenberg's first release with his additions to 1996-12-17.</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/curl show --stat ... 067a75e8957a...</code> — 2000-01-10, subject <code>removed junk files</code>: tarball, patches, and config droppings deleted; 9 files, 3,046 deletions. (<code>src/curl</code> is not among them.)</li><li id="r7"><span class="rid">R7</span> <code>rev-list --count</code> + <code>shortlog -sn</code> at pin <code>695aa157...</code> — 39,474 commits, 1,507 mailmapped authors; Daniel Stenberg authored 20,578.</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/curl log --author='^Daniel Stenberg &lt;' --perl-regexp</code> (reverse head / head) — his first authored commit is the root (1999-12-29); his latest is the pinned tip (2026-08-18, "urldata: remove the aptr struct").</li><li id="r9"><span class="rid">R9</span> decade aggregation of <code>log --use-mailmap --format='%ad%x09%aN'</code> — top five authors per author-date decade in the clone.</li><li id="r10"><span class="rid">R10</span> year-leader aggregation — the six years led by another author: Yang Tse 2008–09, Steve Holme 2013–14, Viktor Szakats 2025–26 (2026 partial, to the August pin).</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

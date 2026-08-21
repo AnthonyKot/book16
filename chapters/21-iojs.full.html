@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Said public when I meant private — Blame</title>
+<meta name="description" content="The complete dig: the governance draft, the four-week clock, the binary renamed out and back, and a changelog baseline that git will not confirm as ancestry.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · full dig · repo <b>nodejs/node</b> · the fork war on a stranded branch</p>
+<h1>Said public when I meant private</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="21-iojs.html">Said public when I meant private</a>.</em></p>
+<p>Every repository you clone carries branches you never look at, and most of them are noise. But in the official Node.js repository there is a remote branch called <code>archived-io.js-v0.10</code>, and it holds sixteen commits reachable from nothing else — not from <code>main</code>, not from any other branch, and not from a single one of the project's tags [R1, R11]. Sixteen commits stranded on a shelf. The last of them, October 29th, 2014, by a developer named Mikeal Rogers, has this subject line <a class="receipt-ref" href="#r3">R3</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show -s --no-mailmap --format='%H%nparents %P%nAuthor: %aI %an &lt;%ae&gt;%nCommitter: %cI %cn &lt;%ce&gt;%n%n%B' e7dec60a63b9171465fd4037a04aeb709198aea2
+e7dec60a63b9171465fd4037a04aeb709198aea2
+parents 2c7847b3228b40aab8ea4902109639725eb0d8c3
+Author: 2014-10-29T17:30:17-07:00 Mikeal Rogers &lt;mikeal.rogers@gmail.com&gt;
+Committer: 2014-10-29T17:30:17-07:00 Mikeal Rogers &lt;mikeal.rogers@gmail.com&gt;
+
+Said public when I meant private.</code></pre>
+<p>The change is one word, in a set of meeting minutes <a class="receipt-ref" href="#r3">R3</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show --format='' --no-ext-diff e7dec60a63b9171465fd4037a04aeb709198aea2 -- doc/tc-meetings/2014-10-29.md
+diff --git a/doc/tc-meetings/2014-10-29.md b/doc/tc-meetings/2014-10-29.md
+index 0fa77502743..ce64c62ddb0 100644
+--- a/doc/tc-meetings/2014-10-29.md
++++ b/doc/tc-meetings/2014-10-29.md
+@@ -13,7 +13,7 @@
+ * Update on "release buckets"
+  * doesn't make sense while we're private, we'll wait until it is public again
+ * `node-forward/node` going public
+- * when we made the repo public it was messaged as only being for "four weeks"
++ * when we made the repo private it was messaged as only being for "four weeks"
+  * "four weeks" is up on November 8th
+  * someone on the Advisory Board needs to remind Joyent of this in the
+    next advisory board meeting so they aren't suprised by it even though</code></pre>
+<p>A typo fix. <em>Public</em> should have read <em>private</em>. It is the most mundane commit imaginable — and it is also a confession, because the sentence being corrected is about a secret. In the autumn of 2014, the future of Node.js was being planned in a private repository, on a clock, by people rehearsing a governance revolution. The stranded branch is the war room, accidentally preserved, and the typo-fix is my favorite kind of receipt: nobody writing "Said public when I meant private" thinks they are writing history.</p>
+<p>One caution before we go in, and it applies to every line that follows: these minutes are the organizers' record. Joyent — the company that stewarded Node at the time, whose repository URLs are all over this branch <a class="receipt-ref" href="#r2">R2</a> — kept no diary on this shelf. What survives here is one side's diagnosis, not the other side's answer.</p>
+<h2>The rehearsal</h2>
+<p>On October 1st, 2014, the branch acquires its plan. Mikeal Rogers drafts "a new contribution policy" — not for <code>joyent/node</code>, but for a repository called <code>node-forward/node</code> <a class="receipt-ref" href="#r2">R2</a>. The diff rewrites the contributing guide's pointers away from Joyent's repository, and adds a section that had never existed in Node before, titled <strong>Governance</strong> <a class="receipt-ref" href="#r2">R2</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show --format='' --no-ext-diff f60abb0ced54f5ba08d324e62ad3fbb306ba37f7 -- CONTRIBUTING.md | sed -n '5,11p'
+@@ -6,13 +6,13 @@ through the process.
+ 
+ ### FORK
+ 
+-Fork the project [on GitHub](https://github.com/joyent/node) and check out
++Fork the project [on GitHub](https://github.com/node-forward/node) and check out
+ your copy.</code></pre>
+<p>The new text names a technical committee drawn from Node's active contributors, records that invitations were also extended to two people "who have not accepted but are still invited to participate" — one of them TJ Fontaine — and writes down one rule that tells you what wound the document was built around: <em>"No more than 30% of the TC membership can be affiliated with the same employer."</em> <a class="receipt-ref" href="#r2">R2</a></p>
+<p>Nobody writes that sentence in the abstract. It names employer concentration as the problem this group chose to write down — which is their diagnosis, not a proven account of what Joyent was doing.</p>
+<h2>Four weeks</h2>
+<p>They committed their meeting minutes, which is why any of this is knowable. Here is the section Mikeal's typo-fix was correcting, read whole from the corrected file <a class="receipt-ref" href="#r3">R3</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show e7dec60a63b9171465fd4037a04aeb709198aea2:doc/tc-meetings/2014-10-29.md | sed -n '13,24p'
+* Update on "release buckets"
+ * doesn't make sense while we're private, we'll wait until it is public again
+* `node-forward/node` going public
+ * when we made the repo private it was messaged as only being for "four weeks"
+ * "four weeks" is up on November 8th
+ * someone on the Advisory Board needs to remind Joyent of this in the
+   next advisory board meeting so they aren't suprised by it even though
+   it was communicated to them when it was first made public.
+ * @mikeal will work on the messaging in the README to make it clear this is
+   a "soft" fork and not a "hard" fork.
+ * ramifications of going public will be discussed in next week's TC meeting as
+   well</code></pre>
+<p>Every line is load-bearing. The repository is private, but only "for four weeks," and the four weeks are up on November 8th. Someone needs to <em>remind Joyent</em> — before the deadline, so the company is not surprised. And the last worry is about wording: make clear this is a "soft" fork, not a "hard" one. These are people deciding whether a pressure campaign has become a split, trying to warn the other side before it goes public, and keeping minutes of it — committed like code, because committing things like code was the only way they knew how to be.</p>
+<h2>io.js</h2>
+<p>The soft fork went public with a new name. On December 1st, 2014, the README's first lines are rewritten; the file that had opened with Node's one-line description, <code>Evented I/O for V8 javascript.</code>, now opens <a class="receipt-ref" href="#r4">R4</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show 51514c8e8cbd98be7f29c3f1508b625d16e91b5d:README.md | sed -n '1,9p'
+io.js
+===
+
+This repository began as a GitHub fork of
+[joyent/node](https://github.com/joyent/node) where contributions,
+releases, and contributorship are under an
+[open governance model](./CONTRIBUTING.md#governance).
+
+We intend to release, with increasing regularity, releases which are</code></pre>
+<p>An origin story in the first sentence, and the manifesto in the second: <em>open governance model</em>, the phrase the whole war was about. By January 8th the split reaches the deepest place a fork can reach — the name of the executable <a class="receipt-ref" href="#r5">R5</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show -s --no-mailmap --format='%aI %an &lt;%ae&gt;%n%s' f17f473af5e28f4ec00a518f97a84b69c426309e
+2015-01-08T14:00:43+01:00 Ben Noordhuis &lt;info@bnoordhuis.nl&gt;
+build: rename binary from node to iojs</code></pre>
+<p>The diff walks the build system from <code>'target_name': 'node'</code> to <code>'target_name': 'iojs'</code>, and the installer from <code>bin/node</code> to <code>bin/iojs</code> <a class="receipt-ref" href="#r5">R5</a>. When a fork renames its binary, it has stopped being a pressure campaign and become a product. And it shipped like one — the repository's own tags record the pace <a class="receipt-ref" href="#r12">R12</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> for t in v1.0.0 v2.0.0 v3.0.0 v3.3.0; do git -C repos/node for-each-ref --format='%(refname:short) %(taggerdate:iso8601-strict) %(taggername) | %(subject)' "refs/tags/$t"; done
+v1.0.0 2015-01-20T12:39:09+11:00 Rod Vagg | 2015-01-14 io.js v1.0.0 Release
+v2.0.0 2015-05-04T14:35:21-07:00 Rod Vagg | 2015-05-04 io.js v2.0.0 Release
+v3.0.0 2015-08-04T14:23:10-07:00 Rod Vagg | 2015-08-04 io.js v3.0.0 Release
+v3.3.0 2015-09-02T22:29:58+10:00 Rod Vagg | 2015-09-02 io.js v3.3.0 Release</code></pre>
+<p>Three major versions in eight months. Hold those numbers; they are about to matter more than anything else in this chapter.</p>
+<h2>The homecoming</h2>
+<p>Then the war ends the way the minutes always hoped it would. August 13th, 2015 <a class="receipt-ref" href="#r6">R6</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show -s --no-mailmap --format='%aI %an &lt;%ae&gt;%n%s%n%n%b' a69ab27ab458385d24676792b75ad1c25b8c30e5 | sed -n '1,5p'
+2015-08-13T12:14:34-04:00 cjihrig &lt;cjihrig@gmail.com&gt;
+node: rename from io.js to node
+
+This commit replaces instances of io.js with Node.js, based on the
+recent convergence. There are some remaining instances of io.js,</code></pre>
+<p><em>Based on the recent convergence</em> — five words for the settlement of the whole conflict. In June 2015 the two communities announced they would merge their codebases under a neutral body, the Node.js Foundation, hosted by the Linux Foundation; stewardship of the Joyent repositories moved there, and the combined release shipped that September. The diff is January's rename played backwards — <code>'target_name': 'iojs'</code> becomes <code>'node'</code> again, <code>bin/iojs</code> becomes <code>bin/node</code> — 96 files, 2,162 insertions, 2,187 deletions <a class="receipt-ref" href="#r6">R6</a>.</p>
+<p>Renaming the executable settled the product's name. The first reunified release is where you find out what the <em>history</em> settled.</p>
+<h2>The seam</h2>
+<p>That release was called Node.js <strong>v4.0.0</strong> — not 0.13, not 1.0. Its changelog opens <a class="receipt-ref" href="#r10">R10</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node show 'v4.0.0^{}:CHANGELOG.md' | sed -n '1,7p'
+# Node.js ChangeLog
+
+## 2015-09-08, Version 4.0.0 (Stable), @rvagg
+
+### Notable changes
+
+This list of changes is relative to the last io.js v3.x branch release, v3.3.0. Please see the list of notable changes in the v3.x, v2.x and v1.x releases for a more complete list of changes from 0.12.x. Note, that some changes in the v3.x series as well as major breaking changes in this release constitute changes required for full convergence of the Node.js and io.js projects.</code></pre>
+<p>The changelog declares its comparison baseline: this list is <em>relative to io.js v3.3.0</em>. The published numbering keeps the fork's counting — v1, v2, v3, then Node v4. The rebels' release record became the official one.</p>
+<p>Now ask git the same question <a class="receipt-ref" href="#r9">R9</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/node merge-base --is-ancestor 'v3.3.0^{}' 'v4.0.0^{}'; echo $?
+1
+<span class="tok-prompt">$</span> git -C repos/node rev-list --left-right --count 'v3.3.0^{}...v4.0.0^{}'
+151	209</code></pre>
+<p>io.js v3.3.0 is not an ancestor of Node v4.0.0. The two tagged commits sit on lines that had already diverged — 151 commits on one side, 209 on the other, from a common base <a class="receipt-ref" href="#r9">R9</a>. The connection was made with a document instead: Rod Vagg cherry-picked the io.js v3.3.0 changelog entry onto the v4 line as its own commit — "cherry-picked from v3.x @ 1a6e52db30," says the message — and <em>that</em> commit is an ancestor of v4.0.0, though the v3.3.0 tag is not <a class="receipt-ref" href="#r7">R7</a>.</p>
+<p>These are two layers answering different questions, and both answers are honest. The continuity asserted <em>between these two releases</em> is editorial, not ancestral. That does not mean the projects never merged during convergence; it means the v3.3.0 release commit is not in v4.0.0's parent chain. This particular continuity was declared, not merged.</p>
+<h2>What it cost</h2>
+<p>The bill for that seam is small, specific, and still sitting there. Node's public version numbers start at 4 because someone else spent 1, 2, and 3 — the fork's counting is permanent. And the v4.0.0 changelog enumerates its changes relative to a release it does not descend from, which is a live hazard for exactly the two things engineers do with release history. Ask git for every commit between the v3.3.0 tag and v4.0.0 and you get a 151-and-209-shaped answer, not a release delta. Bisect across that boundary and you are walking a graph the changelog does not describe. I have been burned by smaller seams than this one: the moment you trust a "relative to" line as an ancestry claim, your tooling and your document disagree, and the document is the one that sounds authoritative.</p>
+<p>What the fork actually won is not in the diff at all — it is the governance model whose name is in that December README, carried into a foundation the following summer. What the fork left in the repository is a version number, a changelog baseline, and sixteen commits on a shelf.</p>
+<h2>At home</h2>
+<p>Two habits, both cheap. First: your repository's remote branches are an archive of the arguments the project survived. Run <code>git branch -r</code>, find the stranded ones, and ask what they hold that the main line does not — <code>git rev-list --count &lt;branch&gt; --not origin/main</code> counts commits absent from main (to prove a commit is reachable from <em>nothing</em> else, exclude every other ref and check <code>git tag --contains</code> too). Then read them.</p>
+<p>Second: when a project claims lineage — "version 4 continues version 3" — check whether the claim is ancestral or editorial. <code>git merge-base --is-ancestor v3 v4; echo $?</code> answers in one character: <code>0</code> means the graph agrees, <code>1</code> means the continuity lives in a document. Both kinds are legitimate, and neither is a lie. But they are different claims, and the day you are bisecting across the seam or trusting a changelog to enumerate every change, the difference becomes yours to discover. The documents tell you the story the project agreed on. The graph tells you how the commits relate. Read both, and mind the seam.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/node branch -r --list '*archived-io.js*'</code> + <code>rev-list --count origin/archived-io.js-v0.10 --not origin/main</code> — the stale branch holds 16 commits absent from <code>main</code>.</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/node show ... f60abb0ced54... -- CONTRIBUTING.md</code> — 2014-10-01, Mikeal Rogers (committed by isaacs, <code>PR-URL: .../node-forward/node/pull/1</code>): the governance draft — TC roster, the 30%-same-employer rule, invitations extended and not accepted (incl. TJ Fontaine).</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/node show ... e7dec60a63b9...</code> — 2014-10-29, "Said public when I meant private.": one word, public→private, in <code>doc/tc-meetings/2014-10-29.md</code>; the minutes: private "for four weeks," up November 8th, remind Joyent, "'soft' fork and not a 'hard' fork."</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/node show ... 51514c8e8cbd... -- README.md</code> — 2014-12-01, Mikeal Rogers (committed by Fedor Indutny): README replaces <code>Evented I/O for V8 javascript.</code> with "io.js … began as a GitHub fork of joyent/node … open governance model."</li><li id="r5"><span class="rid">R5</span> <code>git -C repos/node show ... f17f473af5e2...</code> — 2015-01-08, Ben Noordhuis, "build: rename binary from node to iojs": <code>target_name</code> and installed binary become <code>iojs</code>.</li><li id="r6"><span class="rid">R6</span> <code>git -C repos/node show --shortstat ... a69ab27ab458...</code> — 2015-08-13, cjihrig, "node: rename from io.js to node … based on the recent convergence": 96 files, 2,162 insertions, 2,187 deletions; the installer's <code>iojs -&gt; node</code> compatibility symlink block is unchanged context, already present from January.</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/node show -s ... 8a9a3bf798a3...</code> + <code>merge-base --is-ancestor</code> — Rod Vagg, "doc: update changelog for io.js v3.3.0," "cherry-picked from v3.x @ 1a6e52db30"; this changelog-import commit is an ancestor of v4.0.0 (the v3.3.0 <em>tag</em> is not).</li><li id="r8"><span class="rid">R8</span> <code>for-each-ref</code> + <code>show -s</code> on <code>v3.3.0</code> and <code>v4.0.0</code> — both annotated tags by Rod Vagg, targets <code>1a6e52db...</code> and <code>f9f83788...</code>, with different parents.</li><li id="r9"><span class="rid">R9</span> <code>merge-base --is-ancestor 'v3.3.0^{}' 'v4.0.0^{}'; echo $?</code> → <code>1</code> + <code>rev-list --left-right --count</code> → <code>151 209</code> — v3.3.0 is not an ancestor of v4.0.0; the lines diverge from base <code>a020d9a5...</code>.</li><li id="r10"><span class="rid">R10</span> <code>git -C repos/node show 'v4.0.0^{}:CHANGELOG.md'</code> — "# Node.js ChangeLog … This list of changes is relative to the last io.js v3.x branch release, v3.3.0 … full convergence of the Node.js and io.js projects."</li><li id="r11"><span class="rid">R11</span> <code>rev-list --count origin/archived-io.js-v0.10 --not $(every other ref)</code> → <code>16</code>; <code>git tag --contains e7dec60a...</code> → <code>0</code> — the sixteen commits are reachable from no other ref, branch or tag.</li><li id="r12"><span class="rid">R12</span> <code>for-each-ref</code> on <code>v1.0.0</code>, <code>v2.0.0</code>, <code>v3.0.0</code>, <code>v3.3.0</code> — the io.js release line: v1.0.0 (2015-01-14), v2.0.0 (2015-05-04), v3.0.0 (2015-08-04), v3.3.0 (2015-09-02), all tagged by Rod Vagg.</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

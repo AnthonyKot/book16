@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove myself too — Blame</title>
+<meta name="description" content="The complete dig: the minus-one diff, the 1,677-day silence, the parentless 2025 root whose LICENSE granted nothing, and the holder line that changed five weeks later.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · full dig · repo <b>redis/redis</b> · the departure and the return</p>
+<h1>Remove myself too</h1>
+<p><em>This is the full dig — every command, every receipt. The plain-English telling of the same story is here: <a href="20-redis.html">Remove myself too</a>.</em></p>
+<p>On the 22nd of June, 2020, the most prolific author in the history of Redis — the in-memory database — committed a small documentation tidy-up and one tiny code change. The commit subject is ordinary housekeeping with a second sentence bolted on <a class="receipt-ref" href="#r1">R1</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show -s --format='%s' 59fd178014c7cca1b0c668b30ab0d991dd3030f3
+Clarify maxclients and cluster in conf. Remove myself too.</code></pre>
+<p><em>Remove myself too.</em> Read the code it ships and the sentence is a plain technical note — one of those changes so small it barely earns a commit <a class="receipt-ref" href="#r2">R2</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show --format= --no-ext-diff 59fd178014c7cca1b0c668b30ab0d991dd3030f3 -- src/cluster.c | sed -n '8,15p'
+ unsigned long getClusterConnectionsCount(void) {
++    /* We decrement the number of nodes by one, since there is the
++     * "myself" node too in the list. Each node uses two file descriptors,
++     * one incoming and one outgoing, thus the multiplication by 2. */
+     return server.cluster_enabled ?
+-           (dictSize(server.cluster-&gt;nodes)*2) : 0;
++           ((dictSize(server.cluster-&gt;nodes)-1)*2) : 0;
+ }</code></pre>
+<p>In a Redis cluster, every node keeps a list of all the nodes, and that list includes an entry for the machine you are standing on — the node the code literally calls <code>"myself"</code>. When you count the cluster's network connections, you should not count a connection to yourself. So the fix subtracts one. Remove the "myself" node from the tally. <em>Remove myself too.</em></p>
+<p>It is a pun, and I cannot prove it was intended — git records the subject line and the diff, not the state of mind behind them. But hold the two halves side by side. The man writing this is Salvatore Sanfilippo, who signs his commits <em>antirez</em>. Within days he will stop committing to Redis, and he will not commit again for four and a half years. Of all the sentences to leave on the way out, the ledger caught this one: a maintainer subtracting <em>myself</em> from the count of who is present.</p>
+<h2>The one-name project</h2>
+<p>To feel the departure you have to feel the scale of the presence. Ask the ledger who wrote Redis's commits, and the answer is not a committee <a class="receipt-ref" href="#r5">R5</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis shortlog -sne HEAD | head -4
+  6128	antirez &lt;antirez@gmail.com&gt;
+  1060	Salvatore Sanfilippo &lt;antirez@gmail.com&gt;
+   546	Oran Agra &lt;oran@redislabs.com&gt;
+   510	Pieter Noordhuis &lt;pcnoordhuis@gmail.com&gt;</code></pre>
+<p>The top two lines are the same person — one email address, two spellings of the same human, the casual handle and the legal name. Add them together and Salvatore is behind 7,188 of the project's 13,257 commits <a class="receipt-ref" href="#r5">R5</a>: more than half, more than the other 1,500-odd contributors' commits put together. And the yearly counts read like a pulse — never fewer than 302 commits a year (the 2017 dip), as many as 865 (2014), every single year from 2009 through 2020 <a class="receipt-ref" href="#r5">R5</a>. This is not a founder who wrote the first version and moved to management. This is the hand still on the keys eleven years in.</p>
+<p>Three days after "Remove myself too," on June 25th, that hand files one more comment clarification — and that is his last pre-gap commit on the main line <a class="receipt-ref" href="#r3">R3</a>. That same week he published a post titled "The end of the Redis adventure": he was stepping down as maintainer — <em>"I never wanted to be a software maintainer,"</em> he wrote — handing the daily work to others. The ledger does not record the reasons; it records the result, and you can measure it exactly <a class="receipt-ref" href="#r4">R4</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> start=$(git -C repos/redis show -s --format=%aI ad0a9df77a2ccf3fdf309dcdd1b54cf350fcbe3c); end=$(git -C repos/redis show -s --format=%aI 33d653e24f03adadf469dc1627e15e76580f68b5); seconds=$(( $(date -d "$end" +%s) - $(date -d "$start" +%s) )); printf "from %s\nto   %s\ngap  %d days %02d:%02d:%02d\n" "$start" "$end" "$((seconds/86400))" "$(((seconds%86400)/3600))" "$(((seconds%3600)/60))" "$((seconds%60))"
+from 2020-06-25T12:58:21+02:00
+to   2025-01-27T17:24:02+01:00
+gap  1677 days 05:25:41</code></pre>
+<p>One thousand six hundred and seventy-seven days. Across the calendar years 2021, 2022, 2023, and 2024, the number of commits antirez made to Redis is zero <a class="receipt-ref" href="#r4">R4</a>.</p>
+<h2>The four years</h2>
+<p>What happens to a project when the person behind half its commits walks away? The receipts show the thing that is supposed to happen and so rarely does: it kept going. Look at the year the handover completes <a class="receipt-ref" href="#r6">R6</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis shortlog -sn HEAD --since=2021-01-01T00:00:00Z --until=2022-01-01T00:00:00Z | head -3
+   129	Oran Agra
+    72	Yossi Gottlieb
+    67	Binbin</code></pre>
+<p>In 2020, antirez had still topped the year. In 2021 the most active author is Oran Agra — one of the two people the farewell post had named — and the founder is nowhere in the year's list. The crowd that had always worked in the one name's shadow kept committing, year after year, without a single founder-authored commit among them [R4, R6].</p>
+<p>And then, in the fourth year of the silence, the ground under the project moved — and this time the tree itself records it <a class="receipt-ref" href="#r13">R13</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show -s --format='%H%nAuthor: %aI %an &lt;%ae&gt;%nSubject: %s' 0b34396924eca4edc524469886dc5be6c77ec4ed
+0b34396924eca4edc524469886dc5be6c77ec4ed
+Author: 2024-03-20T22:38:24+00:00 Pieter Cailliau &lt;pieter@redis.com&gt;
+Subject: Change license from BSD-3 to dual RSALv2+SSPLv1 (#13157)</code></pre>
+<p>March 20th, 2024: the company stewarding Redis moved the project off the permissive BSD terms it had carried since the very first commit — the 2009 root's <code>COPYING</code> opens with Salvatore's copyright and the classic "Redistribution and use … are permitted" grant <a class="receipt-ref" href="#r12">R12</a> — onto a dual source-available license. Fifteen years of one social contract, changed in one commit. Within days, a group of contributors and companies forked the last permissively-licensed version and carried the old contract forward under a new name, at the Linux Foundation. That is the world in which what happens next happens.</p>
+<h2>Four roots</h2>
+<p>Most projects have exactly one first commit. Ask this repository for its parentless roots — the commits with no history behind them — and it has four <a class="receipt-ref" href="#r7">R7</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis log --max-parents=0 HEAD --format='%H %aI %an %s'
+33d653e24f03adadf469dc1627e15e76580f68b5 2025-01-27T17:24:02+01:00 antirez First internal release.
+220a0f0880419450c9409202aac1fab4b8be0719 2021-10-10T18:26:48+03:00 Yoav Steinberg Squashed 'deps/jemalloc/' content from commit 886e40bb3
+7ee5a41aac7e5abc90d050fa509fa953ca7f1da1 2020-08-06T12:41:58-07:00 michael-grunder Squashed 'deps/hiredis/' content from commit 39de5267c
+ed9b544e10b84cd43348ddfab7068b610a5df1f7 2009-03-22T10:30:00+01:00 antirez first commit</code></pre>
+<p>The middle two are imported histories of bundled dependencies — ordinary plumbing. But look at the outer two, and at their authors. The bottom one, March 2009, is the beginning: <code>first commit</code>, by antirez. The top one, January 27th, 2025, is by antirez too — a <em>second</em> parentless beginning, nearly sixteen years after the first and 1,677 days into the silence. Its subject is <code>First internal release.</code> — the language of something starting from scratch — and it plants twenty-one files and 7,058 lines in a single stroke <a class="receipt-ref" href="#r7">R7</a>.</p>
+<p>Let me say precisely what it is, because the shortstat invites a grander reading. This is not a second copy of Redis. It is the independent history of a new <em>module</em> — the code that a few weeks later is subtree-joined into the tree as <code>modules/vector-sets/</code> <a class="receipt-ref" href="#r10">R10</a>. But that precision makes the object stranger, not smaller: the founder's return to his own project enters the graph not as a commit on the history he left, but as a fresh origin — authored in private, numbered from one, and stitched in afterwards. The ledger's four-root answer is permanent now. Redis has two beginnings by the same man, sixteen years apart.</p>
+<p>And the first page of the second beginning is the part you should read the way you would read the opening line of a will. The complete LICENSE file at that root <a class="receipt-ref" href="#r8">R8</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show 33d653e24f03adadf469dc1627e15e76580f68b5:LICENSE
+This code is Copyright (C) 2024-2025 Salvatore Sanfilippo.
+All Rights Reserved.</code></pre>
+<p>Two lines. Set them against the 2009 root's <code>COPYING</code>, with its permitted-redistribution grant <a class="receipt-ref" href="#r12">R12</a>: the man whose project's first page once said <em>use this freely</em> returns, mid-license-war, with a first page that grants nothing at all — and the name on it is not a company's. It is his own.</p>
+<p>That lasts five weeks. On March 3rd, 2025, one commit changes the line <a class="receipt-ref" href="#r9">R9</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show --no-ext-diff --format= afcc2ff6e8832dc0621fe4b90e4dae6152b0d0a8 -- LICENSE | sed -n '6,8p'
+-This code is Copyright (C) 2024-2025 Salvatore Sanfilippo.
++This code is Copyright (c) 2024-Present, Redis Ltd.
+ All Rights Reserved.</code></pre>
+<p>The subject is <code>LICENSE: change copyright to Redis Ltd.</code> <a class="receipt-ref" href="#r9">R9</a>. Watch exactly what moves and what stays. The <em>name on the holder line</em> changes — Salvatore's is replaced by the company's. The <em>terms</em> do not: <code>All Rights Reserved</code> sits there through both versions, untouched. Git records the textual change, not the legal arrangement behind it — a two-line file is not a contract archive. But the sequence it preserves is eloquent enough: for five weeks the founder's return bore his own name; then it bore the company's.</p>
+<h2>The return</h2>
+<p>For two months the second root lived off to the side, its own parentless line. On April 2nd, 2025, it was subtree-joined and merged into <code>unstable</code> — the branch that had run without the founder for four years — and the old history and the new root became one tree <a class="receipt-ref" href="#r10">R10</a>. A week later <a class="receipt-ref" href="#r11">R11</a>:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git -C repos/redis show -s --format='Author: %an &lt;%ae&gt;%nDate: %aI%nSubject: %s' 96a0cfdea27fa28f93b8071ec1b3c6ef8b315298
+Author: Salvatore Sanfilippo &lt;antirez@gmail.com&gt;
+Date: 2025-04-09T13:39:33+02:00
+Subject: Vectror Sets: build fixes for the w2v test (#13919)</code></pre>
+<p>The hand is back on the keys — under the full legal name now, with a typo in his own commit subject, and by year's end at well over a hundred commits again <a class="receipt-ref" href="#r11">R11</a>. The founder returned. But the ledger is exact about the route: not a continuation of the history he left — a new origin, carrying a first page that granted nothing, whose holder line was his for five weeks and the company's after.</p>
+<h2>What it proves, and what it doesn't</h2>
+<p>I want to be careful here, because git takes you to the edge of this story and no further. What the receipts prove is strange enough on its own: the man behind more than half of a database's commits subtracted <em>myself</em> from a count, went silent for 1,677 days while the license his project was born under was replaced in one commit, and came back as a brand-new root whose first page said <em>All Rights Reserved</em> — first over his name, then over the company's. What the receipts cannot prove is any of the <em>why</em>: the fights, the fork, whatever conversations preceded the return. Those live in blog posts and press releases. But the shape the era leaves in the tree is real, and it is the thing to carry away: when the terms a project is shared under become contested, the fight does not stay in the LICENSE file. It reaches back into the topology of the history itself — a sixteen-year-old repository acquires a second birthday, and the founder's return is filed under <code>First internal release.</code></p>
+<h2>At home</h2>
+<p>The habit this leaves you is to distrust the singular "first commit." When you inherit a repository — especially one that has been through an acquisition, a relicense, a corporate handoff — ask git for <em>all</em> of its roots:</p>
+<pre><span class="lang">console</span><code><span class="tok-prompt">$</span> git log --max-parents=0 --format='%H %aI %an %s' --all</code></pre>
+<p>Every parentless commit is a place where a history was <em>started</em> rather than continued — an import, a squash, a fresh line dropped into an old project. Read the author and date on each. Then read the LICENSE <em>at that exact commit</em>, not at the tip: <code>git show &lt;root&gt;:LICENSE</code>. The terms at the tip tell you where the project landed; the terms at each root tell you the moment someone decided to start a clock over — and if you read the holder line as carefully as the terms, whose name was on the door when they did. The most important word on a first page is often not the license at all. It is the name in front of it.</p>
+<div class="receipts"><h2>receipts</h2><ul><li id="r1"><span class="rid">R1</span> <code>git -C repos/redis show -s --format='%s' 59fd178014c7...</code> — 2020-06-22, antirez: "Clarify maxclients and cluster in conf. Remove myself too." (2 files, 9 insertions, 1 deletion).</li><li id="r2"><span class="rid">R2</span> <code>git -C repos/redis show ... 59fd178014c7... -- src/cluster.c | sed -n '8,15p'</code> — <code>getClusterConnectionsCount()</code>: <code>dictSize(...)*2</code> becomes <code>(dictSize(...)-1)*2</code>, decrementing the <code>"myself"</code> node.</li><li id="r3"><span class="rid">R3</span> <code>git -C repos/redis show -s ... ad0a9df77a2c...</code> — 2020-06-25: his last pre-gap commit on HEAD (a parallel-history twin <code>14a59d4c...</code> shares the timestamp but is not on HEAD).</li><li id="r4"><span class="rid">R4</span> <code>git -C repos/redis log --all --author=...</code> + <code>rev-list --count</code> + the printf date arithmetic — zero antirez commits across 2021–2024; the gap from 2020-06-25 to the 2025-01-27 root is 1,677 days 05:25:41.</li><li id="r5"><span class="rid">R5</span> <code>rev-list --count</code> + <code>shortlog -sne</code> + per-year counts — 7,188 of 13,257 HEAD commits under one email, two bylines; yearly counts 302 (2017) to 865 (2014), every year 2009–2020.</li><li id="r6"><span class="rid">R6</span> <code>shortlog -sn HEAD --since=2021-01-01T00:00:00Z --until=2022-01-01T00:00:00Z</code> — 2021 topped by Oran Agra (129), the founder absent.</li><li id="r7"><span class="rid">R7</span> <code>git -C repos/redis log --max-parents=0 HEAD</code> + <code>rev-list --parents</code> + <code>show --root --shortstat</code> — four parentless roots; <code>33d653e2...</code> "First internal release." (antirez, 2025-01-27, 21 files / 7,058 insertions) beside the 2009 <code>first commit</code>.</li><li id="r8"><span class="rid">R8</span> <code>git -C repos/redis show 33d653e2...:LICENSE</code> — the complete file: "This code is Copyright (C) 2024-2025 Salvatore Sanfilippo. / All Rights Reserved."</li><li id="r9"><span class="rid">R9</span> <code>git -C repos/redis show ... afcc2ff6e8... -- LICENSE | sed -n '6,8p'</code> — 2025-03-03, "LICENSE: change copyright to Redis Ltd.": the holder line changes; <code>All Rights Reserved</code> unchanged.</li><li id="r10"><span class="rid">R10</span> <code>git -C repos/redis show ... 78e0d871... 5e7333d2...</code> + <code>merge-base --is-ancestor</code> — 2025-04-02: "Add 'modules/vector-sets/' from commit 'c6db0a7c...'"; the orphan line subtree-joined and merged into <code>unstable</code>; the root is an ancestor of the merge.</li><li id="r11"><span class="rid">R11</span> <code>git -C repos/redis log --reverse --author=... 5e7333d2..HEAD</code> + per-year byline counts — 2025-04-09: first post-merge founder commit, authored "Salvatore Sanfilippo"; 129 antirez + 17 Salvatore commits in 2025.</li><li id="r12"><span class="rid">R12</span> <code>git -C repos/redis show ed9b544e10...:COPYING | head -5</code> — the 2009 root's license: "Copyright (c) 2006-2009, Salvatore Sanfilippo … Redistribution and use … are permitted" (BSD terms).</li><li id="r13"><span class="rid">R13</span> <code>git -C repos/redis show -s ... 0b34396924ec...</code> — 2024-03-20, Pieter Cailliau: "Change license from BSD-3 to dual RSALv2+SSPLv1 (#13157)."</li></ul><p class="regen">Every command above is reproducible against a fresh clone. Full transcripts and the regenerate script sit beside this chapter in the repository.</p></div>
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>

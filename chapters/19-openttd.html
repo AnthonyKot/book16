@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making numbers look nice — Blame</title>
+<meta name="description" content="A stranger fixed an obvious typo in a table of constants. Two days later it was reverted, because the value only looked wrong — and the revert wrote the reason where the next person would look. Told plainly.">
+<link rel="stylesheet" href="../static/style.css">
+<script src="../static/theme.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="row">
+  <a class="brand" href="../index.html"><b>git blame</b> · Blame</a>
+  <nav class="site-nav"><a href="../index.html">contents</a><a href="../about.html">method</a><button class="theme-toggle" type="button">☾ dark</button></nav>
+</div></header>
+<main class="wrap">
+<p class="kicker">P.S. <b>draft</b> · repo <b>OpenTTD/OpenTTD</b> · the typo that wasn't</p>
+<h1>Making numbers look nice</h1>
+<p>Here is an entire contribution to a big open-source project, complete. One digit in one cell of one table: a <code>320</code> becomes a <code>420</code>. The commit is titled "Fix: typo in town growth rates." The date is November 18th, 2019. And the author field — git records whatever name your machine was configured with — reads, in full, <em>Yourself</em>. Ask the project's entire history how many changes that identity ever made, and the answer is exactly one. This one. A single small fix from a stranger the ledger can only call <em>you</em>.</p>
+<p>Two days later it was reverted, and the revert message is one of my favorite pieces of writing in any repository — a project's constitution, stated in two sentences, over a one-digit change. We will get there. But first you need to see what <em>Yourself</em> saw, because this fix is the most honest kind of wrong there is. I might have typed it too.</p>
+<h2>The table</h2>
+<p>The project is OpenTTD — in its own README's words, "a transport simulation game based upon the popular game Transport Tycoon Deluxe, written by Chris Sawyer." Towns in the game grow, and how fast is decided by a small table of numbers that has sat in the code since 2007. The comment above the table explains the scheme: each number is a countdown — how many processing rounds pass before a town gains a new building. So smaller means faster. And the columns count how many transport stations are actively serving the town: the first column is a town nobody serves, the next is a town with one station, and so on.</p>
+<p>Now read the row the way a fresh pair of eyes did in 2019: no stations, 320. One station, 420. Then 300, 220, 160, 100 — falling, falling, falling, exactly as you'd expect: the better you serve a town, the faster it grows. Every column obeys that logic except the first pair. According to this table, connecting your very first station to a town makes it grow <em>slower</em> than ignoring it entirely.</p>
+<p>That is not a judgment call; it is a <em>shape</em>. Anyone who has ever scanned a table of constants knows the feeling: five values marching in one direction, one value out of line, like a fence with a leaning post. The eye snags. The diagnosis writes itself — somebody transposed digits, a typo fossilized since 2007 — and the fix is one keystroke. So a stranger with a fresh eye did the public-spirited thing: filed the one-digit fix, titled it a typo fix, and a maintainer landed it the same day.</p>
+<p>Everything about that transaction looks healthy. An outsider read the code closely. A plausible correction got through. This chapter is not about a fool, and I won't let it become that. It is about the one question nobody asked — and the two days it took for someone to arrive who didn't need to ask it.</p>
+<h2>The revert</h2>
+<p>November 20th, 2019, one o'clock in the morning, a longtime developer named frosch reverted the fix. His entire explanation:</p>
+<blockquote>OpenTTD tries to replicate the original game mechanics. Making numbers look nice and</blockquote>
+<blockquote>correlate is no goal, and in this case they actually did not correlate.</blockquote>
+<p>Sit with the first sentence, because it is a constitution. This project recreates a specific game, and that sentence declares what that means as an engineering discipline: the specification is not elegance, not intuition, not what a table <em>ought</em> to look like. The specification is what the original game actually did. The 2007 commit that introduced the table had said as much — the default growth rate, it notes, is "TTD's original rate." A visually tidy table was never the goal. Fidelity was.</p>
+<p>Then the second sentence, the one I keep coming back to: <em>making numbers look nice and correlate is no goal — and in this case they actually did not correlate.</em> He is saying the typo diagnosis was wrong twice over. Wrong in principle, because even a genuinely lopsided table would be protected if the original game behaved that way. And wrong in fact — because the 320 and the 420 were never comparable numbers at all.</p>
+<h2>The hidden clause</h2>
+<p>Here is what the fresh eye could not see, and it had been sitting in the code since 2007, in a different spot. A few lines below the table, one extra rule applies to exactly one column: the town with no stations. Before its countdown even starts, that town has to pass a coin flip that succeeds roughly one time in twelve. Eleven times out of twelve, it is sent home with no progress at all.</p>
+<p>So a town with no stations doesn't really count down from 320. It counts down from 320 <em>behind a one-in-twelve toll gate</em> — far slower, in practice, than the one-station town's honest 420. The table was never out of order. Its first column is simply quoted in a different currency, and the exchange rate lives in a different function — which is why a careful reader of the table alone never had a chance. A value's meaning does not live in the value. It lives in the code that <em>consumes</em> the value, and the consumer is never printed in the diff where the value looks wrong.</p>
+<h2>The five-line monument</h2>
+<p>Now the move that makes this episode worth a chapter. Compare the code from just before the stranger's fix with the code just after frosch's revert — the net effect of the entire affair. The value is back where it started. The only thing the whole episode added is a five-line comment, sitting directly above the number that looks wrong:</p>
+<blockquote>Note: Unserviced+unfunded towns get an additional malus in UpdateTownGrowth(), so the "320"</blockquote>
+<blockquote>is actually not better than the "420".</blockquote>
+<p>frosch didn't just undo the mistake. He patched the <em>conditions</em> that produced the mistake. The fact whose distance from the table caused the whole affair now has a copy at the exact spot where the next tidy-minded stranger's eye will snag: the trap named, the trap's location named, and the conclusion stated outright, like a proverb.</p>
+<p>There is a genre of comment that only a revert can write. Ordinary comments explain what the author was thinking. This kind explains what <em>someone else</em> was thinking when they got it wrong. You cannot write it in advance — you cannot know in advance which of your correct lines looks incorrect. You find out the day somebody fixes one.</p>
+<h2>Still standing</h2>
+<p>The whole affair cost two days and produced five lines. The 320 was never the bug; the bug was a correct-looking correction, and the entire blast radius is the comment that now prevents its sequel. Watch it work: in 2023 a project-wide cleanup modernized the code around it and the five lines came through untouched. Ask git's blame today, nearly seven years on, and the note and the restored row still answer to frosch's revert — and in all that time, nobody has "fixed" the typo again. Whether that is because fresh eyes keep reading the five lines and quietly closing the tab, the record cannot say. A comment's success is measured in commits that never happened, which is why nobody ever gets credit for one.</p>
+<h2>At home</h2>
+<p>The habit fires at one specific moment: when a value in someone else's code looks obviously, fixably wrong. A lopsided table. A constant out of step with its neighbors. Your eye snags, the diagnosis writes itself, the fix is one keystroke. <em>That</em> moment. Before you type, go find the consumer — trace where the value is actually read, and check whether some guard in another function quotes your ugly number in a currency you haven't seen. Then ask git for the value's history and read what its authors said when it arrived; if it was ever "fixed" before, the revert message will tell you exactly which trap you are standing in. Five minutes, total.</p>
+<p>And if you are ever the one doing the reverting, steal frosch's move whole. Don't just put the right value back — write down, at the exact spot where the next person's eye will snag, why the wrong-looking thing is right. Somewhere in a repository you maintain, there is a correct line that looks like a typo, and its comment hasn't been written yet. The stranger who will someday fix it — carefully, publicly, with the best of intentions, under a name like <em>Yourself</em> — is the reader you are writing for.</p>
+<p>---</p>
+<p><em>The one-digit fix, the author named Yourself, the two-sentence revert, the one-in-twelve gate, and the five-line comment still standing seven years later are all real and public, reproducible with a git command each. The full technical dig is here: <a href="19-openttd.full.html">Making numbers look nice — the full dig</a>.</em></p>
+
+<div class="chapter-foot"><a href="../index.html">← contents</a><a href="../about.html">how to check this →</a></div>
+</main>
+<footer class="site-footer"><div class="wrap">Blame — git archaeology. Every hash is real; clone the repo and run the command.</div></footer>
+</body>
+</html>
