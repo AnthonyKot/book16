@@ -147,6 +147,16 @@ Tuesday afternoon two years earlier. On May 13th the project
 told the world, and the world spent that spring doing something almost without precedent: hunting
 down and replacing, one by one, every key the broken pool had ever dealt.
 
+Try to feel the size of that. For those twenty months, *every* secret made on a Debian or Ubuntu
+machine — or anything built on them — came out of the raffle: every server's SSH host key, every
+login key, every website's SSL certificate, every VPN credential. No patch could heal a key already
+made; each had to be regenerated from scratch. And one kind was worse: merely *using* a DSA key on a
+broken machine could leak the secret behind it, so those had to be thrown out even if they'd been born
+somewhere safe. Distributions shipped blacklists of the weak keys so servers would refuse them on
+sight — the list was just the whole small catalog, the same precomputed shelf an attacker would build.
+Years later those keys were still turning up, still live, on machines nobody had rotated.
+<!-- VERIFIED: DSA-1571/CVE-2008-0166; affected OpenSSL 0.9.8c-1 (Sep 2006) to before 0.9.8g-9 (fixed 2008-05-13) on Debian and derivatives incl. Ubuntu; all SSH/SSL/DSA key material generated in that window must be regenerated; DSA keys merely used on an affected host are compromised; Debian shipped openssl-blacklist. https://www.debian.org/security/2008/dsa-1571 -->
+
 
 The repair itself, when it came, was almost insultingly small: delete the comment
 marks, let the real seed flow again. One line, essentially, undone. The commit that did it named

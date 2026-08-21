@@ -232,6 +232,18 @@ translations first, then `[ Kurt Roeckx ]` and one line about `MD_Update`. [R10]
 from `low` to `high`, and a restart prompt gets added on upgrade — the only two signs, anywhere
 in the packaging, that this was the fire and not a Tuesday.
 
+The quiet message understated a loud cleanup. Nothing could repair a key already made — the flaw was
+in the moment of its birth — so every one had to be regenerated: every SSH host key, user key, SSL
+certificate, and VPN credential produced on Debian, Ubuntu, or any derivative in those twenty months.
+DSA keys were worse than the rest: because the algorithm leans on a fresh secret random value each
+time it signs, *using* a DSA key even once on a broken machine could expose its private half, so any
+DSA key that had touched an affected system had to be retired regardless of where it was made. Debian
+shipped an `openssl-blacklist` package listing the known-weak keys so servers could reject them on
+sight — and because the whole catalog was only tens of thousands of keys per type, the blacklists
+were simply the enumerated set, the same precomputed shelf an attacker would build. Years later those
+keys were still turning up, still accepted, on machines no one had rotated.
+<!-- VERIFIED: DSA-1571/CVE-2008-0166; regenerate all key material generated 0.9.8c-1 (Sep 2006) through the 2008-05-13 fix on Debian/Ubuntu/derivatives; DSA keys merely used on an affected host are compromised (per-signature secret k); Debian openssl-blacklist / ssh-vulnkey shipped for detection. https://www.debian.org/security/2008/dsa-1571 -->
+
 ## The name that would not die
 
 One more thing, because it changes how you read a tag. The parallel fix for the *stable* release,
